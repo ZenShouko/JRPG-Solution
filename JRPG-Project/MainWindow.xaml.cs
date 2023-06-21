@@ -34,6 +34,11 @@ namespace JRPG_Project
 
         private void Window_KeyUp(object sender, KeyEventArgs e)
         {
+            Interaction.SetKey(null);
+        }
+
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
             Interaction.SetKey(e.Key);
         }
     }

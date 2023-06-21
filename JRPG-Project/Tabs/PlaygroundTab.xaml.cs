@@ -65,8 +65,6 @@ namespace JRPG_Project.Tabs
                 {
                     MovePlayer(Interaction.GetKey().ToString().ToUpper());
                 }
-
-                Interaction.SetKey(null);
             }
         }
 
@@ -305,6 +303,7 @@ namespace JRPG_Project.Tabs
             //Cancel if space is not free
             if (!IsTargetTileFree(targetX, targetY))
             {
+                AnimatePlayerCollision(targetX, targetY, player);
                 return;
             }
 
@@ -390,6 +389,114 @@ namespace JRPG_Project.Tabs
             player.CurrentY = targetY;
 
             //Set player moving to false
+            isPlayerMoving = false;
+        }
+
+        private async void AnimatePlayerCollision(int targetX, int targetY, Mob player)
+        {
+            //Set player moving to true
+            isPlayerMoving = true;
+
+            //Get player image
+            Image playerIcon = player.ImageObject as Image;
+
+            //What direction is the player moving
+            int directionX = targetX - player.CurrentX; //either -1, 0 or 1; -1 = left, 0 = none, 1 = right
+            int directionY = targetY - player.CurrentY; //either -1, 0 or 1; -1 = up, 0 = none, 1 = down
+
+            //Get the size of the tiles
+            double tileWidth = MainGrid.ColumnDefinitions[0].ActualWidth; //Output = 80
+            double tileHeight = MainGrid.RowDefinitions[0].ActualHeight; //Output = 60
+
+            //Get image margin
+            Thickness margin = playerIcon.Margin;
+
+            //Default props
+            int speed = 2;
+            int delay = 1;
+
+            //Move player 50% of the tile and then back
+            if (directionX == 1)
+            {
+                //Move forward
+                while(Math.Abs(margin.Right) < Math.Abs(tileWidth / 4))
+                {
+                    margin.Left += speed;
+                    margin.Right -= speed;
+                    playerIcon.Margin = margin;
+                    await Task.Delay(delay);
+                }
+
+                //Move back
+                while (Math.Abs(margin.Right) > 0)
+                {
+                    margin.Left -= speed;
+                    margin.Right += speed;
+                    playerIcon.Margin = margin;
+                    await Task.Delay(delay);
+                }
+            }
+            else if (directionX == -1)
+            {
+                //Move forward
+                while (Math.Abs(margin.Right) < Math.Abs(tileWidth / 4))
+                {
+                    margin.Left -= speed;
+                    margin.Right += speed;
+                    playerIcon.Margin = margin;
+                    await Task.Delay(delay);
+                }
+
+                //Move back
+                while (Math.Abs(margin.Right) > 0)
+                {
+                    margin.Left += speed;
+                    margin.Right -= speed;
+                    playerIcon.Margin = margin;
+                    await Task.Delay(delay);
+                }
+            }
+            else if (directionY == 1)
+            {
+                //Move forward
+                while(Math.Abs(margin.Top) < Math.Abs(tileHeight / 4))
+                {
+                    margin.Top += speed;
+                    margin.Bottom -= speed;
+                    playerIcon.Margin = margin;
+                    await Task.Delay(delay);
+                }
+
+                //Move back
+                while (Math.Abs(margin.Top) > 0)
+                {
+                    margin.Top -= speed;
+                    margin.Bottom += speed;
+                    playerIcon.Margin = margin;
+                    await Task.Delay(delay);
+                }
+            }
+            else if (directionY == -1)
+            {
+                //Move forward
+                while(Math.Abs(margin.Bottom) < Math.Abs(tileHeight / 4))
+                {
+                    margin.Top -= speed;
+                    margin.Bottom += speed;
+                    playerIcon.Margin = margin;
+                    await Task.Delay(delay);
+                }
+
+                //Move back
+                while (Math.Abs(margin.Bottom) > 0)
+                {
+                    margin.Top += speed;
+                    margin.Bottom -= speed;
+                    playerIcon.Margin = margin;
+                    await Task.Delay(delay);
+                }
+            }
+
             isPlayerMoving = false;
         }
 
