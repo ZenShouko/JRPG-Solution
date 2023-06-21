@@ -76,6 +76,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ClassLibrary\Entities\Level.cs" />
+    <Compile Include="ClassLibrary\Entities\Mob.cs" />
+    <Compile Include="ClassLibrary\Interaction.cs" />
+    <Compile Include="ClassLibrary\Levels.cs" />
+    <Compile Include="ClassLibrary\Mobs.cs" />
+    <Compile Include="ClassLibrary\PlayerControls.cs" />
     <Compile Include="Tabs\MainTab.xaml.cs">
       <DependentUpon>MainTab.xaml</DependentUpon>
     </Compile>
@@ -126,6 +132,9 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="JRPG-key.pfx" />
+    <None Include="Levels\Testfield.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -138,12 +147,20 @@
     <Folder Include="Resources\Assets\Weapons\" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Assets\Characters\enemy-alert.png" />
-    <Resource Include="Resources\Assets\Characters\enemy-neutral.png" />
-    <Resource Include="Resources\Assets\Characters\player.png" />
+    <Resource Include="Resources\Assets\Characters\enemy-alert.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Assets\Characters\enemy-neutral.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Assets\Characters\player.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Assets\Items\item-box.png" />
+    <Resource Include="Resources\Assets\Items\item-box.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\JRPG-ClassLibrary\JRPG-ClassLibrary.csproj">
