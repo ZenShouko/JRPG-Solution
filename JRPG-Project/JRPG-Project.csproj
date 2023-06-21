@@ -79,10 +79,12 @@
     <Compile Include="ClassLibrary\Entities\Level.cs" />
     <Compile Include="ClassLibrary\Entities\Mob.cs" />
     <Compile Include="ClassLibrary\Entities\Tile.cs" />
-    <Compile Include="ClassLibrary\Interaction.cs" />
+    <Compile Include="ClassLibrary\Universal\Interaction.cs" />
     <Compile Include="ClassLibrary\Levels.cs" />
     <Compile Include="ClassLibrary\Mobs.cs" />
-    <Compile Include="ClassLibrary\PlayerControls.cs" />
+    <Compile Include="ClassLibrary\Player\PlayerActions.cs" />
+    <Compile Include="ClassLibrary\Player\PlayerControls.cs" />
+    <Compile Include="ClassLibrary\Tiles.cs" />
     <Compile Include="Tabs\MainTab.xaml.cs">
       <DependentUpon>MainTab.xaml</DependentUpon>
     </Compile>

@@ -1,4 +1,5 @@
 ﻿using JRPG_ClassLibrary.Entities;
+using JRPG_Project.ClassLibrary;
 using JRPG_Project.ClassLibrary.Entities;
 using System;
 using System.Collections.Generic;
@@ -32,7 +33,7 @@ namespace JRPG_ClassLibrary
             CurrentLevel.Playfield.ColumnDefinitions.Clear();
             CurrentLevel.Playfield.RowDefinitions.Clear();
 
-            //List that will contain the structure for creation
+            //List that will contain the structure for creation (To pass on to other methods)
             List<string> structure = new List<string>();
 
             //Create tileList
@@ -54,12 +55,15 @@ namespace JRPG_ClassLibrary
 
                 //#Mobs
                 structure.Clear();
-                while (!reader.EndOfStream)
+                for (int i = 0; i < CurrentLevel.Rows; i++)
                 {
                     structure.Add(reader.ReadLine());
                 }
 
                 AddMobsToTileList(structure);
+
+                //#Collectables
+                CreateCollectablesList(reader.ReadLine());
 
                 //Create platform
                 CreatePlatform();
@@ -116,7 +120,7 @@ namespace JRPG_ClassLibrary
                     }
 
                     //Create tile element
-                    Border tileElement = CreateTile(tileName);
+                    Border tileElement = Tiles.CreateTile(tileName);
 
                     Grid.SetColumn(tileElement, currentColumn);
                     Grid.SetRow(tileElement, currentRow);
@@ -143,12 +147,12 @@ namespace JRPG_ClassLibrary
 
             //Set player position
             string[] pos = structure.Split(';');
-            player.CurrentX = Convert.ToInt32(pos[0]);
-            player.CurrentY = Convert.ToInt32(pos[1]);
+            player.X = Convert.ToInt32(pos[0]);
+            player.Y = Convert.ToInt32(pos[1]);
 
             //Create player
-            Grid.SetColumn(player.Icon, player.CurrentX);
-            Grid.SetRow(player.Icon, player.CurrentY);
+            Grid.SetColumn(player.Icon, player.X);
+            Grid.SetRow(player.Icon, player.Y);
             Grid.SetZIndex(player.Icon, 100);
 
             //Add player to level
@@ -176,9 +180,9 @@ namespace JRPG_ClassLibrary
                     Mob mob = Mobs.CreateMob(mobName);
 
                     Grid.SetColumn(mob.Icon, currentColumn);
-                    mob.CurrentX = currentColumn;
+                    mob.X = currentColumn;
                     Grid.SetRow(mob.Icon, currentRow);
-                    mob.CurrentY = currentRow;
+                    mob.Y = currentRow;
 
                     //CurrentLevel.Playfield.Children.Add(mob.Icon);
                     CurrentLevel.MobList.Add(mob);
@@ -193,6 +197,15 @@ namespace JRPG_ClassLibrary
                 //Next row
                 currentRow++;
                 currentColumn = 0;
+            }
+        }
+
+        private static void CreateCollectablesList(string line)
+        {
+            string[] collectables = line.Split(';');
+            foreach (string collectable in collectables)
+            {
+                CurrentLevel.Collectables.Add(collectable);
             }
         }
 
@@ -213,55 +226,5 @@ namespace JRPG_ClassLibrary
             }
         }
 
-        private static List<string> availableTiles = new List<string>()
-        {
-            "DEF", "SEA"
-        };
-
-        private static Border CreateTile(string type)
-        {
-            //Check if type is available
-            if (!availableTiles.Contains(type))
-            {
-                return null;
-            }
-
-            //Create tile
-            Border tile = new Border();
-            tile.BorderBrush = Brushes.Black;
-            tile.BorderThickness = new Thickness(1);
-            tile.CornerRadius = new CornerRadius(2);
-
-            //Switch type
-            switch (type)
-            {
-                case "DEF":
-                    {
-                        tile.Background = Brushes.Beige;
-                        break;
-                    }
-                case "SEA":
-                    {
-                        tile.Background = Brushes.DarkSlateBlue;
-                        break;
-                    }
-            }
-
-            return tile;
-        }
-
-        public static void CollectItem(Tile tile)
-        {
-            //Remove mob from playfield
-            CurrentLevel.Playfield.Children.Remove(tile.MOB.Icon);
-
-            //Remove mob from moblist
-            CurrentLevel.MobList.Remove(tile.MOB);
-
-            //Remove mob from tile
-            tile.MOB = null;
-
-            //Add item to inventory
-        }
     }
 }
