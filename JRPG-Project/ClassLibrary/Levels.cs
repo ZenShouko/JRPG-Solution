@@ -1,4 +1,5 @@
 ﻿using JRPG_ClassLibrary.Entities;
+using JRPG_Project.ClassLibrary.Entities;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -31,35 +32,37 @@ namespace JRPG_ClassLibrary
             CurrentLevel.Playfield.ColumnDefinitions.Clear();
             CurrentLevel.Playfield.RowDefinitions.Clear();
 
-            //Build level
+            //List that will contain the structure for creation
+            List<string> structure = new List<string>();
+
+            //Create tileList
             using (StreamReader reader = new StreamReader(filePath))
             {
                 //Set level properties
                 SetLevelProperties(reader.ReadLine());
 
-                //List that will contain the structure for creation
-                List<string> structure = new List<string>();
-
-                //Create platform tiles
+                //#Tiles
                 for (int i = 0; i < CurrentLevel.Rows; i++)
                 {
                     structure.Add(reader.ReadLine());
                 }
 
-                SetPlatformTiles(structure);
+                AddTilesToTileList(structure);
 
-
-                //Get player position
+                //#Player
                 SetPlayer(reader.ReadLine());
 
-                //Read mobs
+                //#Mobs
                 structure.Clear();
                 while (!reader.EndOfStream)
                 {
                     structure.Add(reader.ReadLine());
                 }
 
-                SetMobs(structure);
+                AddMobsToTileList(structure);
+
+                //Create platform
+                CreatePlatform();
             }
         }
 
@@ -73,7 +76,7 @@ namespace JRPG_ClassLibrary
             CurrentLevel.Rows = Convert.ToInt32(props[3]);
         }
 
-        private static void SetPlatformTiles(List<string> structure)
+        private static void AddTilesToTileList(List<string> structure)
         {
             //Set the amount of columns of the playfield
             for (int i = 0; i < CurrentLevel.Columns; i++)
@@ -94,15 +97,36 @@ namespace JRPG_ClassLibrary
             foreach (string row in structure)
             {
                 string[] tileNames = row.Split(';');
-                foreach(string tileName in tileNames)
+                foreach (string tileName in tileNames)
                 {
-                    Border tileObject = CreateTile(tileName);
+                    //Create tile
+                    Tile tile = new Tile();
+                    tile.Type = tileName;
+                    tile.X = currentColumn;
+                    tile.Y = currentRow;
 
-                    Grid.SetColumn(tileObject, currentColumn);
-                    Grid.SetRow(tileObject, currentRow);
+                    //Is tile walkable?
+                    if (tileName == "DEF")
+                    {
+                        tile.IsWalkable = true;
+                    }
+                    else
+                    {
+                        tile.IsWalkable = false;
+                    }
 
-                    CurrentLevel.Playfield.Children.Add(tileObject);
+                    //Create tile element
+                    Border tileElement = CreateTile(tileName);
 
+                    Grid.SetColumn(tileElement, currentColumn);
+                    Grid.SetRow(tileElement, currentRow);
+
+                    tile.TileElement = tileElement;
+
+                    //Add to tile list
+                    CurrentLevel.TileList.Add(tile);
+
+                    //Next column
                     currentColumn++;
                 }
 
@@ -125,13 +149,14 @@ namespace JRPG_ClassLibrary
             //Create player
             Grid.SetColumn(player.Icon, player.CurrentX);
             Grid.SetRow(player.Icon, player.CurrentY);
+            Grid.SetZIndex(player.Icon, 100);
 
             //Add player to level
             CurrentLevel.Playfield.Children.Add(player.Icon);
             CurrentLevel.MobList.Add(player);
         }
 
-        private static void SetMobs(List<string> mobStructure)
+        private static void AddMobsToTileList(List<string> mobStructure)
         {
             int currentColumn = 0;
             int currentRow = 0;
@@ -155,8 +180,12 @@ namespace JRPG_ClassLibrary
                     Grid.SetRow(mob.Icon, currentRow);
                     mob.CurrentY = currentRow;
 
-                    CurrentLevel.Playfield.Children.Add(mob.Icon);
+                    //CurrentLevel.Playfield.Children.Add(mob.Icon);
                     CurrentLevel.MobList.Add(mob);
+
+                    //Add mob to tile
+                    Tile tile = CurrentLevel.TileList.Find(t => t.X == currentColumn && t.Y == currentRow);
+                    tile.MOB = mob;
 
                     currentColumn++;
                 }
@@ -164,6 +193,23 @@ namespace JRPG_ClassLibrary
                 //Next row
                 currentRow++;
                 currentColumn = 0;
+            }
+        }
+
+        private static void CreatePlatform()
+        {
+            //Add tiles to playfield
+            foreach (Tile tile in CurrentLevel.TileList)
+            {
+                CurrentLevel.Playfield.Children.Add(tile.TileElement);
+                if (tile.MOB is null)
+                {
+                    continue;
+                }
+                else
+                {
+                    CurrentLevel.Playfield.Children.Add(tile.MOB.Icon);
+                }
             }
         }
 
@@ -202,6 +248,20 @@ namespace JRPG_ClassLibrary
             }
 
             return tile;
+        }
+
+        public static void CollectItem(Tile tile)
+        {
+            //Remove mob from playfield
+            CurrentLevel.Playfield.Children.Remove(tile.MOB.Icon);
+
+            //Remove mob from moblist
+            CurrentLevel.MobList.Remove(tile.MOB);
+
+            //Remove mob from tile
+            tile.MOB = null;
+
+            //Add item to inventory
         }
     }
 }

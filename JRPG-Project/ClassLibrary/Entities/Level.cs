@@ -1,4 +1,5 @@
-﻿using System;
+﻿using JRPG_Project.ClassLibrary.Entities;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -15,6 +16,7 @@ namespace JRPG_ClassLibrary.Entities
         public int Columns { get; set; }
         public int Rows { get; set; }
         public List<Mob> MobList = new List<Mob>();
+        public List<Tile> TileList = new List<Tile>();
         public Grid Playfield { get; set; }
 
         public Level()

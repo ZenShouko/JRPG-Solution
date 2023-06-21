@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Media.Animation;
 using System.Windows.Controls;
+using JRPG_Project.ClassLibrary.Entities;
 
 namespace JRPG_ClassLibrary
 {
@@ -83,40 +84,34 @@ namespace JRPG_ClassLibrary
             }
         }
 
-        private static bool IsTargetTileFree(int targetX, int targetY)
+        private static string CheckTargetTile(int targetX, int targetY)
         {
             //Check if the tile is out of bounds
             if (targetX < 0 || targetX > Levels.CurrentLevel.Columns - 1 ||
                 targetY < 0 || targetY > Levels.CurrentLevel.Rows - 1)
             {
-                return false;
+                return "VOID";
             }
 
-            //Check if the tile doesn't contain a mob
+            //Does tile contain a mob?
             if (Levels.CurrentLevel.MobList.Contains(Levels.CurrentLevel.MobList.Find(mob => mob.CurrentX == targetX && mob.CurrentY == targetY)))
             {
-                return false;
+                return "STOP";
             }
 
-            return true;
+            return "OK";
         }
 
         private static async void MovePlayer(string direction)
         {
             //Is player already moving?
-            if (isPlayerMoving)
-            {
-                return;
-            }
+            if (isPlayerMoving) { return; }
 
             //Get player element and image
             Mob player = GetPlayer();
 
             //Cancel if player is not available
-            if (player is null)
-            {
-                return;
-            }
+            if (player is null) { return; }
 
             //Rotate player
             RotatePlayer(direction, player.Icon);
@@ -149,8 +144,11 @@ namespace JRPG_ClassLibrary
                     }
             }
 
+            //IS target tile available?
+
+
             //Cancel if space is not free
-            if (!IsTargetTileFree(targetX, targetY))
+            if (!IsTileWalkable(targetX, targetY))
             {
                 AnimatePlayerCollision(targetX, targetY, player);
                 return;
@@ -158,6 +156,33 @@ namespace JRPG_ClassLibrary
 
             //Move player
             AnimatePlayerMovement(targetX, targetY, player);
+
+            //Does tile contain a collectable item?
+            //CollectTileItem(targetX, targetY);
+        }
+
+        private static bool IsTileWalkable(int x, int y)
+        {
+            Tile tile = Levels.CurrentLevel.TileList.Find(t => t.X == x && t.Y == y);
+
+            //Out of bounds?
+            if (tile is null) { return false; }
+
+            //Is tile walkable?
+            return tile.IsWalkable;
+        }
+
+        private static void CollectTileItem(int x, int y)
+        {
+            Tile tile = Levels.CurrentLevel.TileList.Find(t => t.X == x && t.Y == y);
+
+            if (tile is null || tile.MOB is null) { return; }
+
+            //Does tile contain a collectable item?
+            if (tile.MOB.Name == "ITEM")
+            {
+                Levels.CollectItem(tile);
+            }
         }
 
         private static async void AnimatePlayerMovement(int targetX, int targetY, Mob player)
@@ -225,6 +250,9 @@ namespace JRPG_ClassLibrary
             player.CurrentX = targetX;
             Grid.SetRow(player.Icon, targetY);
             player.CurrentY = targetY;
+
+            //Is there a collectable item on the tile?
+            CollectTileItem(targetX, targetY);
 
             //Set player moving to false
             isPlayerMoving = false;

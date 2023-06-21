@@ -78,6 +78,7 @@
     </ApplicationDefinition>
     <Compile Include="ClassLibrary\Entities\Level.cs" />
     <Compile Include="ClassLibrary\Entities\Mob.cs" />
+    <Compile Include="ClassLibrary\Entities\Tile.cs" />
     <Compile Include="ClassLibrary\Interaction.cs" />
     <Compile Include="ClassLibrary\Levels.cs" />
     <Compile Include="ClassLibrary\Mobs.cs" />

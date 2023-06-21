@@ -45,19 +45,11 @@ namespace JRPG_ClassLibrary
             {
                 case "PLAYER":
                     {
-                        if (!File.Exists(@"../../Resources/Assets/Characters/player.png"))
-                        {
-                            MessageBox.Show("ImageFileNotFound!");
-                        }
                         mobImage.Source = new BitmapImage(new Uri(@"../../Resources/Assets/Characters/player.png", UriKind.Relative));
                         break;
                     }
                 case "ITEM":
                     {
-                        if (!File.Exists(@"../../Resources/Assets/Items/item-box.png"))
-                        {
-                            MessageBox.Show("ImageFileNotFound!");
-                        }
                         mobImage.Source = new BitmapImage(new Uri(@"../../Resources/Assets/Items/item-box.png", UriKind.Relative));
                         break;
                     }
