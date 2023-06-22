@@ -21,8 +21,6 @@ namespace JRPG_ClassLibrary
         private static int speedY = 0;
         private static int collisionSpeed = 2;
         private static int animationDelay = 1;
-        private static int tileWidth;
-        private static int tileHeight;
 
 
         private static List<Key> keys = new List<Key>()
@@ -33,19 +31,11 @@ namespace JRPG_ClassLibrary
         private static bool isKeyDetectorActive = false;
 
         private static bool isPlayerMoving = false; //Do not allow player to move if already moving
-        public static void InitializeControls()
-        {
-            tileWidth = (int)Levels.CurrentLevel.Playfield.Width / Levels.CurrentLevel.Playfield.ColumnDefinitions.Count;
-            tileHeight = (int)Levels.CurrentLevel.Playfield.Height / Levels.CurrentLevel.Playfield.RowDefinitions.Count;
-        }
 
         public static async void RunKeyDetector()
         {
             //Set key detector active;
             isKeyDetectorActive = true;
-
-            //Initialize player controls
-            InitializeControls();
 
             //Check if a key has been pressed
             while (isKeyDetectorActive)
@@ -94,6 +84,9 @@ namespace JRPG_ClassLibrary
             //Cancel if player is not available
             if (player is null) { return; }
 
+            //(Start foe turn)
+            FoeControls.MoveFoes();
+
             //Rotate player
             RotatePlayer(direction, player.Icon);
 
@@ -129,7 +122,7 @@ namespace JRPG_ClassLibrary
                     }
             }
 
-            //Cancel if space is not free
+            //Collission detection
             if (Tiles.GetTile(targetX, targetY) is null || !Tiles.GetTile(targetX, targetY).IsWalkable)
             {
                 AnimateMovement(true, player);
@@ -175,6 +168,8 @@ namespace JRPG_ClassLibrary
             //Set player moving to true
             isPlayerMoving = true;
 
+
+
             //Get image margin
             Thickness margin = player.Icon.Margin;
 
@@ -183,8 +178,8 @@ namespace JRPG_ClassLibrary
             int speed = collision ? collisionSpeed : playerSpeed;
 
             //Move
-            while (Math.Abs(margin.Right) < Math.Abs(tileWidth / dividor) &&
-                Math.Abs(margin.Top) < Math.Abs(tileHeight / dividor))
+            while (Math.Abs(margin.Right) < Math.Abs(Levels.CurrentLevel.TileWidth / dividor) &&
+                Math.Abs(margin.Top) < Math.Abs(Levels.CurrentLevel.TileHeight / dividor))
             {
                 margin.Left += speed * speedX;
                 margin.Right -= speed * speedX;
@@ -216,8 +211,13 @@ namespace JRPG_ClassLibrary
             speedX = 0;
             speedY = 0;
 
-            //Foe turn
-            FoeControls.MoveFoes();
+
+
+            while (FoeControls.FoeTurn)
+            {
+                await Task.Delay(50);
+                continue;
+            }
 
             //set player moving to false
             isPlayerMoving = false;
@@ -238,7 +238,6 @@ namespace JRPG_ClassLibrary
             //Collect item
             PlayerActions.CollectTileItem(tile);
         }
-
 
     }
 }

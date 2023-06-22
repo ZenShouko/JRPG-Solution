@@ -88,6 +88,7 @@
     <Compile Include="ClassLibrary\Entities\Tile.cs" />
     <Compile Include="ClassLibrary\FoeControls.cs" />
     <Compile Include="ClassLibrary\Foes.cs" />
+    <Compile Include="ClassLibrary\Mechanics.cs" />
     <Compile Include="ClassLibrary\Universal\Interaction.cs" />
     <Compile Include="ClassLibrary\Levels.cs" />
     <Compile Include="ClassLibrary\Mobs.cs" />

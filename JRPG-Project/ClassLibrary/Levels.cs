@@ -87,6 +87,8 @@ namespace JRPG_ClassLibrary
             CurrentLevel.LevelNumber = Convert.ToInt32(props[1]);
             CurrentLevel.Columns = Convert.ToInt32(props[2]);
             CurrentLevel.Rows = Convert.ToInt32(props[3]);
+            CurrentLevel.TileWidth = (int)CurrentLevel.Playfield.Width / CurrentLevel.Columns;
+            CurrentLevel.TileHeight = (int)CurrentLevel.Playfield.Height / CurrentLevel.Rows;
         }
 
         private static void AddTilesToTileList(List<string> structure)
@@ -268,5 +270,6 @@ namespace JRPG_ClassLibrary
                 x = 0;
             }
         }
+
     }
 }
