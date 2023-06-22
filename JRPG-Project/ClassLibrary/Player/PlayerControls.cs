@@ -50,7 +50,7 @@ namespace JRPG_ClassLibrary
 
                 if (keys.Contains((Key)Interaction.GetKey()))
                 {
-                    StartPlayerMovement(Interaction.GetKey().ToString().ToUpper());
+                    StartPlayerMovementAsync(Interaction.GetKey().ToString().ToUpper());
                 }
             }
         }
@@ -73,10 +73,10 @@ namespace JRPG_ClassLibrary
             }
         }
 
-        private static void StartPlayerMovement(string direction)
+        private static async Task StartPlayerMovementAsync(string direction)
         {
-            //Is player already moving?
-            if (isPlayerMoving) { return; }
+            //Is player already moving? Or is it the foe turn?
+            if (isPlayerMoving || FoeControls.FoeTurn) { return; }
 
             //Get player element and image
             Mob player = GetPlayer();
@@ -84,11 +84,11 @@ namespace JRPG_ClassLibrary
             //Cancel if player is not available
             if (player is null) { return; }
 
-            //(Start foe turn)
-            FoeControls.MoveFoes();
-
             //Rotate player
             RotatePlayer(direction, player.Icon);
+
+            //(Start foe turn)
+            await FoeControls.MoveFoes();
 
             //Calculate the target tile
             int targetX = player.X;
@@ -125,11 +125,11 @@ namespace JRPG_ClassLibrary
             //Collission detection
             if (Tiles.GetTile(targetX, targetY) is null || !Tiles.GetTile(targetX, targetY).IsWalkable)
             {
-                AnimateMovement(true, player);
+                await AnimateMovement(true, player);
             }
             else
             {
-                AnimateMovement(false, player);
+                await AnimateMovement(false, player);
             }
         }
 
@@ -163,12 +163,10 @@ namespace JRPG_ClassLibrary
             player.RenderTransformOrigin = new Point(0.5, 0.5);
         }
 
-        private static async void AnimateMovement(bool collision, Mob player)
+        private static async Task AnimateMovement(bool collision, Mob player)
         {
             //Set player moving to true
             isPlayerMoving = true;
-
-
 
             //Get image margin
             Thickness margin = player.Icon.Margin;

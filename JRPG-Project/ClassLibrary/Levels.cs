@@ -1,12 +1,14 @@
 ﻿using JRPG_ClassLibrary.Entities;
 using JRPG_Project.ClassLibrary;
+using JRPG_Project.ClassLibrary.Data;
 using JRPG_Project.ClassLibrary.Entities;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 
 namespace JRPG_ClassLibrary
 {
@@ -76,7 +78,11 @@ namespace JRPG_ClassLibrary
                 }
 
                 AddFoes(structure);
+
             }
+
+            //Prepare foe tasks
+            FoeControls.PrepareTaskList();
         }
 
         private static void SetLevelProperties(string propLine)
@@ -89,54 +95,55 @@ namespace JRPG_ClassLibrary
             CurrentLevel.Rows = Convert.ToInt32(props[3]);
             CurrentLevel.TileWidth = (int)CurrentLevel.Playfield.Width / CurrentLevel.Columns;
             CurrentLevel.TileHeight = (int)CurrentLevel.Playfield.Height / CurrentLevel.Rows;
-        }
 
-        private static void AddTilesToTileList(List<string> structure)
-        {
+            int width = 80;
+            int height = 60;
+
             //Set the amount of columns of the playfield
             for (int i = 0; i < CurrentLevel.Columns; i++)
             {
-                CurrentLevel.Playfield.ColumnDefinitions.Add(new ColumnDefinition());
+                ColumnDefinition col = new ColumnDefinition();
+                col.Width = new GridLength(width);
+                CurrentLevel.Playfield.ColumnDefinitions.Add(col);
             }
 
             //Set the amount of rows of the playfield
             for (int i = 0; i < CurrentLevel.Rows; i++)
             {
+                RowDefinition row = new RowDefinition();
+                row.Height = new GridLength(height);
                 CurrentLevel.Playfield.RowDefinitions.Add(new RowDefinition());
             }
+        }
 
+        private static void AddTilesToTileList(List<string> structure)
+        {
             //Iterate through level design and set tiles
             int currentColumn = 0;
             int currentRow = 0;
 
-            foreach (string row in structure)
+            foreach (string line in structure)
             {
-                string[] tileNames = row.Split(';');
-                foreach (string tileName in tileNames)
+                string[] tileNames = line.Split(';');
+                foreach (string code in tileNames)
                 {
                     //Create tile
                     Tile tile = new Tile();
-                    tile.Type = tileName;
+                    tile.Code = code;
                     tile.X = currentColumn;
                     tile.Y = currentRow;
 
-                    //Is tile walkable?
-                    if (tileName == "DEF")
-                    {
-                        tile.IsWalkable = true;
-                    }
-                    else
-                    {
-                        tile.IsWalkable = false;
-                    }
+                    DataRow row = TileData.TileTable.Select($"Code = '{code}'").FirstOrDefault();
+                    tile.Type = row["Type"].ToString();
+                    tile.IsWalkable = Convert.ToBoolean(row["IsWalkable"]);
 
                     //Create tile element
-                    Border tileElement = Tiles.CreateTile(tileName);
+                    Border tileBorder = Tiles.CreateTile(code);
 
-                    Grid.SetColumn(tileElement, currentColumn);
-                    Grid.SetRow(tileElement, currentRow);
+                    Grid.SetColumn(tileBorder, tile.X);
+                    Grid.SetRow(tileBorder, tile.Y);
 
-                    tile.TileElement = tileElement;
+                    tile.TileElement = tileBorder;
 
                     //Add to tile list
                     CurrentLevel.TileList.Add(tile);
@@ -270,6 +277,5 @@ namespace JRPG_ClassLibrary
                 x = 0;
             }
         }
-
     }
 }
