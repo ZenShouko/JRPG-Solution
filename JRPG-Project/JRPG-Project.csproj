@@ -56,6 +56,9 @@
     <AssemblyOriginatorKeyFile>JRPG-key.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -76,9 +79,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ClassLibrary\Data\GameData.cs" />
+    <Compile Include="ClassLibrary\Data\FoeData.cs" />
+    <Compile Include="ClassLibrary\Data\TileData.cs" />
+    <Compile Include="ClassLibrary\Entities\Foe.cs" />
     <Compile Include="ClassLibrary\Entities\Level.cs" />
     <Compile Include="ClassLibrary\Entities\Mob.cs" />
     <Compile Include="ClassLibrary\Entities\Tile.cs" />
+    <Compile Include="ClassLibrary\FoeControls.cs" />
+    <Compile Include="ClassLibrary\Foes.cs" />
     <Compile Include="ClassLibrary\Universal\Interaction.cs" />
     <Compile Include="ClassLibrary\Levels.cs" />
     <Compile Include="ClassLibrary\Mobs.cs" />
@@ -138,22 +147,26 @@
     <None Include="Levels\Testfield.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <None Include="Resources\Data\FoeList.JSON" />
+    <None Include="Resources\Data\TileList.json" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="ClassLibrary\Entities\Expansion\" />
     <Folder Include="Resources\Assets\Weapons\" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Assets\Characters\enemy-alert.png">
+    <Resource Include="Resources\Assets\Characters\illufoe-alert.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Resources\Assets\Characters\enemy-neutral.png">
+    <Resource Include="Resources\Assets\Characters\illufoe-neutral.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Assets\Characters\player.png">

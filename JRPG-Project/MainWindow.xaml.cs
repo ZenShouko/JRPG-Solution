@@ -1,4 +1,5 @@
 ﻿using JRPG_ClassLibrary;
+using JRPG_Project.ClassLibrary.Data;
 using JRPG_Project.Tabs;
 using System;
 using System.Collections.Generic;
@@ -24,6 +25,10 @@ namespace JRPG_Project
     {
         public MainWindow()
         {
+            if (GameData.DB_Game.Tables.Count == 0)
+            {
+                GameData.InitializeDatabase();
+            }
             InitializeComponent();
 
             //Add tab to grid

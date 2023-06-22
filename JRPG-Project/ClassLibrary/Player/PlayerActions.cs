@@ -27,7 +27,7 @@ namespace JRPG_Project.ClassLibrary.Player
                 //Remove mob from tile
                 tile.MOB = null;
 
-                //Add item to inventory
+                //TODO: Add item to inventory
             }
         }
     }

@@ -67,6 +67,15 @@ namespace JRPG_ClassLibrary
 
                 //Create platform
                 CreatePlatform();
+
+                //#Foes
+                structure.Clear();
+                for (int i = 0; i < CurrentLevel.Rows; i++)
+                {
+                    structure.Add(reader.ReadLine());
+                }
+
+                AddFoes(structure);
             }
         }
 
@@ -184,7 +193,6 @@ namespace JRPG_ClassLibrary
                     Grid.SetRow(mob.Icon, currentRow);
                     mob.Y = currentRow;
 
-                    //CurrentLevel.Playfield.Children.Add(mob.Icon);
                     CurrentLevel.MobList.Add(mob);
 
                     //Add mob to tile
@@ -226,5 +234,39 @@ namespace JRPG_ClassLibrary
             }
         }
 
+        private static void AddFoes(List<string> structure)
+        {
+            int x = 0;
+            int y = 0;
+
+            foreach (string line in structure)
+            {
+                string[] parts = line.Split(';');
+
+                foreach (string foeName in parts)
+                {
+                    if (foeName == "X")
+                    {
+                        x++;
+                        continue;
+                    }
+
+                    Foe foe = Foes.CreateFoe(foeName);
+
+                    Grid.SetColumn(foe.Icon, x);
+                    foe.X = x;
+                    Grid.SetRow(foe.Icon, y);
+                    foe.Y = y;
+
+                    CurrentLevel.Playfield.Children.Add(foe.Icon);
+                    CurrentLevel.FoeList.Add(foe);
+                    x++;
+                }
+
+                //Next row
+                y++;
+                x = 0;
+            }
+        }
     }
 }

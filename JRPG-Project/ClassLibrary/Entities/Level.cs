@@ -18,6 +18,7 @@ namespace JRPG_ClassLibrary.Entities
         public List<Mob> MobList = new List<Mob>();
         public List<Tile> TileList = new List<Tile>();
         public List<string> Collectables = new List<string>();
+        public List<Foe> FoeList = new List<Foe>();
         public Grid Playfield { get; set; }
 
         public Level()

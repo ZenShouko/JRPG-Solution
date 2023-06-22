@@ -1,0 +1,9 @@
+[
+    {
+        "Name": "ILLUFOE",
+        "Level": "1",
+        "HP": "10",
+        "IconNames": "illufoe-neutral;illufoe-alert",
+        "MovementBehaviour": "StraightForward"
+    }
+]

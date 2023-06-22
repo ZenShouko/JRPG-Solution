@@ -1,4 +1,5 @@
 ﻿using JRPG_ClassLibrary.Entities;
+using JRPG_Project.ClassLibrary;
 using JRPG_Project.ClassLibrary.Entities;
 using JRPG_Project.ClassLibrary.Player;
 using System;
@@ -31,7 +32,7 @@ namespace JRPG_ClassLibrary
 
         private static bool isKeyDetectorActive = false;
 
-        private static bool isPlayerAllowedToMove = false;
+        private static bool isPlayerMoving = false; //Do not allow player to move if already moving
         public static void InitializeControls()
         {
             tileWidth = (int)Levels.CurrentLevel.Playfield.Width / Levels.CurrentLevel.Playfield.ColumnDefinitions.Count;
@@ -85,7 +86,7 @@ namespace JRPG_ClassLibrary
         private static void StartPlayerMovement(string direction)
         {
             //Is player already moving?
-            if (isPlayerAllowedToMove) { return; }
+            if (isPlayerMoving) { return; }
 
             //Get player element and image
             Mob player = GetPlayer();
@@ -129,15 +130,13 @@ namespace JRPG_ClassLibrary
             }
 
             //Cancel if space is not free
-            if (GetTile(targetX, targetY) is null || !GetTile(targetX, targetY).IsWalkable)
+            if (Tiles.GetTile(targetX, targetY) is null || !Tiles.GetTile(targetX, targetY).IsWalkable)
             {
                 AnimateMovement(true, player);
-                return;
             }
             else
             {
                 AnimateMovement(false, player);
-                return;
             }
         }
 
@@ -174,7 +173,7 @@ namespace JRPG_ClassLibrary
         private static async void AnimateMovement(bool collision, Mob player)
         {
             //Set player moving to true
-            isPlayerAllowedToMove = true;
+            isPlayerMoving = true;
 
             //Get image margin
             Thickness margin = player.Icon.Margin;
@@ -210,13 +209,18 @@ namespace JRPG_ClassLibrary
             }
             else
             {
-                MovePlayer(GetTile(player.X + speedX, player.Y + speedY));
+                MovePlayer(Tiles.GetTile(player.X + speedX, player.Y + speedY));
             }
 
             //Reset
             speedX = 0;
             speedY = 0;
-            isPlayerAllowedToMove = false;
+
+            //Foe turn
+            FoeControls.MoveFoes();
+
+            //set player moving to false
+            isPlayerMoving = false;
         }
 
         private static void MovePlayer(Tile tile)
@@ -235,9 +239,6 @@ namespace JRPG_ClassLibrary
             PlayerActions.CollectTileItem(tile);
         }
 
-        private static Tile GetTile(int x, int y)
-        {
-            return Levels.CurrentLevel.TileList.Find(t => t.X == x && t.Y == y);
-        }
+
     }
 }

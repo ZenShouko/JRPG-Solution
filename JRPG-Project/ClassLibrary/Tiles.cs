@@ -6,20 +6,20 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows;
+using System.Data;
+using JRPG_Project.ClassLibrary.Data;
+using JRPG_Project.ClassLibrary.Entities;
+using System.Windows.Media.Animation;
+using JRPG_ClassLibrary;
 
 namespace JRPG_Project.ClassLibrary
 {
     public static class Tiles
     {
-        private static List<string> tileList = new List<string>()
-        {
-            "DEF", "SEA"
-        };
-
-        public static Border CreateTile(string type)
+        public static Border CreateTile(string code)
         {
             //Check if type is available
-            if (!tileList.Contains(type))
+            if (!TileData.AvailableTiles.Contains(code))
             {
                 return null;
             }
@@ -29,23 +29,23 @@ namespace JRPG_Project.ClassLibrary
             tile.BorderBrush = Brushes.Black;
             tile.BorderThickness = new Thickness(1);
             tile.CornerRadius = new CornerRadius(2);
-
-            //Switch type
-            switch (type)
-            {
-                case "DEF":
-                    {
-                        tile.Background = Brushes.Beige;
-                        break;
-                    }
-                case "SEA":
-                    {
-                        tile.Background = Brushes.DarkSlateBlue;
-                        break;
-                    }
-            }
+            tile.Background = GetTileColor(code);
 
             return tile;
+        }
+
+        private static Brush GetTileColor(string code)
+        {
+            DataRow[] rows = TileData.TileTable.Select($"Code = '{code}'");
+
+            if (rows.Count() == 0) { return null; }
+
+            return (Brush)rows[0]["TileColor"];
+        }
+
+        public static Tile GetTile(int x, int y)
+        {
+            return Levels.CurrentLevel.TileList.Find(t => t.X == x && t.Y == y);
         }
     }
 }
