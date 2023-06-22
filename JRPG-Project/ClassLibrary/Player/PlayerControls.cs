@@ -41,7 +41,7 @@ namespace JRPG_ClassLibrary
             while (isKeyDetectorActive)
             {
                 //Wait 100ms
-                await Task.Delay(10);
+                await Task.Delay(50);
 
                 if (Interaction.GetKey() is null)
                 {
@@ -50,7 +50,7 @@ namespace JRPG_ClassLibrary
 
                 if (keys.Contains((Key)Interaction.GetKey()))
                 {
-                    StartPlayerMovementAsync(Interaction.GetKey().ToString().ToUpper());
+                    await StartPlayerMovementAsync(Interaction.GetKey().ToString().ToUpper());
                 }
             }
         }
@@ -86,9 +86,6 @@ namespace JRPG_ClassLibrary
 
             //Rotate player
             RotatePlayer(direction, player.Icon);
-
-            //(Start foe turn)
-            await FoeControls.MoveFoes();
 
             //Calculate the target tile
             int targetX = player.X;
@@ -131,6 +128,9 @@ namespace JRPG_ClassLibrary
             {
                 await AnimateMovement(false, player);
             }
+
+            //(Start foe turn)
+            FoeControls.MoveFoes();
         }
 
         private static void RotatePlayer(string direction, Image player)

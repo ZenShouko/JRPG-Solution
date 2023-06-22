@@ -18,6 +18,7 @@ namespace JRPG_Project.ClassLibrary.Entities
         public int Y { get; set; }
         public int DirectionX { get; set; }
         public int DirectionY { get; set; }
+        public bool HasMoved { get; set; }
         public string MovementBehaviour { get; set; }
     }
 }

@@ -20,8 +20,6 @@ C:\Users\emre_\Documents\Visual Studio 2022\Personal Solutions\JRPG-Solution\JRP
 C:\Users\emre_\Documents\Visual Studio 2022\Personal Solutions\JRPG-Solution\JRPG-Project\obj\Debug\Resources\ResourceDictionary.baml
 C:\Users\emre_\Documents\Visual Studio 2022\Personal Solutions\JRPG-Solution\JRPG-Project\obj\Debug\Tabs\PlaygroundTab.g.cs
 C:\Users\emre_\Documents\Visual Studio 2022\Personal Solutions\JRPG-Solution\JRPG-Project\obj\Debug\Tabs\PlaygroundTab.baml
-C:\Users\emre_\Documents\Visual Studio 2022\Personal Solutions\JRPG-Solution\JRPG-Project\bin\Debug\JRPG-ClassLibrary.dll
-C:\Users\emre_\Documents\Visual Studio 2022\Personal Solutions\JRPG-Solution\JRPG-Project\bin\Debug\JRPG-ClassLibrary.pdb
 C:\Users\emre_\Documents\Visual Studio 2022\Personal Solutions\JRPG-Solution\JRPG-Project\obj\Debug\JRPG-Project.csproj.CopyComplete
 C:\Users\emre_\Documents\Visual Studio 2022\Personal Solutions\JRPG-Solution\JRPG-Project\bin\Debug\Levels\Testfield.csv
 C:\Users\emre_\Documents\Visual Studio 2022\Personal Solutions\JRPG-Solution\JRPG-Project\bin\Debug\Newtonsoft.Json.dll

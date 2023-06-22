@@ -80,9 +80,6 @@ namespace JRPG_ClassLibrary
                 AddFoes(structure);
 
             }
-
-            //Prepare foe tasks
-            FoeControls.PrepareTaskList();
         }
 
         private static void SetLevelProperties(string propLine)

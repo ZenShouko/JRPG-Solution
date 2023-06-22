@@ -18,50 +18,34 @@ namespace JRPG_Project.ClassLibrary
         private static List<string> directions = new List<string>()
             { "UP", "DOWN", "LEFT", "RIGHT" };
 
-        private static List<Task> taskList = new List<Task>();
         private static List<string> plannedCoordinates = new List<string>();
 
-        public static void PrepareTaskList()
+        public static async void MoveFoes()
         {
+            //Activate the foe turn
+            FoeTurn = true;
+
             //Clear the task list & planned coordinates
-            taskList.Clear();
             plannedCoordinates.Clear();
 
-            //Add a task for each foe
+            //Run through all foes
             foreach (Foe foe in Levels.CurrentLevel.FoeList)
             {
                 switch (foe.MovementBehaviour.ToUpper())
                 {
                     case "STRAIGHTFORWARD":
                         {
-                            taskList.Add(CalculateStraightForward(foe));
+                            CalculateStraightForward(foe);
                             break;
                         }
                 }
             }
-        }
-
-        public static async Task MoveFoes()
-        {
-            //Activate the foe turn
-            FoeTurn = true;
-
-            //Execute all tasks simultaneously
-            if (taskList.Count == 0)
-            {
-                throw new Exception("Attempted to run tasklist while it was empty!");
-            }
-
-            await Task.WhenAll(taskList);
 
             //Deactivate the foe turn
             FoeTurn = false;
-
-            //Prepare for next turn
-            PrepareTaskList();
         }
 
-        private static async Task CalculateStraightForward(Foe foe)
+        private static void CalculateStraightForward(Foe foe)
         {
             Tile targetTile = null;
             List<string> attempts = new List<string>(); //Used to prevent infinite loops
@@ -78,11 +62,10 @@ namespace JRPG_Project.ClassLibrary
                     //Get a list with directions that haven't been attempted yet
                     List<string> availableDirections = directions.Except(attempts).ToList();
 
-                    //If all directions have been attempted, break out of the loop
+                    //If all directions have been attempted, cancel movement
                     if (availableDirections.Count == 0)
                     {
-                        targetTile = new Tile() { X = foe.X, Y = foe.Y };
-                        break;
+                        return;
                     }
 
                     //Pick a random direction
@@ -144,11 +127,10 @@ namespace JRPG_Project.ClassLibrary
                         //Get a list with directions that haven't been attempted yet
                         List<string> availableDirections = directions.Except(attempts).ToList();
 
-                        //Break if there are no available directions
+                        //If there are no directions left, cancel movement
                         if (availableDirections.Count == 0)
                         {
-                            targetTile = new Tile() { X = foe.X, Y = foe.Y };
-                            break;
+                            return;
                         }
 
                         //Pick a random direction
@@ -195,15 +177,25 @@ namespace JRPG_Project.ClassLibrary
             plannedCoordinates.Add($"{targetTile.X};{targetTile.Y}");
 
             //Move player
-            await AnimateMovement(foe);
+            AnimateMovement(foe);
         }
 
         private static bool IsTileBooked(Tile tile)
         {
-            return plannedCoordinates.Contains($"{tile.X};{tile.Y}");
+            //Check if the tile is already booked or already has a foe on it
+
+            //get foe on tile
+            Foe foeOnTile = Levels.CurrentLevel.FoeList.FirstOrDefault(f => f.X == tile.X && f.Y == tile.Y);
+
+            if (foeOnTile != null || plannedCoordinates.Contains($"{tile.X};{tile.Y}"))
+            {
+                return true;
+            }
+
+            return false;
         }
 
-        private static async Task AnimateMovement(Foe foe)
+        private static async void AnimateMovement(Foe foe)
         {
             //Get image margin
             Thickness margin = foe.Icon.Margin;
