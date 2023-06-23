@@ -36,8 +36,19 @@ namespace JRPG_Project.ClassLibrary
                 //Is foe already chasing the player?
                 if (foe.DetectedPlayer)
                 {
-                    CalculatePersuit(foe);
-                    continue;
+                    //Should foe stop the chase? (if X or Y distance is greater than 3)
+                    Mob player = PlayerControls.GetPlayer();
+                    if (Math.Abs(player.X - foe.X) > 3 || Math.Abs(player.Y - foe.Y) > 3)
+                    {
+                        //stop chase
+                        foe.DetectedPlayer = false;
+                        foe.Icon.Source = new BitmapImage(new Uri(@"../../Resources/Assets/Characters/illufoe-neutral.png", UriKind.Relative));
+                    }
+                    else
+                    {
+                        CalculatePersuit(foe);
+                        continue;
+                    }
                 }
 
                 //Check if player is in range
