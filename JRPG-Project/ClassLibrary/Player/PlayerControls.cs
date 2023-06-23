@@ -60,7 +60,7 @@ namespace JRPG_ClassLibrary
             isKeyDetectorActive = false;
         }
 
-        private static Mob GetPlayer()
+        public static Mob GetPlayer()
         {
             //Check if there is a player element
             if (Levels.CurrentLevel.MobList.Contains(Levels.CurrentLevel.MobList.Find(mob => mob.Name == "PLAYER")))
@@ -236,6 +236,5 @@ namespace JRPG_ClassLibrary
             //Collect item
             PlayerActions.CollectTileItem(tile);
         }
-
     }
 }

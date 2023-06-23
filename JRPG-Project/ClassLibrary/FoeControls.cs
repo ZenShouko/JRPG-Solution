@@ -1,4 +1,5 @@
 ﻿using JRPG_ClassLibrary;
+using JRPG_ClassLibrary.Entities;
 using JRPG_Project.ClassLibrary.Entities;
 using System;
 using System.Collections.Generic;
@@ -6,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Imaging;
 
 namespace JRPG_Project.ClassLibrary
 {
@@ -20,7 +22,7 @@ namespace JRPG_Project.ClassLibrary
 
         private static List<string> plannedCoordinates = new List<string>();
 
-        public static async void MoveFoes()
+        public static void MoveFoes()
         {
             //Activate the foe turn
             FoeTurn = true;
@@ -31,6 +33,13 @@ namespace JRPG_Project.ClassLibrary
             //Run through all foes
             foreach (Foe foe in Levels.CurrentLevel.FoeList)
             {
+                //Check if player is in range
+                if (FoeDetection(foe))
+                {
+                    //If player is in range, cancel movement
+                    continue;
+                }
+
                 switch (foe.MovementBehaviour.ToUpper())
                 {
                     case "STRAIGHTFORWARD":
@@ -45,10 +54,12 @@ namespace JRPG_Project.ClassLibrary
             FoeTurn = false;
         }
 
+
         private static void CalculateStraightForward(Foe foe)
         {
+            List<string> attemptedDirections = new List<string>();
+            List<string> availableDirections = directions;
             Tile targetTile = null;
-            List<string> attempts = new List<string>(); //Used to prevent infinite loops
 
             //Was the foe already heading in a direction?
             if (foe.DirectionX == 0 && foe.DirectionY == 0)
@@ -60,10 +71,10 @@ namespace JRPG_Project.ClassLibrary
                     foe.DirectionY = 0;
 
                     //Get a list with directions that haven't been attempted yet
-                    List<string> availableDirections = directions.Except(attempts).ToList();
+                    availableDirections = directions.Except(attemptedDirections).ToList();
 
                     //If all directions have been attempted, cancel movement
-                    if (availableDirections.Count == 0)
+                    if (availableDirections is null || availableDirections.Count == 0)
                     {
                         return;
                     }
@@ -74,25 +85,25 @@ namespace JRPG_Project.ClassLibrary
                         case "UP":
                             {
                                 foe.DirectionY = -1;
-                                attempts.Add("UP");
+                                attemptedDirections.Add("UP");
                                 break;
                             }
                         case "DOWN":
                             {
                                 foe.DirectionY = 1;
-                                attempts.Add("DOWN");
+                                attemptedDirections.Add("DOWN");
                                 break;
                             }
                         case "LEFT":
                             {
                                 foe.DirectionX = -1;
-                                attempts.Add("LEFT");
+                                attemptedDirections.Add("LEFT");
                                 break;
                             }
                         case "RIGHT":
                             {
                                 foe.DirectionX = 1;
-                                attempts.Add("RIGHT");
+                                attemptedDirections.Add("RIGHT");
                                 break;
                             }
                     }
@@ -125,10 +136,10 @@ namespace JRPG_Project.ClassLibrary
                         foe.DirectionY = 0;
 
                         //Get a list with directions that haven't been attempted yet
-                        List<string> availableDirections = directions.Except(attempts).ToList();
+                        availableDirections = directions.Except(attemptedDirections).ToList();
 
                         //If there are no directions left, cancel movement
-                        if (availableDirections.Count == 0)
+                        if (availableDirections is null || availableDirections.Count == 0)
                         {
                             return;
                         }
@@ -139,25 +150,25 @@ namespace JRPG_Project.ClassLibrary
                             case "UP":
                                 {
                                     foe.DirectionY = -1;
-                                    attempts.Add("UP");
+                                    attemptedDirections.Add("UP");
                                     break;
                                 }
                             case "DOWN":
                                 {
                                     foe.DirectionY = 1;
-                                    attempts.Add("DOWN");
+                                    attemptedDirections.Add("DOWN");
                                     break;
                                 }
                             case "LEFT":
                                 {
                                     foe.DirectionX = -1;
-                                    attempts.Add("LEFT");
+                                    attemptedDirections.Add("LEFT");
                                     break;
                                 }
                             case "RIGHT":
                                 {
                                     foe.DirectionX = 1;
-                                    attempts.Add("RIGHT");
+                                    attemptedDirections.Add("RIGHT");
                                     break;
                                 }
                         }
@@ -225,6 +236,40 @@ namespace JRPG_Project.ClassLibrary
             Grid.SetColumn(foe.Icon, foe.X);
             foe.Y += foe.DirectionY;
             Grid.SetRow(foe.Icon, foe.Y);
+
+            //Check if player is in detection range
+            _ = FoeDetection(foe);
+        }
+
+        public static bool FoeDetection(Foe foe)
+        {
+            //Checks if the player is 1 tile away from a foe. Diagonal detection is not included.
+            List<string> detectionRange = GetDetectionList();
+
+            //Check if any foe is on a tile in the detection range
+            if (detectionRange.Contains($"{foe.X};{foe.Y}"))
+            {
+                //If so, beep.
+                foe.Icon.Source = new BitmapImage(new Uri(@"../../Resources/Assets/Characters/illufoe-alert.png", UriKind.Relative));
+                return true;
+            }
+
+            return false;
+        }
+
+        private static List<string> GetDetectionList()
+        {
+            //Get player
+            Mob player = PlayerControls.GetPlayer();
+
+            //Define tiles that count as detected
+            return new List<string>()
+            {
+                $"{player.X + 1};{player.Y}", //Right
+                $"{player.X - 1};{player.Y}", //Left
+                $"{player.X};{player.Y + 1}", //Down
+                $"{player.X};{player.Y - 1}" //Up
+            };
         }
     }
 }
