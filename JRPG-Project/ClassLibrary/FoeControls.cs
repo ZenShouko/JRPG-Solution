@@ -33,6 +33,13 @@ namespace JRPG_Project.ClassLibrary
             //Run through all foes
             foreach (Foe foe in Levels.CurrentLevel.FoeList)
             {
+                //Is foe already chasing the player?
+                if (foe.DetectedPlayer)
+                {
+                    CalculatePersuit(foe);
+                    continue;
+                }
+
                 //Check if player is in range
                 if (FoeDetection(foe))
                 {
@@ -40,6 +47,7 @@ namespace JRPG_Project.ClassLibrary
                     continue;
                 }
 
+                //If player is not in range, calculate movement
                 switch (foe.MovementBehaviour.ToUpper())
                 {
                     case "STRAIGHTFORWARD":
@@ -54,132 +62,78 @@ namespace JRPG_Project.ClassLibrary
             FoeTurn = false;
         }
 
-
         private static void CalculateStraightForward(Foe foe)
         {
-            List<string> attemptedDirections = new List<string>();
-            List<string> availableDirections = directions;
             Tile targetTile = null;
 
             //Was the foe already heading in a direction?
-            if (foe.DirectionX == 0 && foe.DirectionY == 0)
+            if (foe.DirectionX != 0 || foe.DirectionY != 0)
             {
-                while (true)
+                //Check if the foe can continue in the same direction
+                targetTile = Tiles.GetTile(foe.X + foe.DirectionX, foe.Y + foe.DirectionY);
+
+                if (IsTileAccessible(targetTile))
                 {
-                    //Reset for each loop
-                    foe.DirectionX = 0;
-                    foe.DirectionY = 0;
-
-                    //Get a list with directions that haven't been attempted yet
-                    availableDirections = directions.Except(attemptedDirections).ToList();
-
-                    //If all directions have been attempted, cancel movement
-                    if (availableDirections is null || availableDirections.Count == 0)
-                    {
-                        return;
-                    }
-
-                    //Pick a random direction
-                    switch (availableDirections[rm.Next(0, availableDirections.Count)])
-                    {
-                        case "UP":
-                            {
-                                foe.DirectionY = -1;
-                                attemptedDirections.Add("UP");
-                                break;
-                            }
-                        case "DOWN":
-                            {
-                                foe.DirectionY = 1;
-                                attemptedDirections.Add("DOWN");
-                                break;
-                            }
-                        case "LEFT":
-                            {
-                                foe.DirectionX = -1;
-                                attemptedDirections.Add("LEFT");
-                                break;
-                            }
-                        case "RIGHT":
-                            {
-                                foe.DirectionX = 1;
-                                attemptedDirections.Add("RIGHT");
-                                break;
-                            }
-                    }
-
-                    //Assign targetTile
-                    targetTile = Tiles.GetTile(foe.X + foe.DirectionX, foe.Y + foe.DirectionY);
-
-                    //Check if targetTile is valid
-                    if (targetTile is null || !targetTile.IsWalkable || IsTileBooked(targetTile))
-                    {
-                        continue;
-                    }
-
-                    //If so, break out of the loop
-                    break;
+                    plannedCoordinates.Add($"{targetTile.X};{targetTile.Y}");
+                    AnimateMovement(foe);
+                    return;
                 }
             }
-            else
+
+            //If not, pick a random direction
+            List<string> attemptedDirections = new List<string>();
+            List<string> availableDirections = new List<string>();
+
+            while (true)
             {
-                while (true)
+                //Reset for each loop
+                foe.DirectionX = 0;
+                foe.DirectionY = 0;
+
+                //Get a list with directions that haven't been attempted yet
+                availableDirections = directions.Except(attemptedDirections).ToList();
+
+                //If all directions have been attempted, cancel movement
+                if (availableDirections is null || availableDirections.Count == 0)
                 {
-                    //Check if the foe can continue in the same direction
-                    targetTile = Tiles.GetTile(foe.X + foe.DirectionX, foe.Y + foe.DirectionY);
+                    return;
+                }
 
-                    if (targetTile is null || !targetTile.IsWalkable || IsTileBooked(targetTile))
-                    {
-                        //Create a new targetTile
-                        //Reset for each loop
-                        foe.DirectionX = 0;
-                        foe.DirectionY = 0;
-
-                        //Get a list with directions that haven't been attempted yet
-                        availableDirections = directions.Except(attemptedDirections).ToList();
-
-                        //If there are no directions left, cancel movement
-                        if (availableDirections is null || availableDirections.Count == 0)
+                //Pick a random direction
+                switch (availableDirections[rm.Next(0, availableDirections.Count)])
+                {
+                    case "UP":
                         {
-                            return;
+                            foe.DirectionY = -1;
+                            attemptedDirections.Add("UP");
+                            break;
                         }
-
-                        //Pick a random direction
-                        switch (availableDirections[rm.Next(0, availableDirections.Count)])
+                    case "DOWN":
                         {
-                            case "UP":
-                                {
-                                    foe.DirectionY = -1;
-                                    attemptedDirections.Add("UP");
-                                    break;
-                                }
-                            case "DOWN":
-                                {
-                                    foe.DirectionY = 1;
-                                    attemptedDirections.Add("DOWN");
-                                    break;
-                                }
-                            case "LEFT":
-                                {
-                                    foe.DirectionX = -1;
-                                    attemptedDirections.Add("LEFT");
-                                    break;
-                                }
-                            case "RIGHT":
-                                {
-                                    foe.DirectionX = 1;
-                                    attemptedDirections.Add("RIGHT");
-                                    break;
-                                }
+                            foe.DirectionY = 1;
+                            attemptedDirections.Add("DOWN");
+                            break;
                         }
+                    case "LEFT":
+                        {
+                            foe.DirectionX = -1;
+                            attemptedDirections.Add("LEFT");
+                            break;
+                        }
+                    case "RIGHT":
+                        {
+                            foe.DirectionX = 1;
+                            attemptedDirections.Add("RIGHT");
+                            break;
+                        }
+                }
 
-                        //Assign the new targetTile
-                        targetTile = Tiles.GetTile(foe.X + foe.DirectionX, foe.Y + foe.DirectionY);
+                //Assign targetTile
+                targetTile = Tiles.GetTile(foe.X + foe.DirectionX, foe.Y + foe.DirectionY);
 
-                        continue;
-                    }
-
-                    //If so, break out of the loop
+                //Check if targetTile is valid
+                if (IsTileAccessible(targetTile))
+                {
                     break;
                 }
             }
@@ -191,19 +145,129 @@ namespace JRPG_Project.ClassLibrary
             AnimateMovement(foe);
         }
 
-        private static bool IsTileBooked(Tile tile)
+        private static void CalculatePersuit(Foe foe)
         {
-            //Check if the tile is already booked or already has a foe on it
+            //Get player position
+            Mob player = PlayerControls.GetPlayer();
 
+            //Calculate the distance between the foe and the player
+            int distanceX = Math.Abs(player.X - foe.X);
+            int distanceY = Math.Abs(player.Y - foe.Y);
+
+            //Decide on which direction to move
+            //Reset for each loop
+            foe.DirectionX = 0;
+            foe.DirectionY = 0;
+
+            if (distanceX > distanceY)
+            {
+                //Left or right?
+                if (player.X > foe.X)
+                {
+                    //Right
+                    foe.DirectionX = 1;
+                }
+                else
+                {
+                    //Left
+                    foe.DirectionX = -1;
+                }
+            }
+            else
+            {
+                //Up or down?
+                if (player.Y > foe.Y)
+                {
+                    //Down
+                    foe.DirectionY = 1;
+                }
+                else
+                {
+                    //Up
+                    foe.DirectionY = -1;
+                }
+            }
+
+            //Assign targetTile
+            Tile targetTile = Tiles.GetTile(foe.X + foe.DirectionX, foe.Y + foe.DirectionY);
+
+            //Check if targetTile is valid
+            if (!IsTileAccessible(targetTile))
+            {
+                //Check if ohter directions are valid
+                if (foe.DirectionX != 0)
+                {
+                    //Reset direction
+                    foe.DirectionX = 0;
+
+                    //Up or down?
+                    if (player.Y > foe.Y)
+                    {
+                        //Down
+                        foe.DirectionY = 1;
+                    }
+                    else
+                    {
+                        //Up
+                        foe.DirectionY = -1;
+                    }
+                }
+                else if (foe.DirectionY != 0)
+                {
+                    //Reset direction
+                    foe.DirectionY = 0;
+
+                    //Left or right?
+                    if (player.X > foe.X)
+                    {
+                        //Right
+                        foe.DirectionX = 1;
+                    }
+                    else
+                    {
+                        //Left
+                        foe.DirectionX = -1;
+                    }
+                }
+
+                //Assign targetTile
+                targetTile = Tiles.GetTile(foe.X + foe.DirectionX, foe.Y + foe.DirectionY);
+
+                if (!IsTileAccessible(targetTile))
+                {
+                    //Cancel movement
+                    return;
+                }
+            }
+            else if (targetTile.X == player.X && targetTile.Y == player.Y)
+            {
+                //Attack player
+                Console.Beep();
+            }
+
+            //Add the movement to the list
+            plannedCoordinates.Add($"{targetTile.X};{targetTile.Y}");
+            AnimateMovement(foe);
+        }
+
+        private static bool IsTileAccessible(Tile tile)
+        {
+            //Check if the tile is out of bounds or is not walkable
+            if (tile is null || !tile.IsWalkable)
+            {
+                return false;
+            }
+
+            //Check if the tile is already booked or already has a foe on it
             //get foe on tile
             Foe foeOnTile = Levels.CurrentLevel.FoeList.FirstOrDefault(f => f.X == tile.X && f.Y == tile.Y);
 
             if (foeOnTile != null || plannedCoordinates.Contains($"{tile.X};{tile.Y}"))
             {
-                return true;
+                return false;
             }
 
-            return false;
+            return true;
         }
 
         private static async void AnimateMovement(Foe foe)
@@ -251,6 +315,7 @@ namespace JRPG_Project.ClassLibrary
             {
                 //If so, beep.
                 foe.Icon.Source = new BitmapImage(new Uri(@"../../Resources/Assets/Characters/illufoe-alert.png", UriKind.Relative));
+                foe.DetectedPlayer = true;
                 return true;
             }
 
