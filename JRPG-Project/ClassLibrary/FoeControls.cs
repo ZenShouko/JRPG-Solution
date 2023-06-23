@@ -242,7 +242,7 @@ namespace JRPG_Project.ClassLibrary
             else if (targetTile.X == player.X && targetTile.Y == player.Y)
             {
                 //Attack player
-                Console.Beep();
+                BattleControls.InitiateBattle(false, foe);
             }
 
             //Add the movement to the list

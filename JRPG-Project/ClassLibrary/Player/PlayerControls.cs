@@ -4,6 +4,7 @@ using JRPG_Project.ClassLibrary.Entities;
 using JRPG_Project.ClassLibrary.Player;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -232,6 +233,14 @@ namespace JRPG_ClassLibrary
             player.X = tile.X;
             Grid.SetRow(player.Icon, tile.Y);
             player.Y = tile.Y;
+
+            //Is there a foe on the tile?
+            Foe foe = Levels.CurrentLevel.FoeList.Find(f => f.X == tile.X && f.Y == tile.Y);
+            if (foe != null)
+            {
+                //Attack foe
+                BattleControls.InitiateBattle(true, foe);
+            }
 
             //Collect item
             PlayerActions.CollectTileItem(tile);

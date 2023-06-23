@@ -82,9 +82,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ClassLibrary\BattleControls.cs" />
     <Compile Include="ClassLibrary\Data\GameData.cs" />
     <Compile Include="ClassLibrary\Data\FoeData.cs" />
     <Compile Include="ClassLibrary\Data\TileData.cs" />
+    <Compile Include="ClassLibrary\Entities\Battle.cs" />
     <Compile Include="ClassLibrary\Entities\Foe.cs" />
     <Compile Include="ClassLibrary\Entities\Level.cs" />
     <Compile Include="ClassLibrary\Entities\Mob.cs" />
