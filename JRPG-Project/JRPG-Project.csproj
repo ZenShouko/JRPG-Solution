@@ -94,6 +94,7 @@
     <Compile Include="ClassLibrary\Data\TileData.cs" />
     <Compile Include="ClassLibrary\Entities\Battle.cs" />
     <Compile Include="ClassLibrary\Entities\Foe.cs" />
+    <Compile Include="ClassLibrary\Items\Charm.cs" />
     <Compile Include="ClassLibrary\Items\Collectable.cs" />
     <Compile Include="ClassLibrary\Entities\Level.cs" />
     <Compile Include="ClassLibrary\Entities\MapItems.cs" />
@@ -176,9 +177,12 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <None Include="Resources\Data\Armours.json" />
+    <None Include="Resources\Data\Charms.json" />
     <None Include="Resources\Data\Collectables.json" />
     <None Include="Resources\Data\FoeList.JSON" />
     <None Include="Resources\Data\TileList.json" />
+    <None Include="Resources\Data\Weapons.json" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -24,7 +24,7 @@
             </Grid.ColumnDefinitions>
             
             <!--Left side (Inventory Overview)-->
-            <TabControl Margin="5">
+            <TabControl x:Name="tabControl" Margin="5">
                 <TabItem Header="Collectables" Name="Collectables">
                     <ListBox x:Name="LstCollectables" SelectionChanged="DisplayItemDetails"/>
                 </TabItem>
@@ -40,23 +40,91 @@
             </TabControl>
             
             <!--Right side (Item Detail)-->
-            <StackPanel Grid.Column="1" Margin="10" Background="GhostWhite" CanVerticallyScroll="True">
-                <TextBlock x:Name="TxtItemName" Foreground="DarkBlue" FontSize="20" FontWeight="Bold" Margin="10" Text="ItemName"/>
-                <Border Background="MediumPurple" Height="1" Margin="5 -10 5 5"/>
-                <TextBlock x:Name="TxtItemDescription" Margin="10" Height="auto" TextWrapping="Wrap" Text="ItemDescription"/>
-                <DockPanel Margin="5 0 5 0">
+            <DockPanel Grid.Column="1" Margin="10" Background="GhostWhite">
+                <!--Stats-->
+                <StackPanel DockPanel.Dock="Bottom" Margin="5 0">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="0.2*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <!--Left side-->
+                        <Border Background="DimGray" BorderBrush="Black" BorderThickness="1" CornerRadius="2">
+                            <StackPanel>
+                                <DockPanel Margin="5">
+                                    <TextBlock x:Name="TxtHp" Text="100" DockPanel.Dock="Right"/>
+                                    <TextBlock Text="HP:"/>
+                                </DockPanel>
+                                <DockPanel Margin="5">
+                                    <TextBlock x:Name="TxtDmg" Text="100" DockPanel.Dock="Right"/>
+                                    <TextBlock Text="DMG:"/>
+                                </DockPanel>
+                                <DockPanel Margin="5">
+                                    <TextBlock x:Name="TxtDef" Text="100" DockPanel.Dock="Right"/>
+                                    <TextBlock Text="DEF:"/>
+                                </DockPanel>
+                                <DockPanel Margin="5">
+                                    <TextBlock x:Name="TxtSpd" Text="100" DockPanel.Dock="Right"/>
+                                    <TextBlock Text="SPD:"/>
+                                </DockPanel>
+                            </StackPanel>
+                        </Border>
+
+                        <!--Right side-->
+                        <Border Grid.Column="2" Background="DimGray" BorderBrush="Black" BorderThickness="1" CornerRadius="2">
+                            <StackPanel>
+                                <DockPanel Margin="5">
+                                    <TextBlock x:Name="TxtSta" Text="100" DockPanel.Dock="Right"/>
+                                    <TextBlock Text="STA:"/>
+                                </DockPanel>
+                                <DockPanel Margin="5">
+                                    <TextBlock x:Name="TxtStr" Text="100" DockPanel.Dock="Right"/>
+                                    <TextBlock Text="STR:"/>
+                                </DockPanel>
+                                <DockPanel Margin="5">
+                                    <TextBlock x:Name="TxtCrc" Text="100" DockPanel.Dock="Right"/>
+                                    <TextBlock Text="CRC:"/>
+                                </DockPanel>
+                                <DockPanel Margin="5">
+                                    <TextBlock x:Name="TxtCrd" Text="100" DockPanel.Dock="Right"/>
+                                    <TextBlock Text="CRD:"/>
+                                </DockPanel>
+                            </StackPanel>
+                        </Border>
+
+                    </Grid>
+                    
+                    <!--Image-->
+                    <Image x:Name="ImgItem" Margin="10" Height="124" Width="auto" Stretch="Uniform"
+                       Source="/Resources/Assets/Collectables/elemental-scepter.png"/>
+                    <!--XP-->
+                    <DockPanel Margin="10 5">
+                        <TextBlock x:Name="TxtXp" Text="40xp" DockPanel.Dock="Left"/>
+                        <TextBlock x:Name="TxtMaxXp" Text="100xp" DockPanel.Dock="Right"/>
+                        <ProgressBar x:Name="ProgressbarXP" Value="40" Background="NavajoWhite" Foreground="CornflowerBlue" Height="20" Margin="10 0"/>
+                    </DockPanel>
+                </StackPanel>
+
+                <!--Value & Rarity-->
+                <DockPanel Margin="5 10" DockPanel.Dock="Bottom">
                     <Border Background="Black" BorderBrush="Black" BorderThickness="0 2 2 2" CornerRadius="0 2 2 0" DockPanel.Dock="Right">
                         <TextBlock x:Name="TxtRarity" Margin="10" FontWeight="Bold" Text="Rarity"/>
                     </Border>
-                    <Border Background="DarkSeaGreen" BorderBrush="Black" BorderThickness="2" CornerRadius="2 0 0 2">
-                        <TextBlock x:Name="TxtValue" Margin="10" Text="0"/>
+                    <Border Background="DarkOliveGreen" BorderBrush="Black" BorderThickness="2" CornerRadius="2 0 0 2">
+                        <TextBlock x:Name="TxtValue" Margin="5" Text="0" TextAlignment="Center" VerticalAlignment="Center" 
+                                       FontSize="24" FontWeight="DemiBold" Foreground="GhostWhite"/>
                     </Border>
                 </DockPanel>
-                
-                <!--TODO: Stats & image-->
-                <Image x:Name="ImgItem" Margin="10" Height="124" Width="auto" Stretch="Uniform"
-                       Source="/Resources/Assets/Collectables/elemental-scepter.png"/>
-            </StackPanel>
+
+                <!--Descriptions & stuff-->
+                <StackPanel CanVerticallyScroll="True" DockPanel.Dock="Top">
+                    <TextBlock x:Name="TxtItemName" Foreground="DarkBlue" FontSize="20" FontWeight="Bold" Margin="10" Text="ItemName"/>
+                    <Border Background="MediumPurple" Height="1" Margin="5 -10 5 5"/>
+                    <TextBlock x:Name="TxtItemDescription" Margin="10" Height="auto" TextWrapping="Wrap" Text="ItemDescription"/>
+                    
+                </StackPanel>
+            </DockPanel>
         </Grid>
     </Grid>
 </UserControl>

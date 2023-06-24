@@ -14,11 +14,7 @@ namespace JRPG_Project.ClassLibrary.Player
         public static int Capacity { get; set; } = 10;
         public static List<Collectable> Collectables { get; set; } = new List<Collectable>();
         public static List<Armour> Armours { get; set; } = new List<Armour>();
-        public static List<Weapon> Weapons { get; set; } = new List<Weapon>()
-        { new Weapon()
-        { Name = "Blacksmith's sword", 
-            Description = "Your very first sword! The blacksmith next door always saw your true potential.", 
-            Level = 1, Rarity = "Common", Value = 10 } };
+        public static List<Weapon> Weapons { get; set; } = new List<Weapon>();
         public static List<Amulet> Amulets { get; set; } = new List<Amulet>();
     }
 }

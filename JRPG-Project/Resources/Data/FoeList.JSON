@@ -3,7 +3,7 @@
         "Name": "ILLUFOE",
         "Level": "1",
         "HP": "10",
-        "IconNames": "illufoe-neutral;illufoe-alert",
+        "IconNames": "foe-neutral.png;foe-alert.png",
         "MovementBehaviour": "StraightForward"
     }
 ]

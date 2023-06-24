@@ -9,5 +9,6 @@ namespace JRPG_Project.ClassLibrary.Items
     public class Armour : BaseItem
     {
         public Stats Stats { get; set; } //Stats of the armour
+        //public Charm Charm { get; set; } //Charm of the armour
     }
 }
