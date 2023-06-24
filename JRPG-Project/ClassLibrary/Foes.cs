@@ -29,7 +29,7 @@ namespace JRPG_Project.ClassLibrary
                 Name = (string)row["Name"],
                 Level = (int)row["Level"],
                 HP = (int)row["HP"],
-                IconNames = (string)row["IconNames"],
+                IconNames = "foe-neutral;foe-alert",
                 MovementBehaviour = (string)row["MovementBehaviour"],
             };
 

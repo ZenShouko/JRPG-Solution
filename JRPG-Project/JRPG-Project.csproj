@@ -82,30 +82,48 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ClassLibrary\Data\ItemData.cs" />
+    <Compile Include="ClassLibrary\Data\LevelData.cs" />
+    <Compile Include="ClassLibrary\Entities\Character.cs" />
+    <Compile Include="ClassLibrary\Items\Amulet.cs" />
+    <Compile Include="ClassLibrary\Items\Armour.cs" />
+    <Compile Include="ClassLibrary\Items\BaseItem.cs" />
     <Compile Include="ClassLibrary\BattleControls.cs" />
     <Compile Include="ClassLibrary\Data\GameData.cs" />
     <Compile Include="ClassLibrary\Data\FoeData.cs" />
     <Compile Include="ClassLibrary\Data\TileData.cs" />
     <Compile Include="ClassLibrary\Entities\Battle.cs" />
     <Compile Include="ClassLibrary\Entities\Foe.cs" />
+    <Compile Include="ClassLibrary\Items\Collectable.cs" />
     <Compile Include="ClassLibrary\Entities\Level.cs" />
+    <Compile Include="ClassLibrary\Entities\MapItems.cs" />
     <Compile Include="ClassLibrary\Entities\Mob.cs" />
     <Compile Include="ClassLibrary\Entities\Tile.cs" />
     <Compile Include="ClassLibrary\FoeControls.cs" />
     <Compile Include="ClassLibrary\Foes.cs" />
     <Compile Include="ClassLibrary\Mechanics.cs" />
+    <Compile Include="ClassLibrary\Player\Inventory.cs" />
+    <Compile Include="ClassLibrary\Stats.cs" />
     <Compile Include="ClassLibrary\Universal\Interaction.cs" />
     <Compile Include="ClassLibrary\Levels.cs" />
     <Compile Include="ClassLibrary\Mobs.cs" />
     <Compile Include="ClassLibrary\Player\PlayerActions.cs" />
     <Compile Include="ClassLibrary\Player\PlayerControls.cs" />
     <Compile Include="ClassLibrary\Tiles.cs" />
+    <Compile Include="ClassLibrary\Items\Weapon.cs" />
+    <Compile Include="Tabs\InventoryTab.xaml.cs">
+      <DependentUpon>InventoryTab.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Tabs\MainTab.xaml.cs">
       <DependentUpon>MainTab.xaml</DependentUpon>
     </Compile>
     <Compile Include="Tabs\PlaygroundTab.xaml.cs">
       <DependentUpon>PlaygroundTab.xaml</DependentUpon>
     </Compile>
+    <Page Include="Tabs\InventoryTab.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -158,6 +176,7 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <None Include="Resources\Data\Collectables.json" />
     <None Include="Resources\Data\FoeList.JSON" />
     <None Include="Resources\Data\TileList.json" />
   </ItemGroup>
@@ -165,14 +184,13 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="ClassLibrary\Entities\Expansion\" />
     <Folder Include="Resources\Assets\Weapons\" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Assets\Characters\illufoe-alert.png">
+    <Resource Include="Resources\Assets\Characters\foe-alert.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Resources\Assets\Characters\illufoe-neutral.png">
+    <Resource Include="Resources\Assets\Characters\foe-neutral.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Assets\Characters\player.png">

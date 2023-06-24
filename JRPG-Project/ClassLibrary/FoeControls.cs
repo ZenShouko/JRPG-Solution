@@ -42,7 +42,7 @@ namespace JRPG_Project.ClassLibrary
                     {
                         //stop chase
                         foe.DetectedPlayer = false;
-                        foe.Icon.Source = new BitmapImage(new Uri(@"../../Resources/Assets/Characters/illufoe-neutral.png", UriKind.Relative));
+                        foe.Icon.Source = new BitmapImage(new Uri(@"../../Resources/Assets/Characters/"+ foe.IconNames.Split(';')[0] +".png", UriKind.Relative));
                     }
                     else
                     {
@@ -325,7 +325,7 @@ namespace JRPG_Project.ClassLibrary
             if (detectionRange.Contains($"{foe.X};{foe.Y}"))
             {
                 //If so, beep.
-                foe.Icon.Source = new BitmapImage(new Uri(@"../../Resources/Assets/Characters/illufoe-alert.png", UriKind.Relative));
+                foe.Icon.Source = new BitmapImage(new Uri(@"../../Resources/Assets/Characters/" + foe.IconNames.Split(';')[1] + ".png", UriKind.Relative));
                 foe.DetectedPlayer = true;
                 return true;
             }

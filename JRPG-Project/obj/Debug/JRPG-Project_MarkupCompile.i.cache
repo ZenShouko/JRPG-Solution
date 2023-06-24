@@ -10,11 +10,11 @@ none
 false
 DEBUG;TRACE
 C:\Users\emre_\Documents\Visual Studio 2022\Personal Solutions\JRPG-Solution\JRPG-Project\App.xaml
-41476372398
+5-104228215
 
-26484366137
+38190894287
 14-88557406
-MainWindow.xaml;Resources\ResourceDictionary.xaml;Tabs\MainTab.xaml;Tabs\PlaygroundTab.xaml;
+Tabs\InventoryTab.xaml;MainWindow.xaml;Resources\ResourceDictionary.xaml;Tabs\MainTab.xaml;Tabs\PlaygroundTab.xaml;
 
 False
 

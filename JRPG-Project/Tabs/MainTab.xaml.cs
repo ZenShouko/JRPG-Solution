@@ -1,4 +1,5 @@
-﻿using System;
+﻿using JRPG_ClassLibrary;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,12 @@ namespace JRPG_Project.Tabs
         public MainTab()
         {
             InitializeComponent();
+        }
+
+        private void OpenTab(object sender, RoutedEventArgs e)
+        {
+            Button btn = sender as Button;
+            Interaction.OpenTab(btn.Name);
         }
     }
 }

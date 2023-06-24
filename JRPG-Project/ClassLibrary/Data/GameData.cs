@@ -20,6 +20,12 @@ namespace JRPG_Project.ClassLibrary.Data
             //Initialize Tile Table and add to database
             TileData.InitializeTable();
             DB_Game.Tables.Add(TileData.TileTable);
+
+            //Initialize XP dictionaries
+            LevelData.InitializeDictionaries();
+
+            //Initialize Item Table and add to database
+            ItemData.InitializeTables();
         }
     }
 }

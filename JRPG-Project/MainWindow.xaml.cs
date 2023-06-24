@@ -30,12 +30,9 @@ namespace JRPG_Project
                 GameData.InitializeDatabase();
             }
             InitializeComponent();
-
-            //Add tab to grid
-            grid.Children.Add(playgroundTab);
+            Interaction.Grid = grid;
+            Interaction.OpenTab("MainTab");
         }
-        MainTab mainTab = new MainTab();
-        PlaygroundTab playgroundTab = new PlaygroundTab();
 
         private void Window_KeyUp(object sender, KeyEventArgs e)
         {
