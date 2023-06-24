@@ -41,7 +41,7 @@
             
             <!--Right side (Item Detail)-->
             <StackPanel Grid.Column="1" Margin="10" Background="GhostWhite" CanVerticallyScroll="True">
-                <TextBlock x:Name="TxtItemName" Foreground="DarkGoldenrod" FontSize="20" FontWeight="Bold" Margin="10" Text="ItemName"/>
+                <TextBlock x:Name="TxtItemName" Foreground="DarkBlue" FontSize="20" FontWeight="Bold" Margin="10" Text="ItemName"/>
                 <Border Background="MediumPurple" Height="1" Margin="5 -10 5 5"/>
                 <TextBlock x:Name="TxtItemDescription" Margin="10" Height="auto" TextWrapping="Wrap" Text="ItemDescription"/>
                 <DockPanel Margin="5 0 5 0">
@@ -54,6 +54,8 @@
                 </DockPanel>
                 
                 <!--TODO: Stats & image-->
+                <Image x:Name="ImgItem" Margin="10" Height="124" Width="auto" Stretch="Uniform"
+                       Source="/Resources/Assets/Collectables/elemental-scepter.png"/>
             </StackPanel>
         </Grid>
     </Grid>

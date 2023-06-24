@@ -184,21 +184,22 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Resources\Assets\Characters\" />
     <Folder Include="Resources\Assets\Weapons\" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Assets\Characters\foe-alert.png">
+    <Resource Include="Resources\Assets\Platform\foe-alert.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Resources\Assets\Characters\foe-neutral.png">
+    <Resource Include="Resources\Assets\Platform\foe-neutral.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Resources\Assets\Characters\player.png">
+    <Resource Include="Resources\Assets\Platform\player.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Assets\Items\item-box.png">
+    <Resource Include="Resources\Assets\Platform\item-box.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
@@ -213,6 +214,38 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Assets\Collectables\elemental-scepter.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Assets\Collectables\shiny-rock.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Assets\Collectables\time-amulet.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Assets\Collectables\haunted-doll.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Assets\Collectables\glowing-spores.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Assets\Collectables\whispering-pendant.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Assets\Collectables\enchanted-feather.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Assets\Collectables\wet-socks.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Assets\Collectables\eternal-orb.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Assets\Collectables\rabbits-foot.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

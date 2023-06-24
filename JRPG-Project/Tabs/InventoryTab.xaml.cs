@@ -6,7 +6,9 @@ using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace JRPG_Project.ClassLibrary.Universal
 {
@@ -24,7 +26,29 @@ namespace JRPG_Project.ClassLibrary.Universal
             //Display all collectable items
             foreach (Collectable collectable in ItemData.ListCollectables)
             {
-                LstCollectables.Items.Add(collectable.ToString());
+                ListBoxItem item = new ListBoxItem();
+                item.Content = collectable.ToString();
+                item.Tag = collectable.ID;
+                item.Foreground = GetBrush(collectable.Rarity);
+
+                LstCollectables.Items.Add(item);
+            }
+        }
+
+        private Brush GetBrush(string rarity)
+        {
+            switch (rarity.ToUpper())
+            {
+                case "COMMON":
+                    return Brushes.Black;
+                case "SPECIAL":
+                    return Brushes.LightSkyBlue;
+                case "CURSED":
+                    return Brushes.Purple;
+                case "LEGENDARY":
+                    return Brushes.DarkOrchid;
+                default:
+                    return Brushes.WhiteSmoke;
             }
         }
 
@@ -63,6 +87,9 @@ namespace JRPG_Project.ClassLibrary.Universal
                 return;
             }
 
+            //Get selected item
+            ListBoxItem listItem = (ListBoxItem)listbox.SelectedItem;
+
             //Get selected item & display
             try
             {
@@ -71,11 +98,12 @@ namespace JRPG_Project.ClassLibrary.Universal
                     case "LstCollectables":
                         {
                             //Get selected item as collectable
-                            Collectable collectable = ItemData.ListCollectables.FirstOrDefault(i => i.ToString() == listbox.SelectedItem.ToString());
+                            Collectable collectable = ItemData.ListCollectables.FirstOrDefault(i => i.ID == (string)listItem.Tag);
                             TxtItemName.Text = collectable.Name;
                             TxtItemDescription.Text = collectable.Description;
                             TxtValue.Text = collectable.Value.ToString();
                             TxtRarity.Text = collectable.Rarity;
+                            ImgItem.Source = new BitmapImage(new Uri(@"/Resources/Assets/Collectables/" + collectable.ImageName + ".png", UriKind.Relative));
                             break;
                         }
                     case "LstWeapons":

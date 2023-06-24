@@ -85,7 +85,7 @@
         "Rarity": "SPECIAL",
         "Name": "Amulet of Time Manipulation",
         "Description": "An amulet that grants its wearer the ability to manipulate time within a limited radius.",
-        "ImageName": "time_amulet",
+        "ImageName": "time-amulet",
         "Value": "500",
         "IsSellable": "False"
     },
