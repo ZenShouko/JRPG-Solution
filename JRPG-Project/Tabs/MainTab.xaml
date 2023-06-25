@@ -14,11 +14,11 @@
 
         <!--Buttons-->
         <StackPanel Margin="15" VerticalAlignment="Center">
-            <Button x:Name="BtnDispatch" Content="Dispatch" Style="{StaticResource defaultButton}" Margin="0 0 0 20" Click="OpenTab"/>
-            <Button x:Name="BtnInventory" Content="Inventory" Style="{StaticResource defaultButton}" Margin="0 0 0 20" Click="OpenTab"/>
-            <Button x:Name="BtnTeam" Content="Team" Style="{StaticResource defaultButton}" Margin="0 0 0 20"/>
-            <Button x:Name="BtnSettings" Content="Settings" Style="{StaticResource defaultButton}" Margin="0 0 0 20"/>
-            <Button x:Name="BtnSave" Content="Manage save" Style="{StaticResource defaultButton}" Margin="0 0 0 20"/>
+            <Button x:Name="BtnDispatch" Content="Dispatch" Style="{StaticResource menu-button}" Margin="0 10" Click="OpenTab"/>
+            <Button x:Name="BtnInventory" Content="Inventory" Style="{StaticResource menu-button}" Margin="0 10" Click="OpenTab"/>
+            <Button x:Name="BtnTeam" Content="Team" Style="{StaticResource menu-button}" Margin="0 10"/>
+            <Button x:Name="BtnSettings" Content="Settings" Style="{StaticResource menu-button}" Margin="0 10"/>
+            <Button x:Name="BtnSave" Content="Manage save" Style="{StaticResource menu-button}" Margin="0 10"/>
         </StackPanel>
 
         <!--Progress-->

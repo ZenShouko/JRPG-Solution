@@ -4,8 +4,10 @@ using JRPG_Project.ClassLibrary.Entities;
 using JRPG_Project.ClassLibrary.Items;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
@@ -21,7 +23,19 @@ namespace JRPG_Project.ClassLibrary.Universal
             InitializeComponent();
             LoadListboxs();
 
-            //Remove later
+            //Focus on the first button after UI is loaded
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                Button btn = ButtonPanel.Children.OfType<Button>().FirstOrDefault();
+                btn.Focus();
+            }));
+
+            //Load all items
+            LoadAllitems();
+        }
+
+        private void LoadAllitems()
+        {
             //Display all collectable items
             foreach (Collectable collectable in ItemData.ListCollectables)
             {
@@ -64,6 +78,37 @@ namespace JRPG_Project.ClassLibrary.Universal
                 item.Foreground = GetBrush(amulet.Rarity);
 
                 LstAmulets.Items.Add(item);
+            }
+        }
+
+        private async void KeyDetection()
+        {
+            while (true)
+            {
+                await Task.Delay(250);
+                if (Interaction.GetKey() is null) { continue; }
+
+                switch (Interaction.GetKey().ToString())
+                {
+                    case "Right":
+                        {
+                            //Get current focussed control
+                            var focusedControl = FocusManager.GetFocusedElement(this);
+                            //Open next tab in tabcontrol
+                            tabControl.SelectedIndex++;
+                            break;
+                        }
+                    case "Left":
+                        {
+                            //Open previous tab in tabcontrol
+                            tabControl.SelectedIndex--;
+                            break;
+                        }
+                    default:
+                        {
+                            break;
+                        }
+                }
             }
         }
 
@@ -240,6 +285,22 @@ namespace JRPG_Project.ClassLibrary.Universal
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             Interaction.OpenTab("MainTab");
+        }
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            //Add keydown event to window
+            //var window = Window.GetWindow(this);
+            //window.KeyDown += Window_KeyDown;
+        }
+        private void UserControl_Unloaded(object sender, RoutedEventArgs e)
+        {
+            //Remove keydown event from window
+        }
+
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            //Scraped
         }
     }
 }
