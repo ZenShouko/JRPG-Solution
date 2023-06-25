@@ -13,4 +13,88 @@
         <Setter Property="Width" Value="200"/>
         <Setter Property="Cursor" Value="Hand"/>
     </Style>
+    
+    <!--Listbox-->
+    <Style TargetType="ListBox" x:Key="IListbox">
+        <Setter Property="Background" Value="#f4f3ee"/>
+    </Style>
+    <!--Listbox Item-->
+    <Style TargetType="ListBoxItem" x:Key="IListboxItem">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ListBoxItem">
+                    <Border x:Name="Border" Padding="2" SnapsToDevicePixels="True">
+                        <ContentPresenter/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="FontSize" Value="22"/>
+                            <Setter TargetName="Border" Property="Background" Value="#f8f9fa"/>
+                            <Setter TargetName="Border" Property="BorderBrush" Value="#463f3a"/>
+                            <Setter TargetName="Border" Property="BorderThickness" Value="1"/>
+                            <Setter TargetName="Border" Property="CornerRadius" Value="2 1 1 2"/>
+                            <Setter TargetName="Border" Property="Margin" Value="5"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <!--Tab Control-->
+    <Style TargetType="TabControl" x:Key="ITabControl">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+    <!--TabItem-->
+    <Style TargetType="TabItem" x:Key="ITabItem" BasedOn="{StaticResource {x:Type TabItem}}">
+        <Setter Property="FontSize" Value="18"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Foreground" Value="Black"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TabItem">
+                    <Grid>
+                        <Border x:Name="Border" Background="#f8f7ff" BorderBrush="#463f3a" BorderThickness="1" CornerRadius="2 1 0 0">
+                            <ContentPresenter x:Name="ContentSite"
+                                              VerticalAlignment="Center"
+                                              HorizontalAlignment="Center"
+                                              ContentSource="Header"
+                                              Margin="12 5"/>
+                        </Border>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="FontWeight" Value="Bold"/>
+                            <Setter TargetName="Border" Property="Background" Value="#eef4ed"/>
+                            <!--<Setter TargetName="Border" Property="BorderThickness" Value="0"/>-->
+                            <Setter TargetName="Border" Property="Margin" Value="0 -2"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <!--<Setter TargetName="Border" Property="Background" Value="#5e503f"/>-->
+                            <Setter TargetName="Border" Property="Cursor" Value="Hand"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <!--Xp Progressbar-->
+    <Style TargetType="ProgressBar" x:Key="XpProgressBar">
+        <Setter Property="Background" Value="#463f3a"/>
+        <Setter Property="Foreground" Value="#cbe896"/>
+        <Setter Property="Height" Value="22"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ProgressBar">
+                    <Grid>
+                        <Border BorderBrush="Black" BorderThickness="0" CornerRadius="2" Padding="2"/>
+                        <Rectangle x:Name="PART_Track" Fill="{TemplateBinding Background}" RadiusX="4" RadiusY="4"/>
+                        <Rectangle x:Name="PART_Indicator" Fill="{TemplateBinding Foreground}" RadiusX="4" RadiusY="4" HorizontalAlignment="Left"/>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>

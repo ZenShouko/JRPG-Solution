@@ -74,9 +74,9 @@ namespace JRPG_Project.ClassLibrary.Universal
                 case "COMMON":
                     return Brushes.Black;
                 case "SPECIAL":
-                    return Brushes.LightSkyBlue;
+                    return Brushes.SteelBlue;
                 case "CURSED":
-                    return Brushes.DarkOrchid;
+                    return Brushes.Orchid;
                 case "LEGENDARY":
                     return Brushes.Goldenrod;
                 default:
@@ -133,10 +133,12 @@ namespace JRPG_Project.ClassLibrary.Universal
                             Collectable collectable = ItemData.ListCollectables.FirstOrDefault(i => i.ID == (string)listItem.Tag);
                             TxtItemName.Text = collectable.Name;
                             TxtItemDescription.Text = collectable.Description;
+                            Txtlevel.Text = collectable.Level.ToString();
                             TxtValue.Text = collectable.Value.ToString();
                             TxtRarity.Text = collectable.Rarity;
                             TxtRarity.Foreground = collectable.Rarity == "COMMON" ? Brushes.White : GetBrush(collectable.Rarity);
                             ImgItem.Source = new BitmapImage(new Uri(@"/Resources/Assets/Collectables/" + collectable.ImageName, UriKind.Relative));
+                            HideItemStats();
                             break;
                         }
                     case "LstWeapons":
@@ -145,10 +147,17 @@ namespace JRPG_Project.ClassLibrary.Universal
                             Weapon weapon = ItemData.ListWeapons.FirstOrDefault(i => i.ID == (string)listItem.Tag);
                             TxtItemName.Text = weapon.Name;
                             TxtItemDescription.Text = weapon.Description;
+                            Txtlevel.Text = weapon.Level.ToString();
                             TxtValue.Text = weapon.Value.ToString();
                             TxtRarity.Text = weapon.Rarity;
                             TxtRarity.Foreground = weapon.Rarity == "COMMON" ? Brushes.White : GetBrush(weapon.Rarity);
                             ImgItem.Source = new BitmapImage(new Uri(@"/Resources/Assets/Weapons/" + weapon.ImageName, UriKind.Relative));
+                            DisplayItemStats($"{weapon.Stats}");
+
+                            TxtXp.Text = weapon.Stats.GetXP() + "xp";
+                            TxtMaxXp.Text = LevelData.GetMaxXpAsString(weapon) + "xp";
+                            ProgressbarXP.Maximum = Convert.ToInt32(LevelData.GetMaxXpAsString(weapon));
+                            ProgressbarXP.Value = weapon.Stats.XP;
                             break;
                         }
                     case "LstArmours":
@@ -157,10 +166,17 @@ namespace JRPG_Project.ClassLibrary.Universal
                             Armour armour = ItemData.ListArmours.FirstOrDefault(i => i.ID == (string)listItem.Tag);
                             TxtItemName.Text = armour.Name;
                             TxtItemDescription.Text = armour.Description;
+                            Txtlevel.Text = armour.Level.ToString();
                             TxtValue.Text = armour.Value.ToString();
                             TxtRarity.Text = armour.Rarity;
                             TxtRarity.Foreground = armour.Rarity == "COMMON" ? Brushes.White : GetBrush(armour.Rarity);
                             ImgItem.Source = new BitmapImage(new Uri(@"/Resources/Assets/Armours/" + armour.ImageName, UriKind.Relative));
+                            DisplayItemStats(armour.Stats.ToString());
+
+                            TxtXp.Text = armour.Stats.GetXP() + "xp";
+                            TxtMaxXp.Text = LevelData.GetMaxXpAsString(armour) + "xp";
+                            ProgressbarXP.Maximum = Convert.ToInt32(LevelData.GetMaxXpAsString(armour));
+                            ProgressbarXP.Value = armour.Stats.XP;
                             break;
                         }
                     case "LstAmulets":
@@ -169,10 +185,17 @@ namespace JRPG_Project.ClassLibrary.Universal
                             Amulet amulet = ItemData.ListAmulets.FirstOrDefault(i => i.ID == (string)listItem.Tag);
                             TxtItemName.Text = amulet.Name;
                             TxtItemDescription.Text = amulet.Description;
+                            Txtlevel.Text = amulet.Level.ToString();
                             TxtValue.Text = amulet.Value.ToString();
                             TxtRarity.Text = amulet.Rarity;
                             TxtRarity.Foreground = amulet.Rarity == "COMMON" ? Brushes.White : GetBrush(amulet.Rarity);
                             ImgItem.Source = new BitmapImage(new Uri(@"/Resources/Assets/Amulets/" + amulet.ImageName, UriKind.Relative));
+                            DisplayItemStats(amulet.Stats.ToString());
+
+                            TxtXp.Text = amulet.Stats.GetXP() + "xp";
+                            TxtMaxXp.Text = LevelData.GetMaxXpAsString(amulet) + "xp";
+                            ProgressbarXP.Maximum = Convert.ToInt32(LevelData.GetMaxXpAsString(amulet));
+                            ProgressbarXP.Value = amulet.Stats.XP;
                             break;
                         }
                 }
@@ -190,6 +213,28 @@ namespace JRPG_Project.ClassLibrary.Universal
                     box.SelectedIndex = -1;
                 }
             }
+        }
+
+        private void DisplayItemStats(string stats)
+        {
+            GridStats.Visibility = Visibility.Visible;
+
+            //Expects to receive the stats in this order: HP;DMG;DEF;SPD;STA;STR;CRC;CRD
+            string[] statParts = stats.Split(';');
+
+            TxtHp.Text = statParts[0];
+            TxtDmg.Text = statParts[1];
+            TxtDef.Text = statParts[2];
+            TxtSpd.Text = statParts[3];
+            TxtSta.Text = statParts[4];
+            TxtStr.Text = statParts[5];
+            TxtCrc.Text = statParts[6];
+            TxtCrd.Text = statParts[7];
+        }
+
+        private void HideItemStats()
+        {
+            GridStats.Visibility = Visibility.Collapsed;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

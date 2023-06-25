@@ -5,7 +5,7 @@
         "Rarity": "COMMON",
         "Name": "Trousers",
         "Description": "It's just me trousers innit bruv.",
-        "ImageName": "hypebeast.png",
+        "ImageName": "trousers.png",
         "Value": "50",
         "Stats": {
             "DEF": "10",
@@ -18,9 +18,9 @@
         "ID": "A2",
         "Level": "1",
         "Rarity": "CURSED",
-        "Name": "Evil Saint",
+        "Name": "Witch's Hat",
         "Description": "Used to be bad, now I'm good. Like OMG I'm such a good person!!",
-        "ImageName": "evil-saint.png",
+        "ImageName": "witch-hat.png",
         "Value": "200",
         "Stats": {
             "DEF": "20",

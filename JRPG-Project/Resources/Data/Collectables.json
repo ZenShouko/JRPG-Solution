@@ -11,7 +11,7 @@
     },
     {
         "ID": "C2",
-        "Level": "3",
+        "Level": "1",
         "Rarity": "SPECIAL",
         "Name": "Lucky Rabbit's Foot",
         "Description": "A soft, fluffy rabbit's foot believed to bring good fortune to its owner.",
@@ -21,7 +21,7 @@
     },
     {
         "ID": "C3",
-        "Level": "10",
+        "Level": "1",
         "Rarity": "LEGENDARY",
         "Name": "Orb of Eternal Wisdom",
         "Description": "A mesmerizing orb that holds the vast knowledge of the ancient sages.",
@@ -31,7 +31,7 @@
     },
     {
         "ID": "C4",
-        "Level": "2",
+        "Level": "1",
         "Rarity": "CURSED",
         "Name": "Wet, sand-filled socks",
         "Description": "I was given this pair of socks to wear to my own funeral. Truly terrifying.",
@@ -41,7 +41,7 @@
     },
     {
         "ID": "C5",
-        "Level": "8",
+        "Level": "1",
         "Rarity": "COMMON",
         "Name": "Enchanted Feather",
         "Description": "A vibrant feather radiating magical energy, capable of granting temporary flight.",
@@ -51,7 +51,7 @@
     },
     {
         "ID": "C6",
-        "Level": "2",
+        "Level": "1",
         "Rarity": "SPECIAL",
         "Name": "Whispering Pendant",
         "Description": "A delicate pendant that whispers forgotten secrets to its wearer in hushed tones.",
@@ -61,7 +61,7 @@
     },
     {
         "ID": "C7",
-        "Level": "6",
+        "Level": "1",
         "Rarity": "LEGENDARY",
         "Name": "Scepter of Elemental Mastery",
         "Description": "A majestic scepter infused with the power to control the four elements at will.",
@@ -71,7 +71,7 @@
     },
     {
         "ID": "C8",
-        "Level": "4",
+        "Level": "1",
         "Rarity": "COMMON",
         "Name": "Glowing Mushroom Spores",
         "Description": "A vial containing spores from a rare luminescent mushroom, known for its healing properties.",
@@ -81,7 +81,7 @@
     },
     {
         "ID": "C9",
-        "Level": "9",
+        "Level": "1",
         "Rarity": "SPECIAL",
         "Name": "Amulet of Time Manipulation",
         "Description": "An amulet that grants its wearer the ability to manipulate time within a limited radius.",

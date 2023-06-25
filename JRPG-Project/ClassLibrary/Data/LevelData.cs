@@ -1,6 +1,9 @@
 ﻿using JRPG_Project.ClassLibrary.Entities;
+using JRPG_Project.ClassLibrary.Items;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 
 namespace JRPG_Project.ClassLibrary.Data
 {
@@ -63,6 +66,56 @@ namespace JRPG_Project.ClassLibrary.Data
         public static void AddXP(Character character, int xp)
         {
 
+        }
+
+        public static string GetMaxXpAsString(object item)
+        {
+            //get null & return null
+            if (item == null) return null;
+
+            //What is object?
+            if (item is Weapon wpn)
+            {
+                //Return required xp to level up based on weapon level
+                if (WeaponXPTable.TryGetValue(wpn.Level + 1, out var xpTuple))
+                {
+                    return Convert.ToString(xpTuple.Item1);
+                }
+                else
+                {
+                    return "MAX";
+                }
+            }
+            else if (item is Armour arm)
+            {
+                //Return required xp to level up based on weapon level
+                if (ArmourXPTable.TryGetValue(arm.Level + 1, out var xpTuple))
+                {
+                    return Convert.ToString(xpTuple.Item1);
+                }
+                else
+                {
+                    return "MAX";
+                }
+            }
+            else if (item is Amulet amu)
+            {
+                //Return required xp to level up based on weapon level
+                if (AmuletXPTable.TryGetValue(amu.Level + 1, out var xpTuple))
+                {
+                    return Convert.ToString(xpTuple.Item1);
+                }
+                else
+                {
+                    return "MAX";
+                }
+            }
+            else if (item is Character cha)
+            {
+                throw new NotImplementedException();   
+            }
+
+            return "error-404";
         }
     }
 }

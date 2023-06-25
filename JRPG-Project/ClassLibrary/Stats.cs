@@ -17,5 +17,15 @@ namespace JRPG_Project.ClassLibrary
         public int STA { get; set; } //Stamina
         public int STR { get; set; } //Stamina Regeneration
         public int XP { get; set; } //Experience Points
+
+        public override string ToString()
+        {
+            return $"{HP};{DMG};{DEF};{SPD};{CRC};{CRD};{STA};{STR};{XP}";
+        }
+
+        public string GetXP()
+        {
+            return XP.ToString();
+        }
     }
 }

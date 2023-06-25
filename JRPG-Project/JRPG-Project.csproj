@@ -189,7 +189,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\Assets\Characters\" />
-    <Folder Include="Resources\Assets\Weapons\" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Assets\Platform\foe-alert.png">
@@ -250,6 +249,24 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Assets\Collectables\rabbits-foot.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Assets\Weapons\painful-vengeance.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Assets\Weapons\blacksmith-sword.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Assets\Weapons\blacksmith-devestator.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Assets\Weapons\noble-sword.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Assets\Armours\trousers.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Assets\Armours\witch-hat.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
