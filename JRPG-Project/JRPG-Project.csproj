@@ -85,6 +85,8 @@
     <Compile Include="ClassLibrary\Data\ItemData.cs" />
     <Compile Include="ClassLibrary\Data\LevelData.cs" />
     <Compile Include="ClassLibrary\Entities\Character.cs" />
+    <Compile Include="ClassLibrary\Entities\Coordinates.cs" />
+    <Compile Include="ClassLibrary\Entities\MapObject.cs" />
     <Compile Include="ClassLibrary\Items\Amulet.cs" />
     <Compile Include="ClassLibrary\Items\Armour.cs" />
     <Compile Include="ClassLibrary\Items\BaseItem.cs" />
@@ -93,12 +95,12 @@
     <Compile Include="ClassLibrary\Data\FoeData.cs" />
     <Compile Include="ClassLibrary\Data\TileData.cs" />
     <Compile Include="ClassLibrary\Entities\Battle.cs" />
-    <Compile Include="ClassLibrary\Entities\Foe.cs" />
+    <Compile Include="ClassLibrary\Entities\MapFoe.cs" />
     <Compile Include="ClassLibrary\Items\Charm.cs" />
     <Compile Include="ClassLibrary\Items\Collectable.cs" />
-    <Compile Include="ClassLibrary\Entities\Level.cs" />
-    <Compile Include="ClassLibrary\Entities\MapItems.cs" />
-    <Compile Include="ClassLibrary\Entities\Mob.cs" />
+    <Compile Include="ClassLibrary\Entities\Stage.cs" />
+    <Compile Include="ClassLibrary\Entities\MapItem.cs" />
+    <Compile Include="ClassLibrary\Entities\MapPlayer.cs" />
     <Compile Include="ClassLibrary\Entities\Tile.cs" />
     <Compile Include="ClassLibrary\FoeControls.cs" />
     <Compile Include="ClassLibrary\Foes.cs" />
@@ -106,8 +108,7 @@
     <Compile Include="ClassLibrary\Player\Inventory.cs" />
     <Compile Include="ClassLibrary\Stats.cs" />
     <Compile Include="ClassLibrary\Universal\Interaction.cs" />
-    <Compile Include="ClassLibrary\Levels.cs" />
-    <Compile Include="ClassLibrary\Mobs.cs" />
+    <Compile Include="ClassLibrary\Stages.cs" />
     <Compile Include="ClassLibrary\Player\PlayerActions.cs" />
     <Compile Include="ClassLibrary\Player\PlayerControls.cs" />
     <Compile Include="ClassLibrary\Tiles.cs" />
@@ -118,8 +119,8 @@
     <Compile Include="Tabs\MainTab.xaml.cs">
       <DependentUpon>MainTab.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Tabs\PlaygroundTab.xaml.cs">
-      <DependentUpon>PlaygroundTab.xaml</DependentUpon>
+    <Compile Include="Tabs\DispatchTab.xaml.cs">
+      <DependentUpon>DispatchTab.xaml</DependentUpon>
     </Compile>
     <Page Include="Tabs\InventoryTab.xaml">
       <SubType>Designer</SubType>
@@ -145,7 +146,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Tabs\PlaygroundTab.xaml">
+    <Page Include="Tabs\DispatchTab.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -169,6 +170,7 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="JRPG-key.pfx" />
+    <None Include="Levels\NewPlatform.json" />
     <None Include="Levels\Testfield.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -251,22 +253,40 @@
     <Resource Include="Resources\Assets\Collectables\rabbits-foot.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Assets\Weapons\painful-vengeance.png" />
+    <Resource Include="Resources\Assets\Armours\amethyst-shardplate.png" />
+    <Resource Include="Resources\Assets\Armours\aquatic-enchantress.png" />
+    <Resource Include="Resources\Assets\Armours\blizzardborn-armour.png" />
+    <Resource Include="Resources\Assets\Armours\carrotguard-ensemble.png" />
+    <Resource Include="Resources\Assets\Armours\cockadoodle-armour.png" />
+    <Resource Include="Resources\Assets\Armours\duskblade-garb.png" />
+    <Resource Include="Resources\Assets\Armours\icecool-jacket.png" />
+    <Resource Include="Resources\Assets\Armours\lilypond-armour.png" />
+    <Resource Include="Resources\Assets\Armours\poochguard-armour.png" />
+    <Resource Include="Resources\Assets\Armours\sandscarab-robes.png" />
+    <Resource Include="Resources\Assets\Armours\shadowcat-visage.png" />
+    <Resource Include="Resources\Assets\Armours\thronshield-vestment.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Assets\Weapons\blacksmith-sword.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Assets\Weapons\blacksmith-devestator.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Assets\Weapons\noble-sword.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Assets\Armours\trousers.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Assets\Armours\witch-hat.png" />
+    <Resource Include="Resources\Assets\Weapons\emerald-inferno.png" />
+    <Resource Include="Resources\Assets\Weapons\emerald-thornlance.png" />
+    <Resource Include="Resources\Assets\Weapons\enigmas-edge.png" />
+    <Resource Include="Resources\Assets\Weapons\ethereal-fistblade.png" />
+    <Resource Include="Resources\Assets\Weapons\frostwave-orca.png" />
+    <Resource Include="Resources\Assets\Weapons\glacial-sovereign.png" />
+    <Resource Include="Resources\Assets\Weapons\gloomgaze-blade.png" />
+    <Resource Include="Resources\Assets\Weapons\golems-might.png" />
+    <Resource Include="Resources\Assets\Weapons\hareblade.png" />
+    <Resource Include="Resources\Assets\Weapons\nightshade-reaper.png" />
+    <Resource Include="Resources\Assets\Weapons\orcas-drillbreaker.png" />
+    <Resource Include="Resources\Assets\Weapons\radishwood-wand.png" />
+    <Resource Include="Resources\Assets\Weapons\serpents-grasp.png" />
+    <Resource Include="Resources\Assets\Weapons\shadowbane-dagger.png" />
+    <Resource Include="Resources\Assets\Weapons\soulfire-reaver.png" />
+    <Resource Include="Resources\Assets\Weapons\sparkplug-blade.png" />
+    <Resource Include="Resources\Assets\Weapons\sphinxsong-bow.png" />
+    <Resource Include="Resources\Assets\Weapons\stardream-blade.png" />
+    <Resource Include="Resources\Assets\Weapons\sugarcrush-mallet.png" />
+    <Resource Include="Resources\Assets\Weapons\trainees-edge.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -32,22 +32,22 @@ namespace JRPG_Project.ClassLibrary.Data
 
         private static void ReadFoeData()
         {
-            List<Foe> foes = new List<Foe>();
+            List<MapFoe> foes = new List<MapFoe>();
 
             //Deserialize JSON file FoeList.json
             string json = File.ReadAllText(@"../../Resources/Data/FoeList.JSON");
-            foes = JsonConvert.DeserializeObject<List<Foe>>(json);
+            foes = JsonConvert.DeserializeObject<List<MapFoe>>(json);
 
             //Add foes to FoeTable
-            foreach (Foe foe in foes)
+            foreach (MapFoe foe in foes)
             {
                 AddFoe(foe);
             }
         }
 
-        private static void AddFoe(Foe foe)
+        private static void AddFoe(MapFoe foe)
         {
-            FoeTable.Rows.Add(foe.Name, foe.Level, foe.HP, foe.IconNames, foe.MovementBehaviour);
+            //FoeTable.Rows.Add(foe.Name, foe.Level, foe.HP, foe.IconNames, foe.MovementBehaviour);
         }
     }
 }

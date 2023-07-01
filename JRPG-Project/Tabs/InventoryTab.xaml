@@ -43,7 +43,7 @@
             </TabControl>
             
             <!--Right side (Item Detail)-->
-            <Border Grid.Column="1" Margin="10" Background="#f5f4f4" BorderBrush="#463f3a" BorderThickness="1 1 2 4" CornerRadius="2">
+            <Border Grid.Column="1" Margin="10" Background="#f1faee" BorderBrush="#463f3a" BorderThickness="1 1 2 4" CornerRadius="2">
                 <DockPanel >
                     <!--Lower Half-->
                     <StackPanel DockPanel.Dock="Bottom" Margin="5 0">
@@ -115,7 +115,7 @@
                     <!--Center-->
                     <StackPanel DockPanel.Dock="Bottom">
                         <!--Image-->
-                        <Border Margin="5" Background="#2b2d42" HorizontalAlignment="Center" CornerRadius="2 4 2 4">
+                        <Border Margin="5" Background="#6b705c" HorizontalAlignment="Center" CornerRadius="2 4 2 4">
                             <Image x:Name="ImgItem" Margin="10" Height="124" Width="124" Stretch="Uniform"
                        Source="/Resources/Assets/Collectables/elemental-scepter.png"/>
                         </Border>
@@ -139,7 +139,7 @@
                     <StackPanel CanVerticallyScroll="True" DockPanel.Dock="Top">
                         <TextBlock x:Name="TxtItemName" Foreground="#463f3a" FontSize="20" FontWeight="Bold" Margin="10" Text="ItemName"/>
                         <Border Background="#463f3a" Height="1" Margin="5 -10 5 5"/>
-                        <TextBlock x:Name="TxtItemDescription" FontFamily="Arial Rounded MT Bold" Margin="10 4" FontSize="16" Height="auto" TextWrapping="Wrap" Text="ItemDescription"/>
+                        <TextBlock x:Name="TxtItemDescription" Margin="10 4" FontFamily="Arial Rounded MT Bold" FontSize="16" TextWrapping="Wrap" Text="ItemDescription"/>
                     </StackPanel>
                 </DockPanel>
             </Border>

@@ -18,8 +18,7 @@ namespace JRPG_Project.ClassLibrary.Data
             DB_Game.Tables.Add(FoeData.FoeTable);
 
             //Initialize Tile Table and add to database
-            TileData.InitializeTable();
-            DB_Game.Tables.Add(TileData.TileTable);
+            TileData.InitializeList();
 
             //Initialize XP dictionaries
             LevelData.InitializeDictionaries();

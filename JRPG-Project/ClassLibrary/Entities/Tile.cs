@@ -12,17 +12,17 @@ namespace JRPG_Project.ClassLibrary.Entities
     public class Tile
     {
         public string Type { get; set; }
-        public string Code { get; set; } //Type but shortened to 3 chars (This is how it's writtin in level design)
         public Brush TileColor { get; set; }
         public Border TileElement { get; set; }
-        public Mob MOB { get; set; }
-        public int X { get; set; }
-        public int Y { get; set; }
+        public MapFoe Foe { get; set; } = null;
+        public MapPlayer Player { get; set; } = null;
+        public MapItem Item { get; set; } = null;
+        public Coordinates Position { get; set; }
         public bool IsWalkable { get; set; }
 
         public Tile()
         {
-            MOB = null;
+
         }
     }
 }

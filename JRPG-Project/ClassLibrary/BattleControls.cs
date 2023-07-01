@@ -19,18 +19,16 @@ namespace JRPG_Project.ClassLibrary
             //MessageBox.Show("Battle started.");
         }
 
-        public static void InitiateBattle(bool byPlayer, Foe foe)
+        public static void InitiateBattle(bool byPlayer, MapFoe foe)
         {
             //Did player initiate battle?
             if (byPlayer)
             {
                 //Yes, player initiated battle
-                MessageBox.Show($"Player initiated battle with {foe.Name}.");
             }
             else
             {
                 //No, foe initiated battle
-                MessageBox.Show($"{foe.Name} initiated battle with player.");
             }
 
             StartBattle();

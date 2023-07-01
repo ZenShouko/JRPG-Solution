@@ -18,6 +18,10 @@ namespace JRPG_Project.ClassLibrary
         public int STR { get; set; } //Stamina Regeneration
         public int XP { get; set; } //Experience Points
 
+        /// <summary>
+        /// Output: HP;DMG;DEF;SPD;CRC;CRD;STA;STR;XP
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return $"{HP};{DMG};{DEF};{SPD};{CRC};{CRD};{STA};{STR};{XP}";

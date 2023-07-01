@@ -4,6 +4,7 @@ using JRPG_Project.ClassLibrary.Data;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -33,11 +34,25 @@ namespace JRPG_Project.Tabs
                 GameData.InitializeDatabase();
             }
 
-            Levels.CreateLevel(MainGrid, "Testfield");
-            PlayerControls.RunKeyDetector();
+            Stages.CreateStage(MainGrid, "NewPlatform");
 
             watch.Stop();
             loadTimeMS = (int)watch.ElapsedMilliseconds;
+        }
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            //Attach keydown event to window
+            Window.GetWindow(this).KeyDown += PlaygroundTab_KeyDown;
+        }
+
+        private void PlaygroundTab_KeyDown(object sender, KeyEventArgs e)
+        {
+            //Send directional keys to player controls
+            if (PlayerControls.DirectionalKeys.Contains(e.Key))
+            {
+                PlayerControls.HandleInput(e.Key);
+            }
         }
     }
 }

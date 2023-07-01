@@ -13,7 +13,7 @@ namespace JRPG_Project.ClassLibrary
     public abstract class BaseItem
     {
         public string ID { get; set; }
-        public int Level { get; set; } //Level of the item
+        public int Level { get; set; } = 1; //Level of the item
         public string Rarity { get; set; } //Rarity of the item
         public string Name { get; set; }
         public string Description { get; set; } //Description of the item

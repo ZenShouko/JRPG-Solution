@@ -81,37 +81,6 @@ namespace JRPG_Project.ClassLibrary.Universal
             }
         }
 
-        private async void KeyDetection()
-        {
-            while (true)
-            {
-                await Task.Delay(250);
-                if (Interaction.GetKey() is null) { continue; }
-
-                switch (Interaction.GetKey().ToString())
-                {
-                    case "Right":
-                        {
-                            //Get current focussed control
-                            var focusedControl = FocusManager.GetFocusedElement(this);
-                            //Open next tab in tabcontrol
-                            tabControl.SelectedIndex++;
-                            break;
-                        }
-                    case "Left":
-                        {
-                            //Open previous tab in tabcontrol
-                            tabControl.SelectedIndex--;
-                            break;
-                        }
-                    default:
-                        {
-                            break;
-                        }
-                }
-            }
-        }
-
         private Brush GetBrush(string rarity)
         {
             switch (rarity.ToUpper())
@@ -201,7 +170,7 @@ namespace JRPG_Project.ClassLibrary.Universal
 
                             TxtXp.Text = weapon.Stats.GetXP() + "xp";
                             TxtMaxXp.Text = LevelData.GetMaxXpAsString(weapon) + "xp";
-                            ProgressbarXP.Maximum = Convert.ToInt32(LevelData.GetMaxXpAsString(weapon));
+                            ProgressbarXP.Maximum = Convert.ToInt32(TxtMaxXp.Text.Replace("xp", ""));
                             ProgressbarXP.Value = weapon.Stats.XP;
                             break;
                         }
@@ -220,7 +189,7 @@ namespace JRPG_Project.ClassLibrary.Universal
 
                             TxtXp.Text = armour.Stats.GetXP() + "xp";
                             TxtMaxXp.Text = LevelData.GetMaxXpAsString(armour) + "xp";
-                            ProgressbarXP.Maximum = Convert.ToInt32(LevelData.GetMaxXpAsString(armour));
+                            ProgressbarXP.Maximum = Convert.ToInt32(TxtMaxXp.Text.Replace("xp", ""));
                             ProgressbarXP.Value = armour.Stats.XP;
                             break;
                         }
@@ -239,7 +208,7 @@ namespace JRPG_Project.ClassLibrary.Universal
 
                             TxtXp.Text = amulet.Stats.GetXP() + "xp";
                             TxtMaxXp.Text = LevelData.GetMaxXpAsString(amulet) + "xp";
-                            ProgressbarXP.Maximum = Convert.ToInt32(LevelData.GetMaxXpAsString(amulet));
+                            ProgressbarXP.Maximum = Convert.ToInt32(TxtMaxXp.Text.Replace("xp", ""));
                             ProgressbarXP.Value = amulet.Stats.XP;
                             break;
                         }
@@ -271,10 +240,10 @@ namespace JRPG_Project.ClassLibrary.Universal
             TxtDmg.Text = statParts[1];
             TxtDef.Text = statParts[2];
             TxtSpd.Text = statParts[3];
-            TxtSta.Text = statParts[4];
-            TxtStr.Text = statParts[5];
-            TxtCrc.Text = statParts[6];
-            TxtCrd.Text = statParts[7];
+            TxtCrc.Text = statParts[4];
+            TxtCrd.Text = statParts[5];
+            TxtSta.Text = statParts[6];
+            TxtStr.Text = statParts[7];
         }
 
         private void HideItemStats()

@@ -18,12 +18,6 @@ namespace JRPG_Project.ClassLibrary
     {
         public static Border CreateTile(string code)
         {
-            //Check if type is available
-            if (!TileData.AvailableTiles.Contains(code))
-            {
-                return null;
-            }
-
             //Create tile
             Border tile = new Border();
             tile.BorderBrush = Brushes.Black;
@@ -36,16 +30,17 @@ namespace JRPG_Project.ClassLibrary
 
         private static Brush GetTileColor(string code)
         {
-            DataRow[] rows = TileData.TileTable.Select($"Code = '{code}'");
+            //DataRow[] rows = TileData.TileTable.Select($"Code = '{code}'");
 
-            if (rows.Count() == 0) { return null; }
+            //if (rows.Count() == 0) { return null; }
 
-            return (Brush)rows[0]["TileColor"];
+            //return (Brush)rows[0]["TileColor"];
+            return null;
         }
 
         public static Tile GetTile(int x, int y)
         {
-            return Levels.CurrentLevel.TileList.Find(t => t.X == x && t.Y == y);
+            return Stages.CurrentStage.TileList.Find(t => t.Position.X == x && t.Position.Y == y);
         }
     }
 }

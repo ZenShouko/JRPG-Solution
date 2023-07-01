@@ -4,7 +4,6 @@ using JRPG_Project.ClassLibrary.Entities;
 using JRPG_Project.ClassLibrary.Player;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -24,7 +23,7 @@ namespace JRPG_ClassLibrary
         private static int animationDelay = 1;
 
 
-        private static List<Key> keys = new List<Key>()
+        public static List<Key> DirectionalKeys = new List<Key>()
         {
             Key.Up, Key.Right, Key.Down, Key.Left
         };
@@ -33,27 +32,10 @@ namespace JRPG_ClassLibrary
 
         private static bool isPlayerMoving = false; //Do not allow player to move if already moving
 
-        public static async void RunKeyDetector()
+        public static async void HandleInput(Key e)
         {
-            //Set key detector active;
-            isKeyDetectorActive = true;
-
-            //Check if a key has been pressed
-            while (isKeyDetectorActive)
-            {
-                //Wait 100ms
-                await Task.Delay(50);
-
-                if (Interaction.GetKey() is null)
-                {
-                    continue;
-                }
-
-                if (keys.Contains((Key)Interaction.GetKey()))
-                {
-                    await StartPlayerMovementAsync(Interaction.GetKey().ToString().ToUpper());
-                }
-            }
+            if (isPlayerMoving) { return; }
+            await StartPlayerMovementAsync(e.ToString().ToUpper());
         }
 
         public static void StopKeyDetector()
@@ -61,77 +43,78 @@ namespace JRPG_ClassLibrary
             isKeyDetectorActive = false;
         }
 
-        public static Mob GetPlayer()
+        public static MapPlayer GetPlayer()
         {
-            //Check if there is a player element
-            if (Levels.CurrentLevel.MobList.Contains(Levels.CurrentLevel.MobList.Find(mob => mob.Name == "PLAYER")))
-            {
-                return Levels.CurrentLevel.MobList.Find(mob => mob.Name == "PLAYER");
-            }
-            else
-            {
-                return null;
-            }
+            ////Check if there is a player element
+            //if (Stages.CurrentStage.MobList.Contains(Stages.CurrentStage.MobList.Find(mob => mob.Name == "PLAYER")))
+            //{
+            //    return Stages.CurrentStage.MobList.Find(mob => mob.Name == "PLAYER");
+            //}
+            //else
+            //{
+            //    return null;
+            //}
+            throw new NotImplementedException();
         }
 
-        private static async Task StartPlayerMovementAsync(string direction)
+        public static async Task StartPlayerMovementAsync(string direction)
         {
-            //Is player already moving? Or is it the foe turn?
-            if (isPlayerMoving || FoeControls.FoeTurn) { return; }
+            ////Is player already moving? Or is it the foe turn?
+            //if (isPlayerMoving || FoeControls.FoeTurn) { return; }
 
-            //Get player element and image
-            Mob player = GetPlayer();
+            ////Get player element and image
+            //MapPlayer player = GetPlayer();
 
-            //Cancel if player is not available
-            if (player is null) { return; }
+            ////Cancel if player is not available
+            //if (player is null) { return; }
 
-            //Rotate player
-            RotatePlayer(direction, player.Icon);
+            ////Rotate player
+            //RotatePlayer(direction, player.Icon);
 
-            //Calculate the target tile
-            int targetX = player.X;
-            int targetY = player.Y;
+            ////Calculate the target tile
+            //int targetX = player.X;
+            //int targetY = player.Y;
 
-            switch (direction)
-            {
-                case "UP":
-                    {
-                        speedY = -1;
-                        targetY--;
-                        break;
-                    }
-                case "RIGHT":
-                    {
-                        speedX = 1;
-                        targetX++;
-                        break;
-                    }
-                case "DOWN":
-                    {
-                        speedY = 1;
-                        targetY++;
-                        break;
-                    }
-                case "LEFT":
-                    {
-                        speedX = -1;
-                        targetX--;
-                        break;
-                    }
-            }
+            //switch (direction)
+            //{
+            //    case "UP":
+            //        {
+            //            speedY = -1;
+            //            targetY--;
+            //            break;
+            //        }
+            //    case "RIGHT":
+            //        {
+            //            speedX = 1;
+            //            targetX++;
+            //            break;
+            //        }
+            //    case "DOWN":
+            //        {
+            //            speedY = 1;
+            //            targetY++;
+            //            break;
+            //        }
+            //    case "LEFT":
+            //        {
+            //            speedX = -1;
+            //            targetX--;
+            //            break;
+            //        }
+            //}
 
-            //Collission detection
-            if (Tiles.GetTile(targetX, targetY) is null || !Tiles.GetTile(targetX, targetY).IsWalkable)
-            {
-                await AnimateMovement(true, player);
-            }
-            else
-            {
-                await AnimateMovement(false, player);
-            }
+            ////Collission detection
+            //if (Tiles.GetTile(targetX, targetY) is null || !Tiles.GetTile(targetX, targetY).IsWalkable)
+            //{
+            //    await AnimateMovement(true, player);
+            //}
+            //else
+            //{
+            //    await AnimateMovement(false, player);
+            //}
 
-            //(Start foe turn)
-            FoeControls.MoveFoes();
+            ////(Start foe turn)
+            //FoeControls.MoveFoes();
         }
 
         private static void RotatePlayer(string direction, Image player)
@@ -164,86 +147,86 @@ namespace JRPG_ClassLibrary
             player.RenderTransformOrigin = new Point(0.5, 0.5);
         }
 
-        private static async Task AnimateMovement(bool collision, Mob player)
+        private static async Task AnimateMovement(bool collision, MapPlayer player)
         {
-            //Set player moving to true
-            isPlayerMoving = true;
+            ////Set player moving to true
+            //isPlayerMoving = true;
 
-            //Get image margin
-            Thickness margin = player.Icon.Margin;
+            ////Get image margin
+            //Thickness margin = player.Icon.Margin;
 
-            //Modify tile size
-            int dividor = collision ? 4 : 1;
-            int speed = collision ? collisionSpeed : playerSpeed;
+            ////Modify tile size
+            //int dividor = collision ? 4 : 1;
+            //int speed = collision ? collisionSpeed : playerSpeed;
 
-            //Move
-            while (Math.Abs(margin.Right) < Math.Abs(Levels.CurrentLevel.TileWidth / dividor) &&
-                Math.Abs(margin.Top) < Math.Abs(Levels.CurrentLevel.TileHeight / dividor))
-            {
-                margin.Left += speed * speedX;
-                margin.Right -= speed * speedX;
-                margin.Top += speed * speedY;
-                margin.Bottom -= speed * speedY;
-                player.Icon.Margin = margin;
-                await Task.Delay(animationDelay);
-            }
+            ////Move
+            //while (Math.Abs(margin.Right) < Math.Abs(Stages.CurrentStage.TileWidth / dividor) &&
+            //    Math.Abs(margin.Top) < Math.Abs(Stages.CurrentStage.TileHeight / dividor))
+            //{
+            //    margin.Left += speed * speedX;
+            //    margin.Right -= speed * speedX;
+            //    margin.Top += speed * speedY;
+            //    margin.Bottom -= speed * speedY;
+            //    player.Icon.Margin = margin;
+            //    await Task.Delay(animationDelay);
+            //}
 
-            if (collision)
-            {
-                //Move back
-                while (Math.Abs(margin.Right) > 0 || Math.Abs(margin.Top) > 0)
-                {
-                    margin.Left -= collisionSpeed * speedX;
-                    margin.Right += collisionSpeed * speedX;
-                    margin.Top -= collisionSpeed * speedY;
-                    margin.Bottom += collisionSpeed * speedY;
-                    player.Icon.Margin = margin;
-                    await Task.Delay(animationDelay);
-                }
-            }
-            else
-            {
-                MovePlayer(Tiles.GetTile(player.X + speedX, player.Y + speedY));
-            }
+            //if (collision)
+            //{
+            //    //Move back
+            //    while (Math.Abs(margin.Right) > 0 || Math.Abs(margin.Top) > 0)
+            //    {
+            //        margin.Left -= collisionSpeed * speedX;
+            //        margin.Right += collisionSpeed * speedX;
+            //        margin.Top -= collisionSpeed * speedY;
+            //        margin.Bottom += collisionSpeed * speedY;
+            //        player.Icon.Margin = margin;
+            //        await Task.Delay(animationDelay);
+            //    }
+            //}
+            //else
+            //{
+            //    MovePlayer(Tiles.GetTile(player.X + speedX, player.Y + speedY));
+            //}
 
-            //Reset
-            speedX = 0;
-            speedY = 0;
+            ////Reset
+            //speedX = 0;
+            //speedY = 0;
 
 
 
-            while (FoeControls.FoeTurn)
-            {
-                await Task.Delay(50);
-                continue;
-            }
+            //while (FoeControls.FoeTurn)
+            //{
+            //    await Task.Delay(50);
+            //    continue;
+            //}
 
-            //set player moving to false
-            isPlayerMoving = false;
+            ////set player moving to false
+            //isPlayerMoving = false;
         }
 
         private static void MovePlayer(Tile tile)
         {
-            Mob player = GetPlayer();
+            //MapPlayer player = GetPlayer();
 
-            //Apply changes
-            player.Icon.Margin = new Thickness(0);
+            ////Apply changes
+            //player.Icon.Margin = new Thickness(0);
 
-            Grid.SetColumn(player.Icon, tile.X);
-            player.X = tile.X;
-            Grid.SetRow(player.Icon, tile.Y);
-            player.Y = tile.Y;
+            //Grid.SetColumn(player.Icon, tile.X);
+            //player.X = tile.X;
+            //Grid.SetRow(player.Icon, tile.Y);
+            //player.Y = tile.Y;
 
-            //Is there a foe on the tile?
-            Foe foe = Levels.CurrentLevel.FoeList.Find(f => f.X == tile.X && f.Y == tile.Y);
-            if (foe != null)
-            {
-                //Attack foe
-                BattleControls.InitiateBattle(true, foe);
-            }
+            ////Is there a foe on the tile?
+            //MapFoe foe = Stages.CurrentStage.FoeList.Find(f => f.X == tile.X && f.Y == tile.Y);
+            //if (foe != null)
+            //{
+            //    //Attack foe
+            //    BattleControls.InitiateBattle(true, foe);
+            //}
 
-            //Collect item
-            PlayerActions.CollectTileItem(tile);
+            ////Collect item
+            //PlayerActions.CollectTileItem(tile);
         }
     }
 }
