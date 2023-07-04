@@ -9,7 +9,7 @@ namespace JRPG_Project.ClassLibrary.Entities
 {
     public abstract class MapObject
     {
-        public Image Icon { get; set; }
+        public Image Icon { get; set; } = new Image();
         public Coordinates Position { get; set; }
     }
 }

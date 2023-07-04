@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace JRPG_Project.ClassLibrary.Player
 {
@@ -12,23 +13,27 @@ namespace JRPG_Project.ClassLibrary.Player
     {
         public static void CollectTileItem(Tile tile)
         {
-            //If empty, return
-            if (tile is null || tile.Player is null) { return; }
+            //Return if no lootbox is present
+            if (string.IsNullOrEmpty(tile.TypeLootbox)) { return; }
 
-            //Does tile contain a collectable item?
-            //if (Stages.CurrentStage.Collectables.Contains(tile.Player.Name))
-            //{
-            //    //Remove mob from playfield
-            //    Stages.CurrentStage.Platform.Children.Remove(tile.Player.Icon);
+            //Get the lootbox
+            LootboxWindow window = new LootboxWindow(tile.TypeLootbox);
+            window.ShowDialog();
 
-            //    //Remove mob from moblist
-            //    Stages.CurrentStage.MobList.Remove(tile.Player);
+            //Remove the lootbox from the tile
+            tile.TypeLootbox = null;
+            tile.TileElement.Child = null;
+        }
 
-            //    //Remove mob from tile
-            //    tile.Player = null;
+        public static void AddToInventory(object item)
+        {
+            if (Inventory.Capacity == Inventory.PlayerInventory.Count)
+            {
+                MessageBox.Show("Sorry, but you don't have enough room in your inventory.");
+                return;
+            }
 
-            //    //TODO: Add item to inventory
-            //}
+            Inventory.PlayerInventory.Add(item);
         }
     }
 }

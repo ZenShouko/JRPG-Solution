@@ -13,21 +13,21 @@ namespace JRPG_Project.ClassLibrary.Data
         public static void InitializeTable()
         {
             //Create columns
-            DataColumn name = new DataColumn("Name", typeof(string));
-            DataColumn level = new DataColumn("Level", typeof(int));
-            DataColumn hp = new DataColumn("HP", typeof(int));
-            DataColumn iconNames = new DataColumn("IconNames", typeof(string));
-            DataColumn movementBehaviour = new DataColumn("MovementBehaviour", typeof(string));
+            //DataColumn name = new DataColumn("Name", typeof(string));
+            //DataColumn level = new DataColumn("Level", typeof(int));
+            //DataColumn hp = new DataColumn("HP", typeof(int));
+            //DataColumn iconNames = new DataColumn("IconNames", typeof(string));
+            //DataColumn movementBehaviour = new DataColumn("MovementBehaviour", typeof(string));
 
-            //Add columns to table
-            FoeTable.Columns.Add(name);
-            FoeTable.Columns.Add(level);
-            FoeTable.Columns.Add(hp);
-            FoeTable.Columns.Add(iconNames);
-            FoeTable.Columns.Add(movementBehaviour);
+            ////Add columns to table
+            //FoeTable.Columns.Add(name);
+            //FoeTable.Columns.Add(level);
+            //FoeTable.Columns.Add(hp);
+            //FoeTable.Columns.Add(iconNames);
+            //FoeTable.Columns.Add(movementBehaviour);
 
-            //Add rows to table
-            ReadFoeData();
+            ////Add rows to table
+            //ReadFoeData();
         }
 
         private static void ReadFoeData()

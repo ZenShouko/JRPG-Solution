@@ -1,4 +1,4 @@
-C:\Users\emre_\Documents\Visual Studio 2022\Personal Solutions\JRPG-Solution\JRPG-Project\bin\Debug\Levels\Testfield.csv
+C:\Users\emre_\Documents\Visual Studio 2022\Personal Solutions\JRPG-Solution\JRPG-Project\bin\Debug\Stages\Testfield.csv
 C:\Users\emre_\Documents\Visual Studio 2022\Personal Solutions\JRPG-Solution\JRPG-Project\bin\Debug\JRPG-Project.exe.config
 C:\Users\emre_\Documents\Visual Studio 2022\Personal Solutions\JRPG-Solution\JRPG-Project\bin\Debug\JRPG-Project.exe
 C:\Users\emre_\Documents\Visual Studio 2022\Personal Solutions\JRPG-Solution\JRPG-Project\bin\Debug\JRPG-Project.pdb
@@ -7,6 +7,7 @@ C:\Users\emre_\Documents\Visual Studio 2022\Personal Solutions\JRPG-Solution\JRP
 C:\Users\emre_\Documents\Visual Studio 2022\Personal Solutions\JRPG-Solution\JRPG-Project\obj\Debug\JRPG-Project.csproj.AssemblyReference.cache
 C:\Users\emre_\Documents\Visual Studio 2022\Personal Solutions\JRPG-Solution\JRPG-Project\obj\Debug\JRPG-Project.csproj.SuggestedBindingRedirects.cache
 C:\Users\emre_\Documents\Visual Studio 2022\Personal Solutions\JRPG-Solution\JRPG-Project\obj\Debug\Resources\ResourceDictionary.baml
+C:\Users\emre_\Documents\Visual Studio 2022\Personal Solutions\JRPG-Solution\JRPG-Project\obj\Debug\LootboxWindow.g.cs
 C:\Users\emre_\Documents\Visual Studio 2022\Personal Solutions\JRPG-Solution\JRPG-Project\obj\Debug\Tabs\InventoryTab.g.cs
 C:\Users\emre_\Documents\Visual Studio 2022\Personal Solutions\JRPG-Solution\JRPG-Project\obj\Debug\MainWindow.g.cs
 C:\Users\emre_\Documents\Visual Studio 2022\Personal Solutions\JRPG-Solution\JRPG-Project\obj\Debug\Tabs\MainTab.g.cs
@@ -15,6 +16,7 @@ C:\Users\emre_\Documents\Visual Studio 2022\Personal Solutions\JRPG-Solution\JRP
 C:\Users\emre_\Documents\Visual Studio 2022\Personal Solutions\JRPG-Solution\JRPG-Project\obj\Debug\JRPG-Project_MarkupCompile.cache
 C:\Users\emre_\Documents\Visual Studio 2022\Personal Solutions\JRPG-Solution\JRPG-Project\obj\Debug\JRPG-Project_MarkupCompile.lref
 C:\Users\emre_\Documents\Visual Studio 2022\Personal Solutions\JRPG-Solution\JRPG-Project\obj\Debug\App.baml
+C:\Users\emre_\Documents\Visual Studio 2022\Personal Solutions\JRPG-Solution\JRPG-Project\obj\Debug\LootboxWindow.baml
 C:\Users\emre_\Documents\Visual Studio 2022\Personal Solutions\JRPG-Solution\JRPG-Project\obj\Debug\Tabs\InventoryTab.baml
 C:\Users\emre_\Documents\Visual Studio 2022\Personal Solutions\JRPG-Solution\JRPG-Project\obj\Debug\MainWindow.baml
 C:\Users\emre_\Documents\Visual Studio 2022\Personal Solutions\JRPG-Solution\JRPG-Project\obj\Debug\Tabs\MainTab.baml

@@ -29,12 +29,9 @@ namespace JRPG_Project.Tabs
             watch.Start();
 
             //Security check
-            if (GameData.DB_Game.Tables.Count == 0)
-            {
-                GameData.InitializeDatabase();
-            }
+            //GameData.InitializeDatabase();
 
-            Stages.CreateStage(MainGrid, "NewPlatform");
+            Stages.CreateStage(MainGrid, "kirby.json");
 
             watch.Stop();
             loadTimeMS = (int)watch.ElapsedMilliseconds;

@@ -1,0 +1,38 @@
+[
+    {
+        "Rarity": "COMMON",
+        "CollectableOdd": "75",
+        "EquipableOdd": "25",
+        "CommonOdd": "96",
+        "SpecialOdd": "4",
+        "Cursedodd": "0",
+        "LegendaryOdd": "0"
+    },
+    {
+        "Rarity": "SPECIAL",
+        "CollectableOdd": "60",
+        "EquipableOdd": "40",
+        "CommonOdd": "35",
+        "SpecialOdd": "63",
+        "Cursedodd": "2",
+        "LegendaryOdd": "0"
+    },
+    {
+        "Rarity": "CURSED",
+        "CollectableOdd": "50",
+        "EquipableOdd": "50",
+        "CommonOdd": "0",
+        "SpecialOdd": "5",
+        "Cursedodd": "80",
+        "LegendaryOdd": "15"
+    },
+    {
+        "Rarity": "LEGENDARY",
+        "CollectableOdd": "50",
+        "EquipableOdd": "50",
+        "CommonOdd": "2",
+        "SpecialOdd": "3",
+        "Cursedodd": "20",
+        "LegendaryOdd": "75"
+    }
+]

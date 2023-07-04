@@ -16,7 +16,8 @@ namespace JRPG_Project.ClassLibrary.Entities
         public Border TileElement { get; set; }
         public MapFoe Foe { get; set; } = null;
         public MapPlayer Player { get; set; } = null;
-        public MapItem Item { get; set; } = null;
+        //public MapItem Item { get; set; } = null;
+        public string TypeLootbox { get; set; }
         public Coordinates Position { get; set; }
         public bool IsWalkable { get; set; }
 

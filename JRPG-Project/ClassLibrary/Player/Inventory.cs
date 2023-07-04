@@ -12,6 +12,10 @@ namespace JRPG_Project.ClassLibrary.Player
     public static class Inventory
     {
         public static int Capacity { get; set; } = 10;
+        public static List<object> PlayerInventory { get; set; } = new List<object>();
+
+
+        //TODO[?] Remove these lists
         public static List<Collectable> Collectables { get; set; } = new List<Collectable>();
         public static List<Armour> Armours { get; set; } = new List<Armour>();
         public static List<Weapon> Weapons { get; set; } = new List<Weapon>();

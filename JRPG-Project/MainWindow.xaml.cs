@@ -25,10 +25,7 @@ namespace JRPG_Project
     {
         public MainWindow()
         {
-            if (GameData.DB_Game.Tables.Count == 0)
-            {
-                GameData.InitializeDatabase();
-            }
+            GameData.InitializeDatabase();
             InitializeComponent();
             Interaction.Grid = grid;
             Interaction.OpenTab("MainTab");

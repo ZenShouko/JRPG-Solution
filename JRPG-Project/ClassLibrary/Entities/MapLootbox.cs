@@ -12,14 +12,14 @@ namespace JRPG_Project.ClassLibrary.Entities
     /// <summary>
     /// Class that contains all the items that are on the map
     /// </summary>
-    public class MapItem : MapObject
+    public class MapLootbox : MapObject
     {
-        public string ReferenceId { get; set; } //Reference to the item/weapon in the database
+        public string Type { get; set; }
 
-        public MapItem()
+        public MapLootbox()
         {
             //Default source for collectable items
-            Icon.Source = new BitmapImage(new Uri(@"../../Resources/Assets/Platform/item-box.png", UriKind.Relative));
+            Icon.Source = new BitmapImage(new Uri(@"../../Resources/Assets/Platform/lootbox.png", UriKind.Relative));
         }
     }
 }

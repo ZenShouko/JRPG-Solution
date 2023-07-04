@@ -151,7 +151,7 @@ namespace JRPG_Project.ClassLibrary.Universal
                             TxtValue.Text = collectable.Value.ToString();
                             TxtRarity.Text = collectable.Rarity;
                             TxtRarity.Foreground = collectable.Rarity == "COMMON" ? Brushes.White : GetBrush(collectable.Rarity);
-                            ImgItem.Source = new BitmapImage(new Uri(@"/Resources/Assets/Collectables/" + collectable.ImageName, UriKind.Relative));
+                            ImgItem.Source = collectable.ItemImage.Source;
                             HideItemStats();
                             break;
                         }
@@ -165,7 +165,7 @@ namespace JRPG_Project.ClassLibrary.Universal
                             TxtValue.Text = weapon.Value.ToString();
                             TxtRarity.Text = weapon.Rarity;
                             TxtRarity.Foreground = weapon.Rarity == "COMMON" ? Brushes.White : GetBrush(weapon.Rarity);
-                            ImgItem.Source = new BitmapImage(new Uri(@"/Resources/Assets/Weapons/" + weapon.ImageName, UriKind.Relative));
+                            ImgItem.Source = weapon.ItemImage.Source;
                             DisplayItemStats($"{weapon.Stats}");
 
                             TxtXp.Text = weapon.Stats.GetXP() + "xp";
@@ -184,7 +184,7 @@ namespace JRPG_Project.ClassLibrary.Universal
                             TxtValue.Text = armour.Value.ToString();
                             TxtRarity.Text = armour.Rarity;
                             TxtRarity.Foreground = armour.Rarity == "COMMON" ? Brushes.White : GetBrush(armour.Rarity);
-                            ImgItem.Source = new BitmapImage(new Uri(@"/Resources/Assets/Armours/" + armour.ImageName, UriKind.Relative));
+                            ImgItem.Source = armour.ItemImage.Source;
                             DisplayItemStats(armour.Stats.ToString());
 
                             TxtXp.Text = armour.Stats.GetXP() + "xp";
@@ -203,7 +203,7 @@ namespace JRPG_Project.ClassLibrary.Universal
                             TxtValue.Text = amulet.Value.ToString();
                             TxtRarity.Text = amulet.Rarity;
                             TxtRarity.Foreground = amulet.Rarity == "COMMON" ? Brushes.White : GetBrush(amulet.Rarity);
-                            ImgItem.Source = new BitmapImage(new Uri(@"/Resources/Assets/Amulets/" + amulet.ImageName, UriKind.Relative));
+                            ImgItem.Source = amulet.ItemImage.Source;
                             DisplayItemStats(amulet.Stats.ToString());
 
                             TxtXp.Text = amulet.Stats.GetXP() + "xp";

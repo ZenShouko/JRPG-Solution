@@ -82,10 +82,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ClassLibrary\Data\CharacterData.cs" />
     <Compile Include="ClassLibrary\Data\ItemData.cs" />
     <Compile Include="ClassLibrary\Data\LevelData.cs" />
+    <Compile Include="ClassLibrary\Data\LootboxData.cs" />
     <Compile Include="ClassLibrary\Entities\Character.cs" />
     <Compile Include="ClassLibrary\Entities\Coordinates.cs" />
+    <Compile Include="ClassLibrary\Entities\Lootbox.cs" />
     <Compile Include="ClassLibrary\Entities\MapObject.cs" />
     <Compile Include="ClassLibrary\Items\Amulet.cs" />
     <Compile Include="ClassLibrary\Items\Armour.cs" />
@@ -99,13 +102,16 @@
     <Compile Include="ClassLibrary\Items\Charm.cs" />
     <Compile Include="ClassLibrary\Items\Collectable.cs" />
     <Compile Include="ClassLibrary\Entities\Stage.cs" />
-    <Compile Include="ClassLibrary\Entities\MapItem.cs" />
+    <Compile Include="ClassLibrary\Entities\MapLootbox.cs" />
     <Compile Include="ClassLibrary\Entities\MapPlayer.cs" />
     <Compile Include="ClassLibrary\Entities\Tile.cs" />
     <Compile Include="ClassLibrary\FoeControls.cs" />
     <Compile Include="ClassLibrary\Foes.cs" />
     <Compile Include="ClassLibrary\Mechanics.cs" />
     <Compile Include="ClassLibrary\Player\Inventory.cs" />
+    <Compile Include="LootboxWindow.xaml.cs">
+      <DependentUpon>LootboxWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ClassLibrary\Stats.cs" />
     <Compile Include="ClassLibrary\Universal\Interaction.cs" />
     <Compile Include="ClassLibrary\Stages.cs" />
@@ -122,6 +128,10 @@
     <Compile Include="Tabs\DispatchTab.xaml.cs">
       <DependentUpon>DispatchTab.xaml</DependentUpon>
     </Compile>
+    <Page Include="LootboxWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Tabs\InventoryTab.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -170,8 +180,10 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="JRPG-key.pfx" />
-    <None Include="Levels\NewPlatform.json" />
-    <None Include="Levels\Testfield.csv">
+    <None Include="Resources\Data\Lootbox.json" />
+    <None Include="Stages\kirby.json" />
+    <None Include="Stages\NewPlatform.json" />
+    <None Include="Stages\Testfield.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
@@ -179,7 +191,9 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <None Include="Resources\Data\Amulets.json" />
     <None Include="Resources\Data\Armours.json" />
+    <None Include="Resources\Data\Characters.json" />
     <None Include="Resources\Data\Charms.json" />
     <None Include="Resources\Data\Collectables.json" />
     <None Include="Resources\Data\FoeList.JSON" />
@@ -189,9 +203,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Resources\Assets\Characters\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Resource Include="Resources\Assets\Platform\foe-alert.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -200,11 +212,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Assets\Platform\player.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Assets\Platform\item-box.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
@@ -287,6 +294,25 @@
     <Resource Include="Resources\Assets\Weapons\stardream-blade.png" />
     <Resource Include="Resources\Assets\Weapons\sugarcrush-mallet.png" />
     <Resource Include="Resources\Assets\Weapons\trainees-edge.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Assets\Platform\lootbox.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Assets\Amulets\skullcoin-talisman.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Assets\Amulets\coralburst-ring.png" />
+    <Resource Include="Resources\Assets\Amulets\cyclopsoul-tablet.png" />
+    <Resource Include="Resources\Assets\Amulets\gearforged-ring.png" />
+    <Resource Include="Resources\Assets\Amulets\heartstone-pendant.png" />
+    <Resource Include="Resources\Assets\Amulets\seadog-token.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Assets\Characters\pingu.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Assets\Characters\maniani.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

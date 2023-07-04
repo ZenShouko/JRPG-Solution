@@ -15,12 +15,13 @@ namespace JRPG_Project.ClassLibrary.Data
 {
     public static class ItemData
     {
+        //Strings are always set in UPPER CASE
         public static List<Collectable> ListCollectables = new List<Collectable>();
         public static List<Weapon> ListWeapons = new List<Weapon>();
         public static List<Armour> ListArmours = new List<Armour>();
         public static List<Amulet> ListAmulets = new List<Amulet>();
 
-        public static void InitializeTables()
+        public static void InitializeLists()
         {
             //#Read Collectables json file
             string json = File.ReadAllText(@"../../Resources/Data/Collectables.json");
@@ -29,7 +30,7 @@ namespace JRPG_Project.ClassLibrary.Data
             //Generate image for each collectable
             foreach (Collectable collectable in ListCollectables)
             {
-                collectable.ItemImage = GetItemImage(collectable.ImageName);
+                collectable.ItemImage = GetItemImage("Collectables/" + collectable.ImageName);
             }
 
             //#Read Weapon json file
@@ -39,7 +40,7 @@ namespace JRPG_Project.ClassLibrary.Data
             //Generate image for each weapon
             foreach (Weapon weapon in ListWeapons)
             {
-                weapon.ItemImage = GetItemImage(weapon.ImageName);
+                weapon.ItemImage = GetItemImage("Weapons/" + weapon.ImageName);
             }
 
             //#Read Armour json file
@@ -49,17 +50,24 @@ namespace JRPG_Project.ClassLibrary.Data
             //Generate image for each armour
             foreach (Armour armour in ListArmours)
             {
-                armour.ItemImage = GetItemImage(armour.ImageName);
+                armour.ItemImage = GetItemImage("Armours/" + armour.ImageName);
             }
 
             //TODO #Read Amulet json file
+            json = File.ReadAllText(@"../../Resources/Data/Amulets.json");
+            ListAmulets = JsonConvert.DeserializeObject<List<Amulet>>(json);
 
+            //Generate image for each amulet
+            foreach (Amulet amulet in ListAmulets)
+            {
+                amulet.ItemImage = GetItemImage("Amulets/" + amulet.ImageName);
+            }
         }
 
         private static Image GetItemImage(string imageName)
         {
             Image itemImage = new Image();
-            itemImage.Source = new BitmapImage(new Uri($@"../../Resources/Images/Items/{imageName}.png", UriKind.Relative));
+            itemImage.Source = new BitmapImage(new Uri($@"../../Resources/Assets/{imageName}", UriKind.Relative));
             return itemImage;
         }
     }

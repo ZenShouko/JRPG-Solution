@@ -20,7 +20,7 @@ namespace JRPG_ClassLibrary.Entities
 
         public List<Tile> TileList = new List<Tile>();
 
-        public MapPlayer Player { get; set; }
+        public MapPlayer Player { get; set; } = new MapPlayer();
 
         public Stage()
         {
