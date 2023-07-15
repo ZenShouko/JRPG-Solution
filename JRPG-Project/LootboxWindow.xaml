@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:JRPG_Project.ClassLibrary.Player" KeyDown="Window_KeyDown"
-        mc:Ignorable="d" WindowStartupLocation="CenterScreen" WindowStyle="ThreeDBorderWindow" ResizeMode="NoResize" SizeToContent="WidthAndHeight"
+        mc:Ignorable="d" WindowStartupLocation="CenterScreen" WindowStyle="ToolWindow" ResizeMode="NoResize" SizeToContent="WidthAndHeight"
         Title="Item!!" Height="auto" Width="auto">
     <Grid Height="240" Width="300">
         <Grid.RowDefinitions>

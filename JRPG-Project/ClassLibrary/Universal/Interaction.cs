@@ -1,4 +1,6 @@
-﻿using JRPG_Project.ClassLibrary.Universal;
+﻿using JRPG_Project;
+using JRPG_Project.ClassLibrary.Data;
+using JRPG_Project.ClassLibrary.Universal;
 using JRPG_Project.Tabs;
 using System.Windows;
 using System.Windows.Controls;
@@ -58,11 +60,17 @@ namespace JRPG_ClassLibrary
                         Grid.Children.Add(teamTab);
                         break;
                     }
+                case "BTNSAVE":
+                    {
+                        SaveWindow saveWindow = new SaveWindow();
+                        saveWindow.ShowDialog();
+                        OpenTab("MainTab");
+                        break;
+                    }
                 default:
                     {
-                        MessageBox.Show("tab not recognized."); 
-                        MainTab mainTab = new MainTab();
-                        Grid.Children.Add(mainTab);
+                        MessageBox.Show("tab not recognized.");
+                        OpenTab("MainTab");
                         break;
                     }
             }

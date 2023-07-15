@@ -120,6 +120,9 @@
     <Compile Include="ClassLibrary\Player\PlayerControls.cs" />
     <Compile Include="ClassLibrary\Tiles.cs" />
     <Compile Include="ClassLibrary\Items\Weapon.cs" />
+    <Compile Include="SaveWindow.xaml.cs">
+      <DependentUpon>SaveWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Tabs\InventoryTab.xaml.cs">
       <DependentUpon>InventoryTab.xaml</DependentUpon>
     </Compile>
@@ -136,6 +139,10 @@
       <DependentUpon>TeamTab.xaml</DependentUpon>
     </Compile>
     <Page Include="LootboxWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SaveWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -218,7 +225,11 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Resources\Assets\GUI\save-icon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Assets\Platform\foe-alert.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

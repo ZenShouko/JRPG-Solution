@@ -24,7 +24,6 @@ namespace JRPG_Project.Tabs
         public TeamTab()
         {
             InitializeComponent();
-            
         }
 
         private void OpenMainTab(object sender, RoutedEventArgs e)

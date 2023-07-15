@@ -32,3 +32,5 @@ C:\Users\emre_\Documents\Visual Studio 2022\Personal Solutions\JRPG-Solution\JRP
 C:\Users\emre_\Documents\Visual Studio 2022\Personal Solutions\JRPG-Solution\JRPG-Project\obj\Debug\Tabs\TeamTab.baml
 C:\Users\emre_\Documents\Visual Studio 2022\Personal Solutions\JRPG-Solution\JRPG-Project\obj\Debug\PlatformFinder.g.cs
 C:\Users\emre_\Documents\Visual Studio 2022\Personal Solutions\JRPG-Solution\JRPG-Project\obj\Debug\PlatformFinder.baml
+C:\Users\emre_\Documents\Visual Studio 2022\Personal Solutions\JRPG-Solution\JRPG-Project\obj\Debug\SaveWindow.g.cs
+C:\Users\emre_\Documents\Visual Studio 2022\Personal Solutions\JRPG-Solution\JRPG-Project\obj\Debug\SaveWindow.baml
