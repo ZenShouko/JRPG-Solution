@@ -4,9 +4,11 @@ using JRPG_Project.ClassLibrary.Items;
 using System;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace JRPG_Project.ClassLibrary.Player
 {
@@ -19,6 +21,8 @@ namespace JRPG_Project.ClassLibrary.Player
         {
             InitializeComponent();
             this.Title = rarity;
+
+            //Get item
             GetRandomItem(rarity);
         }
 
@@ -30,39 +34,50 @@ namespace JRPG_Project.ClassLibrary.Player
             Lootbox box = LootboxData.LootboxList.FirstOrDefault(x => x.Rarity == boxRarity);
             Random random = new Random();
             string itemRarity = GetItemRarity(box);
-            object item = null;
 
             //Get item based on Collectable or Equipable?
             if (random.Next(0, 101) <= box.CollectableOdd)
             {
-                item = ItemData.ListCollectables.Where(x => x.Rarity == itemRarity).ElementAt(random.Next(0, ItemData.ListCollectables.Where(x => x.Rarity == itemRarity).Count() - 1));
+                Collectable item = ItemData.ListCollectables.Where(x => x.Rarity == itemRarity).ElementAt(random.Next(0, ItemData.ListCollectables.Where(x => x.Rarity == itemRarity).Count() - 1));
+                DisplayItem(item.Name, item.ItemImage);
+                PlayerActions.AddCollectable(item);
             }
             else
             {
+                //Cancel if inventory is full
+                if (PlayerActions.IsInventoryFull())
+                {
+                    return;
+                }
+
                 switch (Equipables[random.Next(0, Equipables.Count() - 1)])
                 {
                     case "WEAPON":
                         {
-                            item = ItemData.ListWeapons.Where(x => x.Rarity == itemRarity).ElementAt(random.Next(0, ItemData.ListWeapons.Where(x => x.Rarity == itemRarity).Count() - 1));
+                            Weapon item = ItemData.ListWeapons.Where(x => x.Rarity == itemRarity).ElementAt(random.Next(0, ItemData.ListWeapons.Where(x => x.Rarity == itemRarity).Count() - 1));
+                            DisplayItem(item.Name, item.ItemImage);
+                            PlayerActions.AddWeapon(item);
                             break;
                         }
                     case "ARMOUR":
                         {
-                            item = ItemData.ListArmours.Where(x => x.Rarity == itemRarity).ElementAt(random.Next(0, ItemData.ListArmours.Where(x => x.Rarity == itemRarity).Count() - 1));
+                            Armour item = ItemData.ListArmours.Where(x => x.Rarity == itemRarity).ElementAt(random.Next(0, ItemData.ListArmours.Where(x => x.Rarity == itemRarity).Count() - 1));
+                            DisplayItem(item.Name, item.ItemImage);
+                            PlayerActions.AddArmour(item);
                             break;
                         }
                     case "AMULET":
                         {
-                            item = ItemData.ListAmulets.Where(x => x.Rarity == itemRarity).ElementAt(random.Next(0, ItemData.ListAmulets.Where(x => x.Rarity == itemRarity).Count() - 1));
+                            Amulet item = ItemData.ListAmulets.Where(x => x.Rarity == itemRarity).ElementAt(random.Next(0, ItemData.ListAmulets.Where(x => x.Rarity == itemRarity).Count() - 1));
+                            DisplayItem(item.Name, item.ItemImage);
+                            PlayerActions.AddAmulet(item);
                             break;
                         }
                 }
             }
 
             //The rest
-            DisplayItem(item);
             SetTitleColour(itemRarity);
-            AddItemToInventory(item);
         }
 
         private string GetItemRarity(Lootbox box)
@@ -88,35 +103,10 @@ namespace JRPG_Project.ClassLibrary.Player
             }
         }
 
-        private void DisplayItem(object item)
+        private void DisplayItem(string name, Image image)
         {
-            switch (item)
-            {
-                case Collectable collectable:
-                    {
-                        TxtName.Text = collectable.Name;
-                        ImgItem.Source = collectable.ItemImage.Source;
-                        break;
-                    }
-                case Weapon weapon:
-                    {
-                        TxtName.Text = weapon.Name;
-                        ImgItem.Source = weapon.ItemImage.Source;
-                        break;
-                    }
-                    case Armour armour:
-                    {
-                        TxtName.Text = armour.Name;
-                        ImgItem.Source = armour.ItemImage.Source;
-                        break;
-                    }
-                    case Amulet amulet:
-                    {
-                        TxtName.Text = amulet.Name;
-                        ImgItem.Source = amulet.ItemImage.Source;
-                        break;
-                    }
-            }
+            TxtName.Text = name;
+            ImgItem.Source = image.Source;
         }
 
         private void SetTitleColour(string rarity)
@@ -139,11 +129,6 @@ namespace JRPG_Project.ClassLibrary.Player
                     TxtName.Foreground = Brushes.WhiteSmoke; 
                     break;
             }
-        }
-
-        private void AddItemToInventory(object item)
-        {
-            PlayerActions.AddToInventory(item);
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

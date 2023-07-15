@@ -14,10 +14,10 @@
         </Grid.RowDefinitions>
         
         <!--Item Name-->
-        <TextBlock x:Name="TxtName" Text="Test Item Name" FontSize="24" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        <TextBlock x:Name="TxtName" Text="Inventory Full!!" FontSize="24" VerticalAlignment="Center" HorizontalAlignment="Center"/>
         
         <!--Item Image-->
-        <Image x:Name="ImgItem" Grid.Row="1" Source="/Resources/Assets/Weapons/emerald-inferno.png"/>
+        <Image x:Name="ImgItem" Grid.Row="1" Source="/Resources/Assets/GUI/emoji-fear.png"/>
         
         <!--Close Button-->
         <StackPanel Grid.Row="2" Margin="10" Orientation="Horizontal" HorizontalAlignment="Center">

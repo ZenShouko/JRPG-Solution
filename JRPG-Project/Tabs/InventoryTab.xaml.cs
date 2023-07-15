@@ -2,6 +2,7 @@
 using JRPG_Project.ClassLibrary.Data;
 using JRPG_Project.ClassLibrary.Entities;
 using JRPG_Project.ClassLibrary.Items;
+using JRPG_Project.ClassLibrary.Player;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -21,17 +22,17 @@ namespace JRPG_Project.ClassLibrary.Universal
         public InventoryTab()
         {
             InitializeComponent();
-            LoadListboxs();
+            LoadItems();
 
             //Focus on the first button after UI is loaded
-            Dispatcher.BeginInvoke(new Action(() =>
-            {
-                Button btn = ButtonPanel.Children.OfType<Button>().FirstOrDefault();
-                btn.Focus();
-            }));
+            //Dispatcher.BeginInvoke(new Action(() =>
+            //{
+            //    Button btn = ButtonPanel.Children.OfType<Button>().FirstOrDefault();
+            //    btn.Focus();
+            //}));
 
             //Load all items
-            LoadAllitems();
+            //LoadAllitems();
         }
 
         private void LoadAllitems()
@@ -98,27 +99,43 @@ namespace JRPG_Project.ClassLibrary.Universal
             }
         }
 
-        private void LoadListboxs()
+        private void LoadItems()
         {
-            //Load all items into listbox
-            foreach (Collectable item in Player.Inventory.Collectables)
+            //Load all items into listbox'
+            foreach (Collectable item in Inventory.Collectables)
             {
-                LstCollectables.Items.Add(item);
+                ListBoxItem listItem = new ListBoxItem();
+                listItem.Content = item.ToString();
+                listItem.Tag = item.ID;
+                listItem.Foreground = GetBrush(item.Rarity);
+                LstCollectables.Items.Add(listItem);
             }
 
-            foreach (Weapon item in Player.Inventory.Weapons)
+            foreach (Weapon item in Inventory.Weapons)
             {
-                LstWeapons.Items.Add(item.ToString());
+                ListBoxItem listItem = new ListBoxItem();
+                listItem.Content = item.ToString();
+                listItem.Tag = item.ID;
+                listItem.Foreground = GetBrush(item.Rarity);
+                LstWeapons.Items.Add(listItem);
             }
 
-            foreach (Armour item in Player.Inventory.Armours)
+            foreach (Armour item in Inventory.Armours)
             {
-                LstArmours.Items.Add(item.ToString());
+                ListBoxItem listItem = new ListBoxItem();
+                listItem.Content = item.ToString();
+                listItem.Tag = item.ID;
+                listItem.Foreground = GetBrush(item.Rarity);
+                LstArmours.Items.Add(listItem);
             }
 
-            foreach (Amulet item in Player.Inventory.Amulets)
+            foreach (Amulet item in Inventory.Amulets)
             {
-                LstAmulets.Items.Add(item.ToString());
+                ListBoxItem listItem = new ListBoxItem();
+                listItem.Content = item.ToString();
+                listItem.Tag = item.ID;
+                listItem.Foreground = GetBrush(item.Rarity);
+                LstAmulets.Items.Add(listItem);
             }
         }
 

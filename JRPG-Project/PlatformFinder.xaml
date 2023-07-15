@@ -1,0 +1,28 @@
+﻿<Window x:Class="JRPG_Project.Tabs.PlatformFinder"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:JRPG_Project.Tabs"
+        mc:Ignorable="d" WindowStartupLocation="CenterScreen" SizeToContent="WidthAndHeight" ResizeMode="NoResize"
+        Title="Platform" Height="auto" Width="auto">
+    <Grid Height="300" Width="400">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="2.5*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <!--Title-->
+        <TextBlock Text="Select A Platform" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24"/>
+        
+        <!--Platform List-->
+        <ListBox x:Name="ListPlatforms" Grid.Row="1" Margin="5" HorizontalContentAlignment="Center" FontSize="16" SelectionChanged="ListPlatforms_SelectionChanged"/>
+        
+        <!--Buttons-->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Button x:Name="BtnOk" Style="{StaticResource menu-button}" Content="Ok" Background="MediumSeaGreen" Foreground="White" Margin="5 0" Click="BtnOk_Click"/>
+            <Button Style="{StaticResource menu-button}" Content="Cancel" Background="Crimson" Foreground="White" Margin="5 0" Click="Button_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>

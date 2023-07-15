@@ -25,7 +25,7 @@ namespace JRPG_Project
     {
         public MainWindow()
         {
-            GameData.InitializeDatabase();
+            GameData.InitializeData();
             InitializeComponent();
             Interaction.Grid = grid;
             Interaction.OpenTab("MainTab");

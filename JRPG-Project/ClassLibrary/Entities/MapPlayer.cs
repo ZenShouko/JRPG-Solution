@@ -21,8 +21,8 @@ namespace JRPG_ClassLibrary.Entities
             this.Icon = new Image();
 
             Icon.BeginInit();
-            Icon.Height = 50;
-            Icon.Width = 50;
+            //Icon.Height = 50;
+            //Icon.Width = 50;
             Icon.Stretch = System.Windows.Media.Stretch.Fill;
             Icon.Source = new BitmapImage(new Uri(@"../../Resources/Assets/Platform/player.png", UriKind.Relative));
             Icon.EndInit();

@@ -11,7 +11,7 @@ namespace JRPG_Project.ClassLibrary.Data
     {
         public static DataSet DB_Game = new DataSet("DB_JRPG"); //to be removed
 
-        public static void InitializeDatabase()
+        public static void InitializeData()
         {
             //TODO: CHANGE (Initialize Foe Table and add to database)
             //FoeData.InitializeTable();
@@ -31,6 +31,14 @@ namespace JRPG_Project.ClassLibrary.Data
 
             //Initialize Lootbox list
             LootboxData.InitializeList();
+
+            //Initialize Player Team
+            PlayerData.Initialize();
+        }
+
+        public static void Save()
+        {
+
         }
     }
 }

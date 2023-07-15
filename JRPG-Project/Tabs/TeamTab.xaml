@@ -1,0 +1,133 @@
+﻿<UserControl x:Class="JRPG_Project.Tabs.TeamTab"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:JRPG_Project.Tabs"
+             mc:Ignorable="d"
+             d:DesignHeight="600" d:DesignWidth="800">
+    <Grid Background="White" Height="600" Width="800">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="130"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <!--Menu Buttons-->
+        <Button Content="Return" Style="{StaticResource menu-button}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5" Click="OpenMainTab"/>
+
+        <!--Characters Menu-->
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 5">
+            <Border Style="{StaticResource character-slot}">
+                <Canvas x:Name="CharacterSlot1"></Canvas>
+            </Border>
+            <Border Style="{StaticResource character-slot}">
+                <Canvas x:Name="CharacterSlot2"></Canvas>
+            </Border>
+            <Border Style="{StaticResource character-slot}">
+                <Canvas x:Name="CharacterSlot3"></Canvas>
+            </Border>
+        </StackPanel>
+        
+        <!--Stats n shit-->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1.8*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="2*"/>
+            </Grid.RowDefinitions>
+            
+            <!--Character Info-->
+            <TextBlock Text="Info" Background="WhiteSmoke" Grid.ColumnSpan="2" FontSize="18" Padding="10 0"/>
+            <StackPanel Grid.Row="1" Orientation="Horizontal" Grid.ColumnSpan="2" Background="FloralWhite">
+                <Image x:Name="CharacterImage" Width="120" Height="120" Margin="10 0"/>
+                <StackPanel Margin="10 0">
+                    <TextBlock x:Name="TxtCharacterName" Text="Mr Riverman" FontSize="24"/>
+                    <TextBlock x:Name="TxtCharacterLevel" Text="Level 20" Foreground="RoyalBlue" FontSize="16" Margin="0 4"/>
+                </StackPanel>
+            </StackPanel>
+            
+            <!--Character Equipment-->
+            <TextBlock Grid.Row="2" Text="Equipment" Background="WhiteSmoke" FontSize="18" Padding="10 0"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="3" Background="Coral">
+                <!--Weapon-->
+                <Border x:Name="BorderWeapon" BorderBrush="Black" BorderThickness="2" CornerRadius="4" Width="auto" Background="White" Margin="10" Cursor="Hand">
+                    <DockPanel>
+                        <TextBlock DockPanel.Dock="Top" Text="Weapon:" FontSize="16" TextAlignment="Center" Background="LightGray" Margin="0 10"/>
+                        <TextBlock DockPanel.Dock="Bottom" x:Name="TxtWeaponName" Text="Frostwave Orca" FontSize="16" TextAlignment="Center" Background="LightGray" Margin="0 10"/>
+                        <Image x:Name="CharacterWeaponImage" Width="120" Height="120" Margin="5" Cursor="Hand" Source="/Resources/Assets/Weapons/frostwave-orca.png"/>
+                    </DockPanel>
+                </Border>
+                
+                <!--Armour-->
+                <Border x:Name="BorderArmour" BorderBrush="Black" BorderThickness="2" CornerRadius="4" Width="auto" Background="White" Margin="10" Cursor="Hand">
+                    <DockPanel>
+                        <TextBlock DockPanel.Dock="Top" Text="Armour:" FontSize="16" TextAlignment="Center" Background="LightGray" Margin="0 10"/>
+                        <TextBlock DockPanel.Dock="Bottom" x:Name="TxtArmourName" Text="Frostwave Orca" FontSize="16" TextAlignment="Center" Background="LightGray" Margin="0 10"/>
+                        <Image x:Name="CharacterArmourImage" Width="120" Height="120" Margin="5" Cursor="Hand" Source="/Resources/Assets/Weapons/frostwave-orca.png"/>
+                    </DockPanel>
+                </Border>
+
+                <!--Amulet-->
+                <Border x:Name="BorderAmulet" BorderBrush="Black" BorderThickness="2" CornerRadius="4" Width="auto" Background="White" Margin="10" Cursor="Hand">
+                    <DockPanel>
+                        <TextBlock DockPanel.Dock="Top" Text="Amulet:" FontSize="16" TextAlignment="Center" Background="LightGray" Margin="0 10"/>
+                        <TextBlock DockPanel.Dock="Bottom" x:Name="TxtAmuletName" Text="Frostwave Orca" FontSize="16" TextAlignment="Center" Background="LightGray" Margin="0 10"/>
+                        <Image x:Name="CharacterAmuletImage" Width="120" Height="120" Margin="5" Source="/Resources/Assets/Weapons/frostwave-orca.png"/>
+                    </DockPanel>
+                </Border>
+            </StackPanel>
+            
+            <!--Stats-->
+            <TextBlock Grid.Row="2" Grid.Column="1" Text="Stats" Background="WhiteSmoke" FontSize="18" Padding="10 0"/>
+            <StackPanel Grid.Row="3" Grid.Column="1" Margin="5">
+                <Border Background="#ffffff" BorderBrush="Black" BorderThickness="1 1 2 2" CornerRadius="2">
+                    <StackPanel>
+                        <DockPanel Margin="20 5">
+                            <TextBlock x:Name="TxtHp" Text="100" Style="{StaticResource text-stat}" DockPanel.Dock="Right"/>
+                            <TextBlock Text="HP:" Style="{StaticResource text-stat}"/>
+                        </DockPanel>
+                        <DockPanel Margin="20 5">
+                            <TextBlock x:Name="TxtDmg" Text="100" Style="{StaticResource text-stat}" DockPanel.Dock="Right"/>
+                            <TextBlock Text="DMG:" Style="{StaticResource text-stat}"/>
+                        </DockPanel>
+                        <DockPanel Margin="20 5">
+                            <TextBlock x:Name="TxtDef" Text="100" Style="{StaticResource text-stat}" DockPanel.Dock="Right"/>
+                            <TextBlock Text="DEF:" Style="{StaticResource text-stat}"/>
+                        </DockPanel>
+                        <DockPanel Margin="20 5">
+                            <TextBlock x:Name="TxtSpd" Text="100" Style="{StaticResource text-stat}" DockPanel.Dock="Right"/>
+                            <TextBlock Text="SPD:" Style="{StaticResource text-stat}"/>
+                        </DockPanel>
+                    </StackPanel>
+                </Border>
+
+                <Border Grid.Column="2" Background="#ffffff" Margin="0 10" BorderBrush="Black" BorderThickness="1 1 2 2" CornerRadius="2">
+                    <StackPanel>
+                        <DockPanel Margin="20 5">
+                            <TextBlock x:Name="TxtSta" Text="100" Style="{StaticResource text-stat}" DockPanel.Dock="Right"/>
+                            <TextBlock Text="STA:" Style="{StaticResource text-stat}"/>
+                        </DockPanel>
+                        <DockPanel Margin="20 5">
+                            <TextBlock x:Name="TxtStr" Text="100" Style="{StaticResource text-stat}" DockPanel.Dock="Right"/>
+                            <TextBlock Text="STR:" Style="{StaticResource text-stat}"/>
+                        </DockPanel>
+                        <DockPanel Margin="20 5">
+                            <TextBlock x:Name="TxtCrc" Text="100" Style="{StaticResource text-stat}" DockPanel.Dock="Right"/>
+                            <TextBlock Text="CRC:" Style="{StaticResource text-stat}"/>
+                        </DockPanel>
+                        <DockPanel Margin="20 5">
+                            <TextBlock x:Name="TxtCrd" Text="100" Style="{StaticResource text-stat}" DockPanel.Dock="Right"/>
+                            <TextBlock Text="CRD:" Style="{StaticResource text-stat}"/>
+                        </DockPanel>
+                    </StackPanel>
+                </Border>
+                <Button Content="Change" Style="{StaticResource menu-button}"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>

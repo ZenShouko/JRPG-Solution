@@ -8,9 +8,6 @@ namespace JRPG_ClassLibrary
     public static class Interaction
     {
         public static Grid Grid { get; set; }
-        public static MainTab MainTab;
-        public static PlaygroundTab PlaygroundTab;
-        public static InventoryTab InventoryTab;
 
         private static object _key = null;
         public static void SetKey(object key)
@@ -35,31 +32,47 @@ namespace JRPG_ClassLibrary
         {
             Grid.Children.Clear();
 
-            switch (tab)
+            switch (tab.ToUpper())
             {
-                case "MainTab":
+                case "MAINTAB":
                     {
-                        MainTab = new MainTab();
+                        MainTab MainTab = new MainTab();
                         Grid.Children.Add(MainTab);
                         break;
                     }
-                case "BtnDispatch":
+                case "BTNDISPATCH":
                     {
-                        PlaygroundTab = new PlaygroundTab();
-                        Grid.Children.Add(PlaygroundTab);
+                        PlatformFinder platformFinder = new PlatformFinder();
+                        platformFinder.ShowDialog();
                         break;
                     }
-                case "BtnInventory":
+                case "BTNINVENTORY":
                     {
-                        InventoryTab = new InventoryTab();
+                        InventoryTab InventoryTab = new InventoryTab();
                         Grid.Children.Add(InventoryTab);
+                        break;
+                    }
+                case "BTNTEAM":
+                    {
+                        TeamTab teamTab = new TeamTab();
+                        Grid.Children.Add(teamTab);
                         break;
                     }
                 default:
                     {
-                        MessageBox.Show("tab not recognized."); break;
+                        MessageBox.Show("tab not recognized."); 
+                        MainTab mainTab = new MainTab();
+                        Grid.Children.Add(mainTab);
+                        break;
                     }
             }
+        }
+
+        public static void OpenDispatchTab(string stageName)
+        {
+            Grid.Children.Clear();
+            DispatchTab dispatchTab = new DispatchTab(stageName);
+            Grid.Children.Add(dispatchTab);
         }
     }
 }

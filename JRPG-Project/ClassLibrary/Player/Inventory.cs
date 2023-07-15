@@ -13,6 +13,7 @@ namespace JRPG_Project.ClassLibrary.Player
     {
         public static int Capacity { get; set; } = 10;
         public static List<object> PlayerInventory { get; set; } = new List<object>();
+        public static List<Character> Team { get; set; } = new List<Character>();
 
 
         //TODO[?] Remove these lists

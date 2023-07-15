@@ -12,6 +12,8 @@
             "CRD": "20",
             "STA": "20",
             "STR": "5"
-        }
+        },
+        "EquipmentIDs": "W1;A1;AM1",
+        "ImageName": "pingu.png"
     }
 ]

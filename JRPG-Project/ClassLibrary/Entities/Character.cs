@@ -14,11 +14,12 @@ namespace JRPG_Project.ClassLibrary.Entities
         public string Name { get; set; } //Unique
         public string Description { get; set; }
         public Stats Stats { get; set; } = new Stats();
+        public string EquipmentIDs { get; set; }
+        public string ImageName { get; set; }
         public Weapon Weapon { get; set; }
         public Armour Armour { get; set; }
         public Amulet Amulet { get; set; }
         public Image CharImage { get; set; }
-        public string ImageName { get; set; }
 
         public Character()
         {
