@@ -3,10 +3,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:JRPG_Project.Tabs"
-        mc:Ignorable="d" WindowStartupLocation="CenterScreen" SizeToContent="WidthAndHeight" ResizeMode="NoResize" WindowStyle="ToolWindow"
+        xmlns:local="clr-namespace:JRPG_Project.Tabs" Closing="Window_Closing" Closed="Window_Closed"
+        mc:Ignorable="d" WindowStartupLocation="CenterScreen" SizeToContent="WidthAndHeight" ResizeMode="NoResize" WindowStyle="None"
         Title="Platform" Height="auto" Width="auto">
-    <Grid Height="300" Width="400">
+    <Grid Height="300" Width="400" Background="#353535">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="2.5*"/>
@@ -14,10 +14,12 @@
         </Grid.RowDefinitions>
         
         <!--Title-->
-        <TextBlock Text="Select A Platform" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24"/>
+        <TextBlock Text="Select A Platform" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24" Foreground="White"/>
         
         <!--Platform List-->
-        <ListBox x:Name="ListPlatforms" Grid.Row="1" Margin="5" HorizontalContentAlignment="Center" FontSize="16" SelectionChanged="ListPlatforms_SelectionChanged"/>
+        <Border Grid.Row="1" BorderBrush="#353535" BorderThickness="1 1 2 2" CornerRadius="2" Background="#353550">
+            <ListBox x:Name="ListPlatforms" Margin="10" HorizontalContentAlignment="Center" FontSize="16" SelectionChanged="ListPlatforms_SelectionChanged"/>
+        </Border>
         
         <!--Buttons-->
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">

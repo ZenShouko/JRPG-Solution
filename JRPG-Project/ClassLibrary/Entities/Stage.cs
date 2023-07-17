@@ -16,7 +16,8 @@ namespace JRPG_ClassLibrary.Entities
         public int Rows { get; set; }
         public int TileWidth { get; set; }
         public int TileHeight { get; set; }
-        public Grid Platform { get; set; }
+        //public Grid Platform { get; set; }
+        public Grid VisiblePlatform { get; set; }
 
         public List<Tile> TileList = new List<Tile>();
 

@@ -32,38 +32,11 @@ namespace JRPG_Project.Tabs
             //GameData.InitializeDatabase();
             
             Stages.CreateStage(MainGrid, stageName);
-            CreateMenu();
+            Grid.SetColumnSpan(Menu, 9);
+            Grid.SetRowSpan(Menu, 9);
 
             watch.Stop();
             loadTimeMS = (int)watch.ElapsedMilliseconds;
-        }
-
-        StackPanel menu = new StackPanel();
-
-        private void CreateMenu()
-        {
-            //Panel
-            menu.Orientation = Orientation.Horizontal;
-            menu.HorizontalAlignment = HorizontalAlignment.Center;
-            menu.VerticalAlignment = VerticalAlignment.Top;
-            menu.Margin = new Thickness(10);
-            menu.Background = Brushes.LightGray;
-            menu.Height = 60;
-            Grid.SetColumn(menu, 0);
-            Grid.SetColumnSpan(menu, MainGrid.ColumnDefinitions.Count);
-            Grid.SetRowSpan(menu, MainGrid.RowDefinitions.Count);
-            menu.Visibility = Visibility.Collapsed;
-            MainGrid.Children.Add(menu);
-
-            //Buttons
-            Button BtnLeave = new Button();
-            BtnLeave.Content = "Leave";
-            BtnLeave.Click += BtnLeave_Click;
-            BtnLeave.Margin = new Thickness(10);
-            BtnLeave.Width = 100;
-            BtnLeave.Height = 35;
-            BtnLeave.Style = (Style)FindResource("menu-button");
-            menu.Children.Add(BtnLeave);
         }
 
         private void BtnLeave_Click(object sender, RoutedEventArgs e)
@@ -83,13 +56,13 @@ namespace JRPG_Project.Tabs
             //Open main menu?
             if (e.Key == Key.Escape)
             {
-                menu.Visibility = menu.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
-                MainGrid.Opacity = menu.Visibility == Visibility.Visible ? 0.9 : 1;
+                Menu.Visibility = Menu.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
+                MainGrid.Opacity = Menu.Visibility == Visibility.Visible ? 0.8 : 1;
                 return;
             }
 
             //Cancel if menu is open
-            if (menu.Visibility == Visibility.Visible)
+            if (Menu.Visibility == Visibility.Visible)
             {
                 return;
             }

@@ -17,7 +17,9 @@
         <TextBlock x:Name="TxtName" Text="Inventory Full!!" FontSize="24" VerticalAlignment="Center" HorizontalAlignment="Center"/>
         
         <!--Item Image-->
-        <Image x:Name="ImgItem" Grid.Row="1" Source="/Resources/Assets/GUI/emoji-fear.png"/>
+        <Border Grid.Row="1" Margin="4" BorderBrush="#353535" BorderThickness="1 1 2 2" CornerRadius="2" Background="#6b705c">
+            <Image x:Name="ImgItem" Source="/Resources/Assets/GUI/emoji-fear.png" Margin="6"/>
+        </Border>
         
         <!--Close Button-->
         <StackPanel Grid.Row="2" Margin="10" Orientation="Horizontal" HorizontalAlignment="Center">

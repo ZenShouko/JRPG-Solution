@@ -18,8 +18,15 @@ namespace JRPG_Project.ClassLibrary.Entities
 
         public MapLootbox()
         {
-            //Default source for collectable items
+            Icon = new Image();
+
+            //Default size for collectable items
+            Icon.BeginInit();
+            Icon.Height = 50;
+            Icon.Width = 50;
+            Icon.Stretch = System.Windows.Media.Stretch.Uniform;
             Icon.Source = new BitmapImage(new Uri(@"../../Resources/Assets/Platform/lootbox.png", UriKind.Relative));
+            Icon.EndInit();
         }
     }
 }

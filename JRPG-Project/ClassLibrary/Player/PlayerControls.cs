@@ -28,12 +28,11 @@ namespace JRPG_ClassLibrary
             Key.Up, Key.Right, Key.Down, Key.Left
         };
 
-        private static bool isKeyDetectorActive = false;
         private static MapPlayer Player = new MapPlayer();
 
         private static bool isPlayerMoving = false; //Do not allow player to move if already moving
 
-        public static async void HandleInput(Key e)
+        public static void HandleInput(Key e)
         {
             if (isPlayerMoving) { return; }
 
@@ -44,7 +43,7 @@ namespace JRPG_ClassLibrary
             if (Player is null) { return; }
 
             //Handle movement
-            await StartPlayerMovementAsync(e.ToString().ToUpper());
+            StartPlayerMovementAsync(e.ToString().ToUpper());
         }
 
         public static MapPlayer GetPlayer()
@@ -61,7 +60,7 @@ namespace JRPG_ClassLibrary
             throw new NotImplementedException();
         }
 
-        public static async Task StartPlayerMovementAsync(string direction)
+        public static void StartPlayerMovementAsync(string direction)
         {
             RotatePlayer(direction);
             ////Is player already moving? Or is it the foe turn?
@@ -116,11 +115,12 @@ namespace JRPG_ClassLibrary
             ////Collission detection
             if (targetTile is null || !targetTile.IsWalkable)
             {
-                await AnimateMovement(true, null);
+                //await AnimateMovement(true, null);
             }
             else
             {
-                await AnimateMovement(false, targetTile);
+                //await AnimateMovement(false, targetTile);
+                MovePlayer(targetTile);
             }
 
             ////(Start foe turn)
@@ -217,12 +217,19 @@ namespace JRPG_ClassLibrary
 
         private static void MovePlayer(Tile tile)
         {
+            //Remove player from current tile
+            Tile playerTile = Stages.CurrentStage.TileList.Find(t => t.Position.X == Player.Position.X && t.Position.Y == Player.Position.Y);
+            playerTile.Player = null;
+
+            //Add player to new tile
+            tile.Player = Player;
+
             //Apply changes
             Player.Icon.Margin = new Thickness(0);
 
-            Grid.SetColumn(Player.Icon, tile.Position.X);
+            //Grid.SetColumn(Player.Icon, tile.Position.X);
             Player.Position.X = tile.Position.X;
-            Grid.SetRow(Player.Icon, tile.Position.Y);
+            //Grid.SetRow(Player.Icon, tile.Position.Y);
             Player.Position.Y = tile.Position.Y;
 
             ////Is there a foe on the tile?
@@ -235,6 +242,9 @@ namespace JRPG_ClassLibrary
 
             //Collect item
             PlayerActions.CollectTileItem(tile);
+
+            //Update visible platform
+            Stages.UpdateVisiblePlatform();
         }
     }
 }

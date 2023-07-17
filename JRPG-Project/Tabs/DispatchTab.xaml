@@ -4,9 +4,15 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:JRPG_Project.Tabs" Focusable="True"
-             mc:Ignorable="d"
+             mc:Ignorable="d" Height="600" Width="800" Background="Black"
              d:DesignHeight="600" d:DesignWidth="800">
-    <Grid x:Name="MainGrid" Background="DarkMagenta" Height="600" Width="800">
-        <!--Dynamically created Menu (Accessible by pressing ESC key)-->
-    </Grid>
+        <StackPanel VerticalAlignment="Center">
+             <!--Dynamically created Menu (Accessible by pressing ESC key)-->
+            <StackPanel x:Name="Menu" Margin="0 25 0 0" Visibility="Collapsed" Background="#353535" 
+                        VerticalAlignment="Top" HorizontalAlignment="Center" MinWidth="600">
+                <Button Content="Return" Style="{StaticResource menu-button}" Margin="6" Click="BtnLeave_Click"/>
+            </StackPanel>
+             <!--Main Grid-->
+            <Grid x:Name="MainGrid" Background="YellowGreen" Height="585" Width="585"></Grid>
+        </StackPanel>
 </UserControl>
