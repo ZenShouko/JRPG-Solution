@@ -35,6 +35,14 @@ namespace JRPG_Project.ClassLibrary.Data
 
             //Load Player Data
             Load();
+
+            //@Generate default team if no save file
+            if (Inventory.Team.Count == 0)
+            {
+                Inventory.Team.Add(CharacterData.CharacterList.Find(x => x.ID == "CH1"));
+                //Inventory.Team.Add(CharacterData.CharacterList.Find(x => x.ID == "CH2"));
+                //Inventory.Team.Add(CharacterData.CharacterList.Find(x => x.ID == "CH3"));
+            }
         }
 
         public static void Save()
@@ -49,7 +57,7 @@ namespace JRPG_Project.ClassLibrary.Data
         public static void Load()
         {
             //Check if file exists
-            if (!File.Exists(@"../../Resources/Data/PlayerData.json"))
+            if (!IsThereASaveFile())
             {
                 return;
             }
@@ -98,7 +106,7 @@ namespace JRPG_Project.ClassLibrary.Data
             PlayerData oldData = new PlayerData();
 
             //Check if file exists
-            if (File.Exists(@"../../Resources/Data/PlayerData.json"))
+            if (IsThereASaveFile())
             {
                 //Read & Deserialize file
                 string json = File.ReadAllText(@"../../Resources/Data/PlayerData.json");
@@ -163,6 +171,10 @@ namespace JRPG_Project.ClassLibrary.Data
 
             //No unsaved changes
             return false;
+        }
+        public static bool IsThereASaveFile()
+        {
+            return File.Exists(@"../../Resources/Data/PlayerData.json");
         }
 
         public static PlayerData GetCurrentData()

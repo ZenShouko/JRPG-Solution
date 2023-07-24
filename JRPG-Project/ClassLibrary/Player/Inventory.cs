@@ -20,5 +20,8 @@ namespace JRPG_Project.ClassLibrary.Player
 
         //Misceallaneous
         public static DateTime LastSaveTime { get; set; }
+
+        //Methods
+        
     }
 }

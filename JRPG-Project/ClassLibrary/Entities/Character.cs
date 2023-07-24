@@ -11,8 +11,9 @@ namespace JRPG_Project.ClassLibrary.Entities
     public class Character
     {
         public string ID { get; set; }
-        public string Name { get; set; } //Unique
+        public string Name { get; set; } //Unique ... I don't remember what I meant by this
         public string Description { get; set; }
+        public int Level { get; set; } = 1;
         public Stats Stats { get; set; } = new Stats();
         public string EquipmentIDs { get; set; }
         public string ImageName { get; set; }

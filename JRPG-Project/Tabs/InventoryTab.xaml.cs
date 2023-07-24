@@ -24,13 +24,6 @@ namespace JRPG_Project.ClassLibrary.Universal
             InitializeComponent();
             LoadItems();
 
-            //Focus on the first button after UI is loaded
-            //Dispatcher.BeginInvoke(new Action(() =>
-            //{
-            //    Button btn = ButtonPanel.Children.OfType<Button>().FirstOrDefault();
-            //    btn.Focus();
-            //}));
-
             //Load all items
             //LoadAllitems();
         }

@@ -203,7 +203,10 @@
     </EmbeddedResource>
     <None Include="JRPG-key.pfx" />
     <None Include="Resources\Data\Lootbox.json" />
+    <None Include="Stages\BIGU.json" />
+    <None Include="Stages\Ideal Platform.json" />
     <None Include="Stages\kirby.json" />
+    <None Include="Stages\Murasaki.json" />
     <None Include="Stages\NewPlatform.json" />
     <None Include="Stages\Testfield.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -221,6 +224,7 @@
     <None Include="Resources\Data\FoeList.JSON" />
     <None Include="Resources\Data\TileList.json" />
     <None Include="Resources\Data\Weapons.json" />
+    <None Include="Stages\ZureHarrie.json" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -342,6 +346,11 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Assets\GUI\emoji-fear.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Assets\GUI\bg-main.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
