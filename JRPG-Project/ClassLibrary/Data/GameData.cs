@@ -39,33 +39,8 @@ namespace JRPG_Project.ClassLibrary.Data
 
         public static void Save()
         {
-            //Create PlayerData object
-            PlayerData data = new PlayerData();
-
-            //Copy Data To PlayerData [TODO: TEAM]
-            data.Capacity = Inventory.Capacity;
-
-            foreach (Collectable item in Inventory.Collectables)
-            {
-                data.Collectables.Add(item.ID);
-            }
-            foreach (Weapon item in Inventory.Weapons)
-            {
-                data.Weapons.Add(item.ID);
-            }
-            foreach (Armour item in Inventory.Armours)
-            {
-                data.Armours.Add(item.ID);
-            }
-            foreach (Amulet item in Inventory.Amulets)
-            {
-                data.Amulets.Add(item.ID);
-            }
-
-            data.LastSaveTime = DateTime.Now;
-
             //Serialize PlayerData
-            string json = JsonConvert.SerializeObject(data);
+            string json = JsonConvert.SerializeObject(GetCurrentData());
 
             //Save to file
             File.WriteAllText(@"../../Resources/Data/PlayerData.json", json);
@@ -120,36 +95,26 @@ namespace JRPG_Project.ClassLibrary.Data
 
         public static bool HasUnsavedChanges()
         {
+            PlayerData oldData = new PlayerData();
+
             //Check if file exists
-            if (!File.Exists(@"../../Resources/Data/PlayerData.json"))
+            if (File.Exists(@"../../Resources/Data/PlayerData.json"))
             {
-                return false;
+                //Read & Deserialize file
+                string json = File.ReadAllText(@"../../Resources/Data/PlayerData.json");
+                oldData = JsonConvert.DeserializeObject<PlayerData>(json);
             }
 
-            //Read file
-            string json = File.ReadAllText(@"../../Resources/Data/PlayerData.json");
+            //Serialize current PlayerData
+            PlayerData newData = GetCurrentData();
 
-            //Deserialize PlayerData
-            PlayerData data = JsonConvert.DeserializeObject<PlayerData>(json);
-
-            //Check if last save time is different
-            if (data.LastSaveTime != Inventory.LastSaveTime)
-            {
-                return true;
-            }
-
-            //Check if inventory capacity is different
-            if (data.Capacity != Inventory.Capacity)
-            {
-                return true;
-            }
-
+            //#Compare
             //Check if collectables are different
-            if (data.Collectables.Count != Inventory.Collectables.Count)
+            if (oldData.Collectables.Count != Inventory.Collectables.Count)
             {
                 return true;
             }
-            foreach (string itemID in data.Collectables)
+            foreach (string itemID in oldData.Collectables)
             {
                 if (Inventory.Collectables.Find(x => x.ID == itemID) == null)
                 {
@@ -158,11 +123,11 @@ namespace JRPG_Project.ClassLibrary.Data
             }
 
             //Check if weapons are different
-            if (data.Weapons.Count != Inventory.Weapons.Count)
+            if (oldData.Weapons.Count != Inventory.Weapons.Count)
             {
                 return true;
             }
-            foreach (string itemID in data.Weapons)
+            foreach (string itemID in oldData.Weapons)
             {
                 if (Inventory.Weapons.Find(x => x.ID == itemID) == null)
                 {
@@ -171,11 +136,11 @@ namespace JRPG_Project.ClassLibrary.Data
             }
 
             //Check if armours are different
-            if (data.Armours.Count != Inventory.Armours.Count)
+            if (oldData.Armours.Count != Inventory.Armours.Count)
             {
                 return true;
             }
-            foreach (string itemID in data.Armours)
+            foreach (string itemID in oldData.Armours)
             {
                 if (Inventory.Armours.Find(x => x.ID == itemID) == null)
                 {
@@ -184,11 +149,11 @@ namespace JRPG_Project.ClassLibrary.Data
             }
 
             //Check if amulets are different
-            if (data.Amulets.Count != Inventory.Amulets.Count)
+            if (oldData.Amulets.Count != Inventory.Amulets.Count)
             {
                 return true;
             }
-            foreach (string itemID in data.Amulets)
+            foreach (string itemID in oldData.Amulets)
             {
                 if (Inventory.Amulets.Find(x => x.ID == itemID) == null)
                 {
@@ -198,6 +163,36 @@ namespace JRPG_Project.ClassLibrary.Data
 
             //No unsaved changes
             return false;
+        }
+
+        public static PlayerData GetCurrentData()
+        {
+            //Create PlayerData object
+            PlayerData data = new PlayerData();
+
+            //Copy Data To PlayerData [TODO: TEAM]
+            data.Capacity = Inventory.Capacity;
+
+            foreach (Collectable item in Inventory.Collectables)
+            {
+                data.Collectables.Add(item.ID);
+            }
+            foreach (Weapon item in Inventory.Weapons)
+            {
+                data.Weapons.Add(item.ID);
+            }
+            foreach (Armour item in Inventory.Armours)
+            {
+                data.Armours.Add(item.ID);
+            }
+            foreach (Amulet item in Inventory.Amulets)
+            {
+                data.Amulets.Add(item.ID);
+            }
+
+            data.LastSaveTime = DateTime.Now;
+
+            return data;
         }
     }
 }
