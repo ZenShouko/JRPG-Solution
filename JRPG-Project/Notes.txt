@@ -1,0 +1,32 @@
+﻿Hi and welcome to the general App Notes!
+[Last updated: 24/07/2023]
+
+#Known Issues
+>-------------
+- Saving the game then opening team tab causes the game to crash. 
+This is due to the fact that the team is not getting saved.
+(Need implementation)
+
+- After inventory is full, reopening a platform allows player to continue picking up items.
+(Need investigation)
+
+- Lootboxes do not drop amulets.
+(Need implementation)
+
+- Lootboxes' RNG is not random enough. 
+It favors items with a lower ID number compared to bigger ID numbered items.
+Also, it favors collectables a bit too much.
+(Need rework)
+.
+.
+.
+#Upcoming Features
+>------------------
+[Pending] Being able to equip items to characters
+[Pending] Being able to "sell"/destroy items
+.
+.
+.
+#Current Workflow
+>-----------------
+- TeamTab is in construction!
