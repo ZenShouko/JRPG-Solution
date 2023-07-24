@@ -41,13 +41,15 @@ namespace JRPG_Project.Tabs
 
         private void BtnLeave_Click(object sender, RoutedEventArgs e)
         {
+            //Unsubscribe from keydown event
+            Window.GetWindow(this).KeyDown -= DispatchTab_KeyDown;
+
             //Return to main screen
             Interaction.OpenTab("MainTab");
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            //Attach keydown event to window
             Window.GetWindow(this).KeyDown += DispatchTab_KeyDown;
         }
 

@@ -117,5 +117,87 @@ namespace JRPG_Project.ClassLibrary.Data
             }
             catch { }
         }
+
+        public static bool HasUnsavedChanges()
+        {
+            //Check if file exists
+            if (!File.Exists(@"../../Resources/Data/PlayerData.json"))
+            {
+                return false;
+            }
+
+            //Read file
+            string json = File.ReadAllText(@"../../Resources/Data/PlayerData.json");
+
+            //Deserialize PlayerData
+            PlayerData data = JsonConvert.DeserializeObject<PlayerData>(json);
+
+            //Check if last save time is different
+            if (data.LastSaveTime != Inventory.LastSaveTime)
+            {
+                return true;
+            }
+
+            //Check if inventory capacity is different
+            if (data.Capacity != Inventory.Capacity)
+            {
+                return true;
+            }
+
+            //Check if collectables are different
+            if (data.Collectables.Count != Inventory.Collectables.Count)
+            {
+                return true;
+            }
+            foreach (string itemID in data.Collectables)
+            {
+                if (Inventory.Collectables.Find(x => x.ID == itemID) == null)
+                {
+                    return true;
+                }
+            }
+
+            //Check if weapons are different
+            if (data.Weapons.Count != Inventory.Weapons.Count)
+            {
+                return true;
+            }
+            foreach (string itemID in data.Weapons)
+            {
+                if (Inventory.Weapons.Find(x => x.ID == itemID) == null)
+                {
+                    return true;
+                }
+            }
+
+            //Check if armours are different
+            if (data.Armours.Count != Inventory.Armours.Count)
+            {
+                return true;
+            }
+            foreach (string itemID in data.Armours)
+            {
+                if (Inventory.Armours.Find(x => x.ID == itemID) == null)
+                {
+                    return true;
+                }
+            }
+
+            //Check if amulets are different
+            if (data.Amulets.Count != Inventory.Amulets.Count)
+            {
+                return true;
+            }
+            foreach (string itemID in data.Amulets)
+            {
+                if (Inventory.Amulets.Find(x => x.ID == itemID) == null)
+                {
+                    return true;
+                }
+            }
+
+            //No unsaved changes
+            return false;
+        }
     }
 }

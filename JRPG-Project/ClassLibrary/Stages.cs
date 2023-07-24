@@ -179,6 +179,9 @@ namespace JRPG_ClassLibrary
 
         public static void UpdateVisiblePlatform()
         {
+            //Clear visible platform
+            CurrentStage.VisiblePlatform.Children.Clear();
+
             //Get tile where player is not null
             Tile playerTile = CurrentStage.TileList.Find(t => t.Player != null);
 

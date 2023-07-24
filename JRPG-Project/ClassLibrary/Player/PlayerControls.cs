@@ -32,7 +32,7 @@ namespace JRPG_ClassLibrary
 
         private static bool isPlayerMoving = false; //Do not allow player to move if already moving
 
-        public static void HandleInput(Key e)
+        public async static void HandleInput(Key e)
         {
             if (isPlayerMoving) { return; }
 
@@ -43,7 +43,7 @@ namespace JRPG_ClassLibrary
             if (Player is null) { return; }
 
             //Handle movement
-            StartPlayerMovementAsync(e.ToString().ToUpper());
+            await StartPlayerMovementAsync(e.ToString().ToUpper());
         }
 
         public static MapPlayer GetPlayer()
@@ -60,11 +60,11 @@ namespace JRPG_ClassLibrary
             throw new NotImplementedException();
         }
 
-        public static void StartPlayerMovementAsync(string direction)
+        public static async Task StartPlayerMovementAsync(string direction)
         {
             RotatePlayer(direction);
             ////Is player already moving? Or is it the foe turn?
-            //if (isPlayerMoving || FoeControls.FoeTurn) { return; }
+            if (isPlayerMoving /*|| FoeControls.FoeTurn*/) { return; }
 
             ////Get player element and image
             //MapPlayer player = GetPlayer();
@@ -115,7 +115,7 @@ namespace JRPG_ClassLibrary
             ////Collission detection
             if (targetTile is null || !targetTile.IsWalkable)
             {
-                //await AnimateMovement(true, null);
+                await AnimateMovement(true, null);
             }
             else
             {
@@ -239,6 +239,9 @@ namespace JRPG_ClassLibrary
             //    //Attack foe
             //    BattleControls.InitiateBattle(true, foe);
             //}
+
+            //Update visible platform
+            Stages.UpdateVisiblePlatform();
 
             //Collect item
             PlayerActions.CollectTileItem(tile);

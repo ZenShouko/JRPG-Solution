@@ -1,4 +1,5 @@
 ﻿using JRPG_ClassLibrary;
+using JRPG_Project.ClassLibrary.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,6 +31,21 @@ namespace JRPG_Project.Tabs
         {
             Button btn = sender as Button;
             Interaction.OpenTab(btn.Name);
+        }
+
+        private void BtnExit_Click(object sender, RoutedEventArgs e)
+        {
+            //Check if user has unsaved changes
+            if (GameData.HasUnsavedChanges())
+            {
+                MessageBoxResult result = MessageBox.Show("Save before closing?", "Unsaved changes", MessageBoxButton.YesNo);
+                if (result == MessageBoxResult.Yes)
+                {
+                    GameData.Save();
+                }
+            }
+
+            Window.GetWindow(this).Close();
         }
     }
 }
