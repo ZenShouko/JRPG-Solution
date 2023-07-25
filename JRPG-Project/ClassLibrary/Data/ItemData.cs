@@ -64,10 +64,15 @@ namespace JRPG_Project.ClassLibrary.Data
             }
         }
 
-        private static Image GetItemImage(string imageName)
+        /// <summary>
+        /// Important: Always include the folder name in the imageName!
+        /// </summary>
+        /// <param name="imageName"></param>
+        /// <returns></returns>
+        public static Image GetItemImage(string imageName)
         {
             Image itemImage = new Image();
-            itemImage.Source = new BitmapImage(new Uri($@"../../Resources/Assets/{imageName}", UriKind.Relative));
+            itemImage.Source = new BitmapImage(new Uri(@"../../Resources/Assets/" + imageName, UriKind.Relative));
             return itemImage;
         }
     }

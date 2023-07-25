@@ -1,4 +1,5 @@
 ﻿using JRPG_Project.ClassLibrary.Entities;
+using JRPG_Project.ClassLibrary.Entities.Serialization;
 using JRPG_Project.ClassLibrary.Items;
 using System;
 using System.Collections.Generic;
@@ -20,12 +21,15 @@ namespace JRPG_Project.ClassLibrary.Data
 
         //Player Inventory
         public int Capacity { get; set; }
-        public List<string> Collectables { get; set; } = new List<string>();
-        public List<string> Armours { get; set; } = new List<string>();
-        public List<string> Weapons { get; set; } = new List<string>();
-        public List<string> Amulets { get; set; } = new List<string>();
+        public List<Collectable> Collectables { get; set; } = new List<Collectable>();
+        public List<Weapon> Weapons { get; set; } = new List<Weapon>();
+        public List<Armour> Armours { get; set; } = new List<Armour>();
+        public List<Amulet> Amulets { get; set; } = new List<Amulet>();
 
         //Misceallaneous
         public DateTime LastSaveTime { get; set; }
+
+        //Methods
+        
     }
 }

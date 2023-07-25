@@ -1,10 +1,13 @@
 ﻿using JRPG_Project.ClassLibrary.Entities;
+using JRPG_Project.ClassLibrary.Entities.Serialization;
 using JRPG_Project.ClassLibrary.Items;
 using JRPG_Project.ClassLibrary.Player;
 using Newtonsoft.Json;
 using System;
 using System.Data;
 using System.IO;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace JRPG_Project.ClassLibrary.Data
 {
@@ -33,16 +36,29 @@ namespace JRPG_Project.ClassLibrary.Data
             //Initialize Lootbox list
             LootboxData.InitializeList();
 
+            //Is this the first time the game is launched?
+            if (!IsThereASaveFile())
+            {
+                InitializeFirstTime();
+            }
+
             //Load Player Data
             Load();
+        }
 
-            //@Generate default team if no save file
-            if (Inventory.Team.Count == 0)
-            {
-                Inventory.Team.Add(CharacterData.CharacterList.Find(x => x.ID == "CH1"));
-                //Inventory.Team.Add(CharacterData.CharacterList.Find(x => x.ID == "CH2"));
-                //Inventory.Team.Add(CharacterData.CharacterList.Find(x => x.ID == "CH3"));
-            }
+        private static void InitializeFirstTime()
+        {
+            //@Generate default team
+            Inventory.Team.Add(CharacterData.CharacterList.Find(x => x.ID == "CH1"));
+            Inventory.Team.Add(CharacterData.CharacterList.Find(x => x.ID == "CH2"));
+            Inventory.Team.Add(CharacterData.CharacterList.Find(x => x.ID == "CH3"));
+
+            //@Generate default inventory
+            Inventory.Weapons.Add(ItemData.ListWeapons.Find(x => x.ID == "W1"));
+            Inventory.Weapons.Add(ItemData.ListWeapons.Find(x => x.ID == "W1"));
+            Inventory.Weapons.Add(ItemData.ListWeapons.Find(x => x.ID == "W1"));
+
+            Inventory.Amulets.Add(ItemData.ListAmulets.Find(x => x.ID == "AM1"));
         }
 
         public static void Save()
@@ -69,25 +85,37 @@ namespace JRPG_Project.ClassLibrary.Data
             PlayerData data = JsonConvert.DeserializeObject<PlayerData>(json);
 
             //Copy PlayerData to Inventory
-            Inventory.Team = data.Team;
             Inventory.Capacity = data.Capacity;
+            Inventory.Collectables = data.Collectables;
+            Inventory.Weapons = data.Weapons;
+            Inventory.Armours = data.Armours;
+            Inventory.Amulets = data.Amulets;
+
+            //Generate image for each item
+            foreach (Collectable item in Inventory.Collectables)
+            {
+                item.ItemImage = ItemData.GetItemImage("Collectables/" + item.ImageName);
+            }
+            foreach (Weapon item in Inventory.Weapons)
+            {
+                item.ItemImage = ItemData.GetItemImage("Weapons/" + item.ImageName);
+            }
+            foreach (Armour item in Inventory.Armours)
+            {
+                item.ItemImage = ItemData.GetItemImage("Armours/" + item.ImageName);
+            }
+            foreach (Amulet item in Inventory.Amulets)
+            {
+                item.ItemImage = ItemData.GetItemImage("Amulets/" + item.ImageName);
+            }
+
             Inventory.LastSaveTime = data.LastSaveTime;
 
-            foreach (string itemID in data.Collectables)
+            //Load team
+            Inventory.Team = data.Team;
+            for (int i = 0; i < 3; i++)
             {
-                Inventory.Collectables.Add(ItemData.ListCollectables.Find(x => x.ID == itemID));
-            }
-            foreach (string itemID in data.Weapons)
-            {
-                Inventory.Weapons.Add(ItemData.ListWeapons.Find(x => x.ID == itemID));
-            }
-            foreach (string itemID in data.Armours)
-            {
-                Inventory.Armours.Add(ItemData.ListArmours.Find(x => x.ID == itemID));
-            }
-            foreach (string itemID in data.Amulets)
-            {
-                Inventory.Amulets.Add(ItemData.ListAmulets.Find(x => x.ID == itemID));
+                Inventory.Team[i].CharImage = CharacterData.GetCharacterImage(Inventory.Team[i].ImageName);
             }
         }
 
@@ -103,77 +131,13 @@ namespace JRPG_Project.ClassLibrary.Data
 
         public static bool HasUnsavedChanges()
         {
-            PlayerData oldData = new PlayerData();
-
-            //Check if file exists
-            if (IsThereASaveFile())
-            {
-                //Read & Deserialize file
-                string json = File.ReadAllText(@"../../Resources/Data/PlayerData.json");
-                oldData = JsonConvert.DeserializeObject<PlayerData>(json);
-            }
-
-            //Serialize current PlayerData
-            PlayerData newData = GetCurrentData();
-
-            //#Compare
-            //Check if collectables are different
-            if (oldData.Collectables.Count != Inventory.Collectables.Count)
-            {
-                return true;
-            }
-            foreach (string itemID in oldData.Collectables)
-            {
-                if (Inventory.Collectables.Find(x => x.ID == itemID) == null)
-                {
-                    return true;
-                }
-            }
-
-            //Check if weapons are different
-            if (oldData.Weapons.Count != Inventory.Weapons.Count)
-            {
-                return true;
-            }
-            foreach (string itemID in oldData.Weapons)
-            {
-                if (Inventory.Weapons.Find(x => x.ID == itemID) == null)
-                {
-                    return true;
-                }
-            }
-
-            //Check if armours are different
-            if (oldData.Armours.Count != Inventory.Armours.Count)
-            {
-                return true;
-            }
-            foreach (string itemID in oldData.Armours)
-            {
-                if (Inventory.Armours.Find(x => x.ID == itemID) == null)
-                {
-                    return true;
-                }
-            }
-
-            //Check if amulets are different
-            if (oldData.Amulets.Count != Inventory.Amulets.Count)
-            {
-                return true;
-            }
-            foreach (string itemID in oldData.Amulets)
-            {
-                if (Inventory.Amulets.Find(x => x.ID == itemID) == null)
-                {
-                    return true;
-                }
-            }
-
-            //No unsaved changes
+            //Scraped
             return false;
         }
+
         public static bool IsThereASaveFile()
         {
+            //Checks if "PlayerData.json" exists in ../Resources/Data/
             return File.Exists(@"../../Resources/Data/PlayerData.json");
         }
 
@@ -182,26 +146,31 @@ namespace JRPG_Project.ClassLibrary.Data
             //Create PlayerData object
             PlayerData data = new PlayerData();
 
-            //Copy Data To PlayerData [TODO: TEAM]
+            //Copy Data To PlayerData
             data.Capacity = Inventory.Capacity;
 
-            foreach (Collectable item in Inventory.Collectables)
-            {
-                data.Collectables.Add(item.ID);
-            }
-            foreach (Weapon item in Inventory.Weapons)
-            {
-                data.Weapons.Add(item.ID);
-            }
-            foreach (Armour item in Inventory.Armours)
-            {
-                data.Armours.Add(item.ID);
-            }
-            foreach (Amulet item in Inventory.Amulets)
-            {
-                data.Amulets.Add(item.ID);
-            }
+            //#Items
+            data.Weapons = Inventory.Weapons;
+            data.Armours = Inventory.Armours;
+            data.Amulets = Inventory.Amulets;
+            data.Collectables = Inventory.Collectables;
 
+            //#Team
+            data.Team = Inventory.Team;
+
+            //foreach (Character character in Inventory.Team)
+            //{
+            //    CharacterSave charSaveData = new CharacterSave();
+            //    charSaveData.Armour = character.Armour;
+            //    charSaveData.Amulet = character.Amulet;
+            //    charSaveData.Weapon = character.Weapon;
+            //    charSaveData.Level = character.Level;
+            //    charSaveData.Stats = character.Stats;
+
+            //    data.Team.Add(charSaveData);
+            //}
+
+            //#Save Time
             data.LastSaveTime = DateTime.Now;
 
             return data;

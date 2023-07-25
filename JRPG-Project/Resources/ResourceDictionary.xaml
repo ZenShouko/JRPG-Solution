@@ -138,6 +138,7 @@
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="border" Property="Background" Value="#eef4ed"/>
+                            <Setter Property="Foreground" Value="Black"/>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
                             <Setter TargetName="border" Property="BorderThickness" Value="1 2 1 1"/>
@@ -154,7 +155,8 @@
         <Setter Property="BorderThickness" Value="2"/>
         <Setter Property="CornerRadius" Value="2"/>
         <Setter Property="Margin" Value="10 0"/>
-        <Setter Property="Background" Value="NavajoWhite"/>
+        <Setter Property="Background" Value="Black"/>
         <Setter Property="Width" Value="125"/>
+        <Setter Property="Padding" Value="1"/>
     </Style>
 </ResourceDictionary>

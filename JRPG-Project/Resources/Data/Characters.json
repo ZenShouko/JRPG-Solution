@@ -1,19 +1,53 @@
 [
-    {
-        "ID": "CH1",
-        "Name": "Pingu",
-        "Description": "Angry pingu saying he's no enemies.",
-        "Stats": {
-            "HP": "50",
-            "DMG": "20",
-            "DEF": "10",
-            "SPD": "5",
-            "CRC": "10",
-            "CRD": "20",
-            "STA": "20",
-            "STR": "5"
-        },
-        "EquipmentIDs": "W1;A1;AM1",
-        "ImageName": "pingu.png"
-    }
+  {
+    "ID": "CH1",
+    "Name": "Pingu",
+    "Description": "Well, what did you expect after all the ice melted?",
+    "Stats": {
+      "HP": "50",
+      "DMG": "20",
+      "DEF": "10",
+      "SPD": "5",
+      "CRC": "10",
+      "CRD": "20",
+      "STA": "20",
+      "STR": "5"
+    },
+    "EquipmentIDs": "/;/;/",
+    "ImageName": "pingu.png"
+  },
+  {
+    "ID": "CH2",
+    "Name": "Pep",
+    "Description": "Not what you were hoping for but idiots keep me relevant so ...",
+    "Stats": {
+      "HP": "25",
+      "DMG": "12",
+      "DEF": "35",
+      "SPD": "2",
+      "CRC": "15",
+      "CRD": "20",
+      "STA": "20",
+      "STR": "5"
+    },
+    "EquipmentIDs": "/;/;/",
+    "ImageName": "pep.png"
+  },
+  {
+    "ID": "CH3",
+    "Name": "G-Ball",
+    "Description": "With the power of potato chips and Zelmore speedrun any%",
+    "Stats": {
+      "HP": "30",
+      "DMG": "10",
+      "DEF": "5",
+      "SPD": "20",
+      "CRC": "10",
+      "CRD": "25",
+      "STA": "40",
+      "STR": "12"
+    },
+    "EquipmentIDs": "/;/;/",
+    "ImageName": "g-ball.png"
+  }
 ]

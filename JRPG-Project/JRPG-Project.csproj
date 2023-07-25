@@ -82,6 +82,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ChangeEquipmentWindow.xaml.cs">
+      <DependentUpon>ChangeEquipmentWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ClassLibrary\Data\CharacterData.cs" />
     <Compile Include="ClassLibrary\Data\ItemData.cs" />
     <Compile Include="ClassLibrary\Data\LevelData.cs" />
@@ -91,6 +94,7 @@
     <Compile Include="ClassLibrary\Entities\Coordinates.cs" />
     <Compile Include="ClassLibrary\Entities\Lootbox.cs" />
     <Compile Include="ClassLibrary\Entities\MapObject.cs" />
+    <Compile Include="ClassLibrary\Entities\Serialization\CharacterSave.cs" />
     <Compile Include="ClassLibrary\Items\Amulet.cs" />
     <Compile Include="ClassLibrary\Items\Armour.cs" />
     <Compile Include="ClassLibrary\Items\BaseItem.cs" />
@@ -138,6 +142,10 @@
     <Compile Include="Tabs\TeamTab.xaml.cs">
       <DependentUpon>TeamTab.xaml</DependentUpon>
     </Compile>
+    <Page Include="ChangeEquipmentWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="LootboxWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -356,6 +364,21 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Notes.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Assets\Characters\pep.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Assets\Characters\g-ball.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Assets\GUI\empty.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

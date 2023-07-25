@@ -18,13 +18,16 @@
         <!--Characters Menu-->
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 5">
             <Border x:Name="CharacterSlotBorder1" Style="{StaticResource character-slot}" BorderBrush="GreenYellow">
-                <Image x:Name="CharacterSlot1" Stretch="UniformToFill"/>
+                <Image x:Name="CharacterSlot1" Stretch="UniformToFill" HorizontalAlignment="Center" VerticalAlignment="Top"
+                       Cursor="Hand" MouseUp="PickCharacter"/>
             </Border>
             <Border x:Name="CharacterSlotBorder2" Style="{StaticResource character-slot}">
-                <Image x:Name="CharacterSlot2" Stretch="UniformToFill"/>
+                <Image x:Name="CharacterSlot2" Stretch="UniformToFill" HorizontalAlignment="Center" VerticalAlignment="Top"
+                       Cursor="Hand" MouseUp="PickCharacter"/>
             </Border>
             <Border x:Name="CharacterSlotBorder3" Style="{StaticResource character-slot}">
-                <Image x:Name="CharacterSlot3" Stretch="UniformToFill"/>
+                <Image x:Name="CharacterSlot3" Stretch="UniformToFill" HorizontalAlignment="Center" VerticalAlignment="Top"
+                       Cursor="Hand" MouseUp="PickCharacter"/>
             </Border>
         </StackPanel>
         
@@ -43,45 +46,47 @@
             
             <!--Character Info-->
             <TextBlock Text="Info" Background="#ffc300" Foreground="Black" Grid.ColumnSpan="2" FontSize="18" Padding="20 0"/>
-            <StackPanel Grid.Row="1" Orientation="Horizontal" Grid.ColumnSpan="2" Background="#262626">
-                <Image x:Name="CharacterImage" Width="120" Height="120" Margin="10 0"/>
-                <StackPanel Margin="10 0">
+            <DockPanel Grid.Row="1" Grid.ColumnSpan="2" Background="#262626">
+                <Border DockPanel.Dock="Left" Width="135" Height="135" BorderBrush="Black" BorderThickness="1" CornerRadius="4" Margin="10 0">
+                    <Image x:Name="CharacterImage"  Stretch="UniformToFill" HorizontalAlignment="Center"/>
+                </Border>
+                <StackPanel  Margin="0 0" HorizontalAlignment="Left">
                     <TextBlock x:Name="TxtCharacterName" Text="Mr Riverman" FontSize="24" Foreground="White"/>
                     <TextBlock x:Name="TxtCharacterLevel" Text="Level 20" Foreground="#48cae4" FontSize="15" Margin="4"/>
                     <TextBlock x:Name="TxtCharacterDescription" Text="Sample: This guy is tough!!" FontSize="16" Foreground="White" Margin="0 10 0 0"/>
                 </StackPanel>
-            </StackPanel>
+            </DockPanel>
             
             <!--Character Equipment-->
             <TextBlock Grid.Row="2" Text="Equipment" Background="#ffc300" FontSize="18" Padding="20 0"/>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="3" Background="Transparent" Margin="0 10">
                 <!--Weapon-->
-                <Border x:Name="BorderWeapon" BorderBrush="Black" BorderThickness="2" CornerRadius="4" Width="auto" Background="White" Margin="10" Cursor="Hand">
+                <Border x:Name="BorderWeapon" BorderBrush="Black" BorderThickness="2" CornerRadius="4" Width="auto" Background="White" Margin="10" Cursor="Hand" MouseUp="Item_Click">
                     <DockPanel>
                         <TextBlock DockPanel.Dock="Top" Text="Weapon:" FontSize="16" TextAlignment="Center" Background="LightGray" Margin="0 10"/>
-                        <TextBlock DockPanel.Dock="Bottom" x:Name="TxtWeaponLevel" Text="Level X" FontSize="12" TextAlignment="Center" Background="WhiteSmoke" Foreground="DeepSkyBlue" Margin="0 0 0 10"/>
-                        <TextBlock DockPanel.Dock="Bottom" x:Name="TxtWeaponName" Text="Frostwave Orca" FontSize="16" TextAlignment="Center" Background="LightGray"/>
-                        <Image x:Name="CharacterWeaponImage" Width="120" Height="120" Margin="5" Cursor="Hand" Source="/Resources/Assets/Weapons/frostwave-orca.png"/>
+                        <TextBlock DockPanel.Dock="Bottom" x:Name="TxtWeaponLevel" Text="" FontSize="12" TextAlignment="Center" Background="WhiteSmoke" Foreground="DeepSkyBlue" Margin="0 0 0 10"/>
+                        <TextBlock DockPanel.Dock="Bottom" x:Name="TxtWeaponName" Text="None" FontSize="16" TextAlignment="Center" Background="LightGray"/>
+                        <Image x:Name="CharacterWeaponImage" Width="120" Height="120" Margin="5" Cursor="Hand"/>
                     </DockPanel>
                 </Border>
                 
                 <!--Armour-->
-                <Border x:Name="BorderArmour" BorderBrush="Black" BorderThickness="2" CornerRadius="4" Width="auto" Background="White" Margin="10" Cursor="Hand">
+                <Border x:Name="BorderArmour" BorderBrush="Black" BorderThickness="2" CornerRadius="4" Width="auto" Background="White" Margin="10" Cursor="Hand" MouseUp="Item_Click">
                     <DockPanel>
                         <TextBlock DockPanel.Dock="Top" Text="Armour:" FontSize="16" TextAlignment="Center" Background="LightGray" Margin="0 10"/>
                         <TextBlock DockPanel.Dock="Bottom" x:Name="TxtArmourLevel" Text="Level X" FontSize="12" TextAlignment="Center" Background="WhiteSmoke" Foreground="DeepSkyBlue" Margin="0 0 0 10"/>
                         <TextBlock DockPanel.Dock="Bottom" x:Name="TxtArmourName" Text="Frostwave Orca" FontSize="16" TextAlignment="Center" Background="LightGray"/>
-                        <Image x:Name="CharacterArmourImage" Width="120" Height="120" Margin="5" Cursor="Hand" Source="/Resources/Assets/Weapons/frostwave-orca.png"/>
+                        <Image x:Name="CharacterArmourImage" Width="120" Height="120" Margin="5" Cursor="Hand" Source="/Resources/Assets/GUI/empty.png"/>
                     </DockPanel>
                 </Border>
 
                 <!--Amulet-->
-                <Border x:Name="BorderAmulet" BorderBrush="Black" BorderThickness="2" CornerRadius="4" Width="auto" Background="White" Margin="10" Cursor="Hand">
+                <Border x:Name="BorderAmulet" BorderBrush="Black" BorderThickness="2" CornerRadius="4" Width="auto" Background="White" Margin="10" Cursor="Hand" MouseUp="Item_Click">
                     <DockPanel>
                         <TextBlock DockPanel.Dock="Top" Text="Amulet:" FontSize="16" TextAlignment="Center" Background="LightGray" Margin="0 10"/>
                         <TextBlock DockPanel.Dock="Bottom" x:Name="TxtAmuletLevel" Text="Level X" FontSize="12" TextAlignment="Center" Background="WhiteSmoke" Foreground="DeepSkyBlue" Margin="0 0 0 10"/>
                         <TextBlock DockPanel.Dock="Bottom" x:Name="TxtAmuletName" Text="Frostwave Orca" FontSize="16" TextAlignment="Center" Background="LightGray"/>
-                        <Image x:Name="CharacterAmuletImage" Width="120" Height="120" Margin="5" Source="/Resources/Assets/Weapons/frostwave-orca.png"/>
+                        <Image x:Name="CharacterAmuletImage" Width="120" Height="120" Margin="5" Source="/Resources/Assets/GUI/empty.png"/>
                     </DockPanel>
                 </Border>
             </StackPanel>

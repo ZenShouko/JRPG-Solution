@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,9 +18,11 @@ namespace JRPG_Project.ClassLibrary
         public string Rarity { get; set; } //Rarity of the item
         public string Name { get; set; }
         public string Description { get; set; } //Description of the item
-        public Image ItemImage { get; set; } //Image of the item
         public string ImageName { get; set; } //Name of the image, used when deserializing
         public int Value { get; set; } //Value of the item
+
+        [JsonIgnore]
+        public Image ItemImage { get; set; } //Image of the item
 
         public override string ToString()
         {

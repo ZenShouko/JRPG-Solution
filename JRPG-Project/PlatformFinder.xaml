@@ -23,8 +23,8 @@
         
         <!--Buttons-->
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-            <Button x:Name="BtnOk" Style="{StaticResource menu-button}" Content="Ok" Background="MediumSeaGreen" Foreground="White" Margin="5 0" Click="BtnOk_Click"/>
-            <Button Style="{StaticResource menu-button}" Content="Cancel" Background="Crimson" Foreground="White" Margin="5 0" Click="Button_Click"/>
+            <Button x:Name="BtnOk" Style="{StaticResource menu-button}" Content="Ok" Background="MediumSeaGreen" Foreground="GhostWhite" Margin="5 0" Click="BtnOk_Click"/>
+            <Button Style="{StaticResource menu-button}" Content="Cancel" Background="Crimson" Foreground="GhostWhite" Margin="5 0" Click="Button_Click"/>
         </StackPanel>
     </Grid>
 </Window>

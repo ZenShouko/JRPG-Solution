@@ -29,7 +29,7 @@ namespace JRPG_Project.ClassLibrary.Data
             }
         }
 
-        private static Image GetCharacterImage(string imageName)
+        public static Image GetCharacterImage(string imageName)
         {
             Image img = new Image();
             img.Source = new BitmapImage(new Uri(@"../../Resources/Assets/Characters/" + imageName, UriKind.Relative));

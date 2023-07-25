@@ -1,11 +1,11 @@
 ﻿Hi and welcome to the general App Notes!
-[Last updated: 24/07/2023]
+[Last updated: 25/07/2023]
 
 #Known Issues
 >-------------
 - Saving the game then opening team tab causes the game to crash. 
 This is due to the fact that the team is not getting saved.
-(Need implementation)
+(Need implementation --Fixed)
 
 - After inventory is full, reopening a platform allows player to continue picking up items.
 (Need investigation)
@@ -24,9 +24,29 @@ Also, it favors collectables a bit too much.
 >------------------
 [Pending] Being able to equip items to characters
 [Pending] Being able to "sell"/destroy items
+[Done] Being able to view the team's characters and items
 .
 .
 .
 #Current Workflow
 >-----------------
 - TeamTab is in construction!
+
+
+====================================================================================================
+#Changelog
+>---------
+[25/07/2023]
+- Changed the game saves. It now saves the whole inventory instead of just the id numbers of items.
+	>Images are ignored. Created when loading the game.
+
+- Got rid of GameData.HasSavedGame(). It is now obsolete. (Too much work to implement, not worth it)
+
+- Team tab is now successfully displaying the team's characters and items including their stats.
+	>Clicking on a character will display the character's stats and items.
+	>Clicking on an item will display the item's stats.
+
+- Added the other 2 characters to the game and they are automatically in the team.
+
+- Game detects if player is launching for the first time. 
+	>Will create a new blank team and also hand out starter items.
