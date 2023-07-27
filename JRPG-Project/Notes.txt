@@ -3,20 +3,24 @@
 
 #Known Issues
 >-------------
+- Need a better way of identifying equipment. Trying to equip one will now randomly equip one of the same type.
+	>Need a more specific way of identifying equipment. 
+(Need implementation)
+
 - Saving the game then opening team tab causes the game to crash. 
 This is due to the fact that the team is not getting saved.
 (Need implementation --Fixed)
 
 - After inventory is full, reopening a platform allows player to continue picking up items.
-(Need investigation)
+(Need investigation --Checked, No Issues Encountered)
 
 - Lootboxes do not drop amulets.
-(Need implementation)
+(Need implementation --Fixed)
 
 - Lootboxes' RNG is not random enough. 
 It favors items with a lower ID number compared to bigger ID numbered items.
 Also, it favors collectables a bit too much.
-(Need rework)
+(Need rework --Done)
 .
 .
 .
@@ -36,6 +40,11 @@ Also, it favors collectables a bit too much.
 ====================================================================================================
 #Changelog
 >---------
+[27/07/2023]
+- Fixed all the known issues.
+	>Lootbox RNG is now more random.
+	>Lootboxes now drop amulets.
+	
 [25/07/2023]
 - Changed the game saves. It now saves the whole inventory instead of just the id numbers of items.
 	>Images are ignored. Created when loading the game.

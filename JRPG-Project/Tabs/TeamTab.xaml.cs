@@ -1,7 +1,6 @@
 ﻿using JRPG_ClassLibrary;
 using JRPG_Project.ClassLibrary;
 using JRPG_Project.ClassLibrary.Data;
-using JRPG_Project.ClassLibrary.Entities;
 using JRPG_Project.ClassLibrary.Items;
 using JRPG_Project.ClassLibrary.Player;
 using System;
@@ -296,10 +295,13 @@ namespace JRPG_Project.Tabs
 
         private void ChangeItem(string item)
         {
-            if (item.ToUpper() == "WEAPON")
-            {
+            ChangeEquipmentWindow window = new ChangeEquipmentWindow(item, CharacterIndex);
+            window.ShowDialog();
+        }
 
-            }
+        private void BorderWeapon_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            ChangeItem("WEAPON");
         }
     }
 }

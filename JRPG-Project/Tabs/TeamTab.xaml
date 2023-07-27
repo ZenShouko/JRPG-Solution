@@ -61,7 +61,7 @@
             <TextBlock Grid.Row="2" Text="Equipment" Background="#ffc300" FontSize="18" Padding="20 0"/>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="3" Background="Transparent" Margin="0 10">
                 <!--Weapon-->
-                <Border x:Name="BorderWeapon" BorderBrush="Black" BorderThickness="2" CornerRadius="4" Width="auto" Background="White" Margin="10" Cursor="Hand" MouseUp="Item_Click">
+                <Border x:Name="BorderWeapon" BorderBrush="Black" BorderThickness="2" CornerRadius="4" Width="auto" Background="White" Margin="10" Cursor="Hand" MouseUp="Item_Click" MouseRightButtonUp="BorderWeapon_MouseRightButtonUp">
                     <DockPanel>
                         <TextBlock DockPanel.Dock="Top" Text="Weapon:" FontSize="16" TextAlignment="Center" Background="LightGray" Margin="0 10"/>
                         <TextBlock DockPanel.Dock="Bottom" x:Name="TxtWeaponLevel" Text="" FontSize="12" TextAlignment="Center" Background="WhiteSmoke" Foreground="DeepSkyBlue" Margin="0 0 0 10"/>

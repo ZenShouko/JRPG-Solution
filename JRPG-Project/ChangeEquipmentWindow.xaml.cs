@@ -1,4 +1,6 @@
-﻿using System;
+﻿using JRPG_Project.ClassLibrary;
+using JRPG_Project.ClassLibrary.Player;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,9 +21,25 @@ namespace JRPG_Project
     /// </summary>
     public partial class ChangeEquipmentWindow : Window
     {
-        public ChangeEquipmentWindow()
+        public ChangeEquipmentWindow(string type, int charIndex)
         {
             InitializeComponent();
+            LoadItems(type);
+        }
+
+        private void LoadItems(string type)
+        {
+            //Load items based on type
+            if (type == "WEAPON")
+            {
+                foreach (Weapon weapon in Inventory.Weapons)
+                {
+                    ListBoxItem item = new ListBoxItem();
+                    item.Tag = weapon.ID;
+                    item.Content = weapon.Name;
+                    ListboxItems.Items.Add(item);
+                }
+            }
         }
     }
 }

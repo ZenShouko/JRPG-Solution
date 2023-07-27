@@ -11,7 +11,7 @@ namespace JRPG_Project.ClassLibrary.Player
 {
     public static class Inventory
     {
-        public static int Capacity { get; set; } = 10;
+        public static int Capacity { get; set; } = 25;
         public static List<Character> Team { get; set; } = new List<Character>();
         public static List<Collectable> Collectables { get; set; } = new List<Collectable>();
         public static List<Armour> Armours { get; set; } = new List<Armour>();

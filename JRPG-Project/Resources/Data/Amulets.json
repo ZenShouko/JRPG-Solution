@@ -39,7 +39,7 @@
     },
     {
         "ID": "AM3",
-        "Rarity": "COMMON",
+        "Rarity": "SPECIAL",
         "Name": "Seadog Token",
         "Description": "Unset",
         "ImageName": "seadog-token.png",
@@ -58,7 +58,7 @@
     },
     {
         "ID": "AM4",
-        "Rarity": "COMMON",
+        "Rarity": "SPECIAL",
         "Name": "Cyclopsoul Tablet",
         "Description": "Unset",
         "ImageName": "cyclopsoul-tablet.png",
@@ -77,7 +77,7 @@
     },
     {
         "ID": "AM5",
-        "Rarity": "COMMON",
+        "Rarity": "CURSED",
         "Name": "Heartstone Pendant",
         "Description": "Unset",
         "ImageName": "heartstone-pendant.png",
@@ -96,7 +96,7 @@
     },
     {
         "ID": "AM6",
-        "Rarity": "COMMON",
+        "Rarity": "LEGENDARY",
         "Name": "Gearforged Ring",
         "Description": "Unset",
         "ImageName": "gearforged-ring.png",

@@ -3,12 +3,11 @@ using JRPG_Project.ClassLibrary.Entities;
 using JRPG_Project.ClassLibrary.Items;
 using System;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 
 namespace JRPG_Project.ClassLibrary.Player
 {
@@ -36,9 +35,9 @@ namespace JRPG_Project.ClassLibrary.Player
             string itemRarity = GetItemRarity(box);
 
             //Get item based on Collectable or Equipable?
-            if (random.Next(0, 101) <= box.CollectableOdd)
+            if (GetRandomNumber(100) <= box.CollectableOdd)
             {
-                Collectable item = ItemData.ListCollectables.Where(x => x.Rarity == itemRarity).ElementAt(random.Next(0, ItemData.ListCollectables.Where(x => x.Rarity == itemRarity).Count() - 1));
+                Collectable item = ItemData.ListCollectables.Where(x => x.Rarity == itemRarity).ElementAt(GetRandomNumber(ItemData.ListCollectables.Where(x => x.Rarity == itemRarity).Count() - 1));
                 DisplayItem(item.Name, item.ItemImage);
                 PlayerActions.AddCollectable(item);
             }
@@ -50,25 +49,25 @@ namespace JRPG_Project.ClassLibrary.Player
                     return;
                 }
 
-                switch (Equipables[random.Next(0, Equipables.Count() - 1)])
+                switch (Equipables[GetRandomNumber(Equipables.Count() - 1)])
                 {
                     case "WEAPON":
                         {
-                            Weapon item = ItemData.ListWeapons.Where(x => x.Rarity == itemRarity).ElementAt(random.Next(0, ItemData.ListWeapons.Where(x => x.Rarity == itemRarity).Count() - 1));
+                            Weapon item = ItemData.ListWeapons.Where(x => x.Rarity == itemRarity).ElementAt(GetRandomNumber(ItemData.ListWeapons.Where(x => x.Rarity == itemRarity).Count() - 1));
                             DisplayItem(item.Name, item.ItemImage);
                             PlayerActions.AddWeapon(item);
                             break;
                         }
                     case "ARMOUR":
                         {
-                            Armour item = ItemData.ListArmours.Where(x => x.Rarity == itemRarity).ElementAt(random.Next(0, ItemData.ListArmours.Where(x => x.Rarity == itemRarity).Count() - 1));
+                            Armour item = ItemData.ListArmours.Where(x => x.Rarity == itemRarity).ElementAt(GetRandomNumber(ItemData.ListArmours.Where(x => x.Rarity == itemRarity).Count() - 1));
                             DisplayItem(item.Name, item.ItemImage);
                             PlayerActions.AddArmour(item);
                             break;
                         }
                     case "AMULET":
                         {
-                            Amulet item = ItemData.ListAmulets.Where(x => x.Rarity == itemRarity).ElementAt(random.Next(0, ItemData.ListAmulets.Where(x => x.Rarity == itemRarity).Count() - 1));
+                            Amulet item = ItemData.ListAmulets.Where(x => x.Rarity == itemRarity).ElementAt(GetRandomNumber(ItemData.ListAmulets.Where(x => x.Rarity == itemRarity).Count() - 1));
                             DisplayItem(item.Name, item.ItemImage);
                             PlayerActions.AddAmulet(item);
                             break;
@@ -103,10 +102,56 @@ namespace JRPG_Project.ClassLibrary.Player
             }
         }
 
+        /// <summary>
+        /// Generates a number between min and max. Min and Max are included in the range.
+        /// </summary>
+        /// <param name="min"></param>
+        /// <param name="max"></param>
+        /// <returns></returns>
+        private int GetRandomNumber(int min, int max)
+        {
+            //Make max inclusive
+            max++;
+
+            //Generate random number
+            using (RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider())
+            {
+                byte[] randomNumber = new byte[4]; // 4 bytes for a 32-bit integer
+
+                rng.GetBytes(randomNumber);
+
+                // Convert the random bytes to a 32-bit signed integer
+                int generatedNumber = Math.Abs(BitConverter.ToInt32(randomNumber, 0));
+
+                // Scale the number to be within the desired range
+                try
+                {
+                    return min + (generatedNumber % (max - min));
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show($"MIN= {min}, MAX= {max}\n" + e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    return 0;
+                }
+            }
+        }
+
+        private int GetRandomNumber(int max)
+        {
+            //Get random number between 0 and max
+            return GetRandomNumber(0, max);
+        }
+
         private void DisplayItem(string name, Image image)
         {
             TxtName.Text = name;
             ImgItem.Source = image.Source;
+
+            //Resize textsize if too long
+            if (TxtName.Text.Length > 22)
+            {
+                TxtName.FontSize = 18;
+            }
         }
 
         private void SetTitleColour(string rarity)
@@ -126,7 +171,7 @@ namespace JRPG_Project.ClassLibrary.Player
                     TxtName.Foreground = Brushes.Goldenrod;
                     break;
                 default:
-                    TxtName.Foreground = Brushes.WhiteSmoke; 
+                    TxtName.Foreground = Brushes.WhiteSmoke;
                     break;
             }
         }

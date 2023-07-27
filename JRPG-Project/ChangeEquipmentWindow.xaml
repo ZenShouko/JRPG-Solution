@@ -4,9 +4,26 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:JRPG_Project"
-        mc:Ignorable="d"
-        Title="ChangeEquipmentWindow" Height="450" Width="800">
-    <Grid>
+        mc:Ignorable="d" WindowStyle="ToolWindow" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" SizeToContent="WidthAndHeight"
+        Title="Equipment" Height="auto" Width="auto">
+    <Grid Height="300" Width="400">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="3.5*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
         
+        <!--Title-->
+        <TextBlock Text="Pick an item:" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        
+        <!--List with items-->
+        <ListBox x:Name="ListboxItems" Grid.Row="1" Margin="4" Style="{StaticResource IListbox}">
+            
+        </ListBox>
+        
+        <!--Buttons-->
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="2">
+            <Button Content="Ok" Style="{StaticResource menu-button}"/>
+        </StackPanel>
     </Grid>
 </Window>
