@@ -39,7 +39,7 @@ namespace JRPG_Project.ClassLibrary.Player
             {
                 Collectable item = ItemData.ListCollectables.Where(x => x.Rarity == itemRarity).ElementAt(GetRandomNumber(ItemData.ListCollectables.Where(x => x.Rarity == itemRarity).Count() - 1));
                 DisplayItem(item.Name, item.ItemImage);
-                PlayerActions.AddCollectable(item);
+                PlayerActions.AddItem(item);
             }
             else
             {
@@ -55,21 +55,21 @@ namespace JRPG_Project.ClassLibrary.Player
                         {
                             Weapon item = ItemData.ListWeapons.Where(x => x.Rarity == itemRarity).ElementAt(GetRandomNumber(ItemData.ListWeapons.Where(x => x.Rarity == itemRarity).Count() - 1));
                             DisplayItem(item.Name, item.ItemImage);
-                            PlayerActions.AddWeapon(item);
+                            PlayerActions.AddItem(item);
                             break;
                         }
                     case "ARMOUR":
                         {
                             Armour item = ItemData.ListArmours.Where(x => x.Rarity == itemRarity).ElementAt(GetRandomNumber(ItemData.ListArmours.Where(x => x.Rarity == itemRarity).Count() - 1));
                             DisplayItem(item.Name, item.ItemImage);
-                            PlayerActions.AddArmour(item);
+                            PlayerActions.AddItem(item);
                             break;
                         }
                     case "AMULET":
                         {
                             Amulet item = ItemData.ListAmulets.Where(x => x.Rarity == itemRarity).ElementAt(GetRandomNumber(ItemData.ListAmulets.Where(x => x.Rarity == itemRarity).Count() - 1));
                             DisplayItem(item.Name, item.ItemImage);
-                            PlayerActions.AddAmulet(item);
+                            PlayerActions.AddItem(item);
                             break;
                         }
                 }

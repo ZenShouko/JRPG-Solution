@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="JRPG_Project.ClassLibrary.Universal.InventoryTab" Loaded="UserControl_Loaded"
+﻿<UserControl x:Class="JRPG_Project.ClassLibrary.Universal.InventoryTab"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -13,10 +13,12 @@
         </Grid.RowDefinitions>
         <!--Buttons-->
         <StackPanel x:Name="ButtonPanel" Orientation="Horizontal" Height="30" Margin="0 6 0 0" HorizontalAlignment="Center" VerticalAlignment="Stretch">
-            <Button Content="Return" Style="{StaticResource menu-button}" Click="Button_Click"/>
+            <Button Content="Return" Style="{StaticResource menu-button}" Margin="5 0" Click="Button_Click"/>
             <Button Content="Discard" Style="{StaticResource menu-button}" Margin="5 0"/>
             <Button Content="Sell" Style="{StaticResource menu-button}" Margin="5 0"/>
-            <Button Content="Upgrade" Style="{StaticResource menu-button}" Margin="5 0"/>
+            <ComboBox x:Name="CboxSort" Margin="5 0" SelectionChanged="CboxSort_SelectionChanged"
+                      HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="6">
+            </ComboBox>
         </StackPanel>
         
         <!--Inventory-->

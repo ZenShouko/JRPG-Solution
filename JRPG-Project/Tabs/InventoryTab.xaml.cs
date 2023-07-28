@@ -4,10 +4,12 @@ using JRPG_Project.ClassLibrary.Entities;
 using JRPG_Project.ClassLibrary.Items;
 using JRPG_Project.ClassLibrary.Player;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -22,10 +24,31 @@ namespace JRPG_Project.ClassLibrary.Universal
         public InventoryTab()
         {
             InitializeComponent();
-            LoadItems();
+            PrepareGUI();
+            LoadItems(SortOptions[CboxSort.SelectedIndex]);
 
             //Load all items
             //LoadAllitems();
+        }
+
+        Dictionary<int, string> SortOptions = new Dictionary<int, string>()
+        {
+            { 0, "Rarity Asc" },
+            { 1, "Rarity Desc" },
+            { 2, "Level Asc" },
+            { 3, "Level Desc" },
+            { 4, "Value Asc" },
+            { 5, "Value Desc" }
+        };
+
+        private void PrepareGUI()
+        {
+            foreach (string option in SortOptions.Values)
+            {
+                CboxSort.Items.Add(option);
+            }
+
+            CboxSort.SelectedIndex = 0;
         }
 
         private void LoadAllitems()
@@ -92,41 +115,118 @@ namespace JRPG_Project.ClassLibrary.Universal
             }
         }
 
-        private void LoadItems()
+        private void LoadItems(string sort)
         {
+            //Create lists
+            List<Collectable> collectables = new List<Collectable>();
+            List<Weapon> weapons = new List<Weapon>();
+            List<Armour> armours = new List<Armour>();
+            List<Amulet> amulets = new List<Amulet>();
+
+            //Sort Lists
+            if (sort == SortOptions[0] || sort == SortOptions[1]) //#Rarity
+            {
+                //Define a list for sorting order
+                List<string> sortingOrder = new List<string>() { "COMMON", "SPECIAL", "CURSED", "LEGENDARY" };
+
+                //Reverse if descending
+                if (sort == SortOptions[1])
+                {
+                    sortingOrder.Reverse();
+                }
+
+                //Define custom comparer for sorting
+                var comparer = Comparer<string>.Create((x, y) =>
+                {
+                    int index1 = sortingOrder.IndexOf(x);
+                    int index2 = sortingOrder.IndexOf(y);
+                    return index1.CompareTo(index2);
+                });
+
+                //Apply sorting
+                collectables = Inventory.Collectables.OrderBy(x => x.Rarity, comparer).ThenBy(x => x.Name).ToList();
+                weapons = Inventory.Weapons.OrderBy(x => x.Rarity, comparer).ThenBy(x => x.Name).ToList();
+                armours = Inventory.Armours.OrderBy(x => x.Rarity, comparer).ThenBy(x => x.Name).ToList();
+                amulets = Inventory.Amulets.OrderBy(x => x.Rarity, comparer).ThenBy(x => x.Name).ToList();
+            }
+            else if (sort == SortOptions[2])
+            {
+                //#Sort on level
+                collectables = Inventory.Collectables.OrderBy(x => x.Level).ThenBy(x => x.Name).ToList();
+                weapons = Inventory.Weapons.OrderBy(x => x.Level).ThenBy(x => x.Name).ToList();
+                armours = Inventory.Armours.OrderBy(x => x.Level).ThenBy(x => x.Name).ToList();
+                amulets = Inventory.Amulets.OrderBy(x => x.Level).ThenBy(x => x.Name).ToList();
+            }
+            else if (sort == SortOptions[3])
+            {
+                //#sort on level descending
+                collectables = Inventory.Collectables.OrderByDescending(x => x.Level).ThenBy(x => x.Name).ToList();
+                weapons = Inventory.Weapons.OrderByDescending(x => x.Level).ThenBy(x => x.Name).ToList();
+                armours = Inventory.Armours.OrderByDescending(x => x.Level).ThenBy(x => x.Name).ToList();
+                amulets = Inventory.Amulets.OrderByDescending(x => x.Level).ThenBy(x => x.Name).ToList();
+            }
+            else if (sort == SortOptions[4])
+            {
+                //#Sort based on value
+                collectables = Inventory.Collectables.OrderBy(x => x.Value).ThenBy(x => x.Name).ToList();
+                weapons = Inventory.Weapons.OrderBy(x => x.Value).ThenBy(x => x.Name).ToList();
+                armours = Inventory.Armours.OrderBy(x => x.Value).ThenBy(x => x.Name).ToList();
+                amulets = Inventory.Amulets.OrderBy(x => x.Value).ThenBy(x => x.Name).ToList();
+            }
+            else if (sort == SortOptions[5])
+            {
+                //#Sort based on value descending
+                collectables = Inventory.Collectables.OrderByDescending(x => x.Value).ThenBy(x => x.Name).ToList();
+                weapons = Inventory.Weapons.OrderByDescending(x => x.Value).ThenBy(x => x.Name).ToList();
+                armours = Inventory.Armours.OrderByDescending(x => x.Value).ThenBy(x => x.Name).ToList();
+                amulets = Inventory.Amulets.OrderByDescending(x => x.Value).ThenBy(x => x.Name).ToList();
+            }
+
+            //Add to listboxes
+            AddToList(collectables, weapons, armours, amulets);
+        }
+
+        private void AddToList(List<Collectable> collectables, List<Weapon> weapons, List<Armour> armours, List<Amulet> amulets)
+        {
+            //Clear lists
+            LstCollectables.Items.Clear();
+            LstWeapons.Items.Clear();
+            LstArmours.Items.Clear();
+            LstAmulets.Items.Clear();
+
             //Load all items into listbox'
-            foreach (Collectable item in Inventory.Collectables)
+            foreach (Collectable item in collectables)
             {
                 ListBoxItem listItem = new ListBoxItem();
                 listItem.Content = item.ToString();
-                listItem.Tag = item.ID;
+                listItem.Tag = item.UniqueID;
                 listItem.Foreground = GetBrush(item.Rarity);
                 LstCollectables.Items.Add(listItem);
             }
 
-            foreach (Weapon item in Inventory.Weapons)
+            foreach (Weapon item in weapons)
             {
                 ListBoxItem listItem = new ListBoxItem();
                 listItem.Content = item.ToString();
-                listItem.Tag = item.ID;
+                listItem.Tag = item.UniqueID;
                 listItem.Foreground = GetBrush(item.Rarity);
                 LstWeapons.Items.Add(listItem);
             }
 
-            foreach (Armour item in Inventory.Armours)
+            foreach (Armour item in armours)
             {
                 ListBoxItem listItem = new ListBoxItem();
                 listItem.Content = item.ToString();
-                listItem.Tag = item.ID;
+                listItem.Tag = item.UniqueID;
                 listItem.Foreground = GetBrush(item.Rarity);
                 LstArmours.Items.Add(listItem);
             }
 
-            foreach (Amulet item in Inventory.Amulets)
+            foreach (Amulet item in amulets)
             {
                 ListBoxItem listItem = new ListBoxItem();
                 listItem.Content = item.ToString();
-                listItem.Tag = item.ID;
+                listItem.Tag = item.UniqueID;
                 listItem.Foreground = GetBrush(item.Rarity);
                 LstAmulets.Items.Add(listItem);
             }
@@ -154,7 +254,7 @@ namespace JRPG_Project.ClassLibrary.Universal
                     case "LstCollectables":
                         {
                             //Get selected item as collectable
-                            Collectable collectable = ItemData.ListCollectables.FirstOrDefault(i => i.ID == (string)listItem.Tag);
+                            Collectable collectable = Inventory.Collectables.FirstOrDefault(i => i.UniqueID == (string)listItem.Tag);
                             TxtItemName.Text = collectable.Name;
                             TxtItemDescription.Text = collectable.Description;
                             Txtlevel.Text = collectable.Level.ToString();
@@ -168,7 +268,7 @@ namespace JRPG_Project.ClassLibrary.Universal
                     case "LstWeapons":
                         {
                             //Get selected item as weapon
-                            Weapon weapon = ItemData.ListWeapons.FirstOrDefault(i => i.ID == (string)listItem.Tag);
+                            Weapon weapon = Inventory.Weapons.FirstOrDefault(i => i.UniqueID == (string)listItem.Tag);
                             TxtItemName.Text = weapon.Name;
                             TxtItemDescription.Text = weapon.Description;
                             Txtlevel.Text = weapon.Level.ToString();
@@ -178,16 +278,27 @@ namespace JRPG_Project.ClassLibrary.Universal
                             ImgItem.Source = weapon.ItemImage.Source;
                             DisplayItemStats($"{weapon.Stats}");
 
-                            TxtXp.Text = weapon.Stats.GetXP() + "xp";
-                            TxtMaxXp.Text = LevelData.GetMaxXpAsString(weapon) + "xp";
-                            ProgressbarXP.Maximum = Convert.ToInt32(TxtMaxXp.Text.Replace("xp", ""));
-                            ProgressbarXP.Value = weapon.Stats.XP;
+                            if (weapon.Level != LevelData.WeaponXPTable.Keys.LastOrDefault())
+                            {
+                                TxtXp.Text = weapon.Stats.GetXP() + "xp";
+                                TxtMaxXp.Text = LevelData.GetMaxXpAsString(weapon) + "xp";
+                                ProgressbarXP.Maximum = Convert.ToInt32(TxtMaxXp.Text.Replace("xp", ""));
+                                ProgressbarXP.Value = weapon.Stats.XP;
+                            }
+                            else
+                            {
+                                TxtXp.Text = LevelData.WeaponXPTable.Values.LastOrDefault().Item1.ToString() + "xp";
+                                TxtMaxXp.Text = "MAX";
+                                ProgressbarXP.Maximum = 100;
+                                ProgressbarXP.Value = 100;
+                            }
+
                             break;
                         }
                     case "LstArmours":
                         {
                             //Get selected item as armour
-                            Armour armour = ItemData.ListArmours.FirstOrDefault(i => i.ID == (string)listItem.Tag);
+                            Armour armour = Inventory.Armours.FirstOrDefault(i => i.UniqueID == (string)listItem.Tag);
                             TxtItemName.Text = armour.Name;
                             TxtItemDescription.Text = armour.Description;
                             Txtlevel.Text = armour.Level.ToString();
@@ -197,16 +308,27 @@ namespace JRPG_Project.ClassLibrary.Universal
                             ImgItem.Source = armour.ItemImage.Source;
                             DisplayItemStats(armour.Stats.ToString());
 
-                            TxtXp.Text = armour.Stats.GetXP() + "xp";
-                            TxtMaxXp.Text = LevelData.GetMaxXpAsString(armour) + "xp";
-                            ProgressbarXP.Maximum = Convert.ToInt32(TxtMaxXp.Text.Replace("xp", ""));
-                            ProgressbarXP.Value = armour.Stats.XP;
+                            if (armour.Level != LevelData.ArmourXPTable.Keys.LastOrDefault())
+                            {
+                                TxtXp.Text = armour.Stats.GetXP() + "xp";
+                                TxtMaxXp.Text = LevelData.GetMaxXpAsString(armour) + "xp";
+                                ProgressbarXP.Maximum = Convert.ToInt32(TxtMaxXp.Text.Replace("xp", ""));
+                                ProgressbarXP.Value = armour.Stats.XP;
+                            }
+                            else
+                            {
+                                TxtXp.Text = LevelData.ArmourXPTable.Values.LastOrDefault().Item1.ToString() + "xp";
+                                TxtMaxXp.Text = "MAX";
+                                ProgressbarXP.Maximum = 100;
+                                ProgressbarXP.Value = 100;
+                            }
+
                             break;
                         }
                     case "LstAmulets":
                         {
                             //Get selected item as amulet
-                            Amulet amulet = ItemData.ListAmulets.FirstOrDefault(i => i.ID == (string)listItem.Tag);
+                            Amulet amulet = Inventory.Amulets.FirstOrDefault(i => i.UniqueID == (string)listItem.Tag);
                             TxtItemName.Text = amulet.Name;
                             TxtItemDescription.Text = amulet.Description;
                             Txtlevel.Text = amulet.Level.ToString();
@@ -216,10 +338,20 @@ namespace JRPG_Project.ClassLibrary.Universal
                             ImgItem.Source = amulet.ItemImage.Source;
                             DisplayItemStats(amulet.Stats.ToString());
 
-                            TxtXp.Text = amulet.Stats.GetXP() + "xp";
-                            TxtMaxXp.Text = LevelData.GetMaxXpAsString(amulet) + "xp";
-                            ProgressbarXP.Maximum = Convert.ToInt32(TxtMaxXp.Text.Replace("xp", ""));
-                            ProgressbarXP.Value = amulet.Stats.XP;
+                            if (amulet.Level != LevelData.AmuletXPTable.Keys.LastOrDefault())
+                            {
+                                TxtXp.Text = amulet.Stats.GetXP() + "xp";
+                                TxtMaxXp.Text = LevelData.GetMaxXpAsString(amulet) + "xp";
+                                ProgressbarXP.Maximum = Convert.ToInt32(TxtMaxXp.Text.Replace("xp", ""));
+                                ProgressbarXP.Value = amulet.Stats.XP;
+                            }
+                            else
+                            {
+                                TxtXp.Text = LevelData.AmuletXPTable.Values.LastOrDefault().Item1.ToString() + "xp";
+                                TxtMaxXp.Text = "MAX";
+                                ProgressbarXP.Maximum = 100;
+                                ProgressbarXP.Value = 100;
+                            }
                             break;
                         }
                 }
@@ -266,20 +398,9 @@ namespace JRPG_Project.ClassLibrary.Universal
             Interaction.OpenTab("MainTab");
         }
 
-        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        private void CboxSort_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            //Add keydown event to window
-            //var window = Window.GetWindow(this);
-            //window.KeyDown += Window_KeyDown;
-        }
-        private void UserControl_Unloaded(object sender, RoutedEventArgs e)
-        {
-            //Remove keydown event from window
-        }
-
-        private void Window_KeyDown(object sender, KeyEventArgs e)
-        {
-            //Scraped
+            LoadItems(SortOptions[CboxSort.SelectedIndex]);
         }
     }
 }

@@ -13,7 +13,8 @@ namespace JRPG_Project.ClassLibrary
     ///</summary>
     public abstract class BaseItem
     {
-        public string ID { get; set; }
+        public string UniqueID { get; set; } //Unique on inventory level
+        public string ID { get; set; } //Unique on global level
         public int Level { get; set; } = 1; //Level of the item
         public string Rarity { get; set; } //Rarity of the item
         public string Name { get; set; }
@@ -27,6 +28,18 @@ namespace JRPG_Project.ClassLibrary
         public override string ToString()
         {
             return $"[{Level}] {Name}";
+        }
+
+        public virtual void CopyFrom(BaseItem otherItem)
+        {
+            UniqueID = Guid.NewGuid().ToString();
+            ID = otherItem.ID;
+            Level = otherItem.Level;
+            Rarity = otherItem.Rarity;
+            Name = otherItem.Name;
+            Description = otherItem.Description;
+            ImageName = otherItem.ImageName;
+            Value = otherItem.Value;
         }
     }
 }

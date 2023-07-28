@@ -1,15 +1,10 @@
-﻿using JRPG_Project.ClassLibrary.Items;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using JRPG_Project.ClassLibrary.Data;
 
 namespace JRPG_Project.ClassLibrary
 {
-    public class Weapon : BaseItem
+    public class Weapon : BaseItem, IStatsHolder
     {
-        public Stats Stats { get; set; } //Stats of the weapon
+        public Stats Stats { get; set; } = new Stats(); //Stats of the weapon
         public string Type { get; set; } //Type of weapon
         //public Charm Charm { get; set; } //Charm of the weapon
 
@@ -18,5 +13,29 @@ namespace JRPG_Project.ClassLibrary
 
         }
 
+        public override void CopyFrom(BaseItem otherItem)
+        {
+            //Copy default properties
+            base.CopyFrom(otherItem);
+
+            //Copy weapon specific properties
+            if (otherItem is Weapon wpn)
+            {
+                Stats = new Stats()
+                {
+                    HP = wpn.Stats.HP,
+                    DMG = wpn.Stats.DMG,
+                    DEF = wpn.Stats.DEF,
+                    SPD = wpn.Stats.SPD,
+                    STA = wpn.Stats.STA,
+                    STR = wpn.Stats.STR,
+                    CRC = wpn.Stats.CRC,
+                    CRD = wpn.Stats.CRD
+                };
+
+                Type = wpn.Type;
+                ItemImage = ItemData.GetItemImage("Weapons/" + wpn.ImageName);
+            }
+        }
     }
 }

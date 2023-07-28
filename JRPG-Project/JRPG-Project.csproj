@@ -95,6 +95,7 @@
     <Compile Include="ClassLibrary\Entities\Lootbox.cs" />
     <Compile Include="ClassLibrary\Entities\MapObject.cs" />
     <Compile Include="ClassLibrary\Entities\Serialization\CharacterSave.cs" />
+    <Compile Include="ClassLibrary\IStatsHolder.cs" />
     <Compile Include="ClassLibrary\Items\Amulet.cs" />
     <Compile Include="ClassLibrary\Items\Armour.cs" />
     <Compile Include="ClassLibrary\Items\BaseItem.cs" />

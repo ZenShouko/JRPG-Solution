@@ -9,7 +9,7 @@ using System.Windows.Controls;
 
 namespace JRPG_Project.ClassLibrary.Entities
 {
-    public class Character
+    public class Character : IStatsHolder
     {
         #region Important Properties
         public int Level { get; set; } = 1;

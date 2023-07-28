@@ -54,9 +54,21 @@ namespace JRPG_Project.ClassLibrary.Data
             Inventory.Team.Add(CharacterData.CharacterList.Find(x => x.ID == "CH3"));
 
             //@Generate default inventory
-            Inventory.Weapons.Add(ItemData.ListWeapons.Find(x => x.ID == "W1"));
-            Inventory.Weapons.Add(ItemData.ListWeapons.Find(x => x.ID == "W1"));
-            Inventory.Weapons.Add(ItemData.ListWeapons.Find(x => x.ID == "W1"));
+            for (int i = 0; i < 3; i++)
+            {
+                PlayerActions.AddItem(ItemData.ListWeapons.Find(x => x.ID == "W1"));
+            }
+
+            //(Test) Enhance first weapon
+            Inventory.Weapons[0].Stats.DMG += 100;
+            Inventory.Weapons[0].Stats.SPD += 100;
+            Inventory.Weapons[0].Stats.DEF -= 100;
+            Inventory.Weapons[0].Rarity = "CURSED";
+            Inventory.Weapons[0].Name = "Cursed " + Inventory.Weapons[0].Name;
+            Inventory.Weapons[0].Description = "Cursed by yo moms baking poweder ... !! \n >:-(";
+            Inventory.Weapons[0].Value = 500;
+            LevelData.AddXP(Inventory.Weapons[0], 10000);
+
 
             Inventory.Amulets.Add(ItemData.ListAmulets.Find(x => x.ID == "AM1"));
         }
