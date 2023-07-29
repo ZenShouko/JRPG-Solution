@@ -1,11 +1,10 @@
 ﻿using JRPG_Project.ClassLibrary.Entities;
+using JRPG_Project.ClassLibrary.Items;
+using JRPG_Project.ClassLibrary.Player;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 
@@ -57,6 +56,74 @@ namespace JRPG_Project.ClassLibrary.Data
             if (parts[2] != "/")
             {
                 character.Amulet = ItemData.ListAmulets.Find(x => x.ID == parts[2]);
+            }
+        }
+
+        public static void UnequipItem(BaseItem item)
+        {
+            if (item is Weapon wpn)
+            {
+                Inventory.Team[0].Weapon = Inventory.Team[0].Weapon == wpn ? null : Inventory.Team[0].Weapon;
+                Inventory.Team[1].Weapon = Inventory.Team[1].Weapon == wpn ? null : Inventory.Team[1].Weapon;
+                Inventory.Team[2].Weapon = Inventory.Team[2].Weapon == wpn ? null : Inventory.Team[2].Weapon;
+            }
+            else if (item is Armour arm)
+            {
+                Inventory.Team[0].Armour = Inventory.Team[0].Armour == arm ? null : Inventory.Team[0].Armour;
+                Inventory.Team[1].Armour = Inventory.Team[1].Armour == arm ? null : Inventory.Team[1].Armour;
+                Inventory.Team[2].Armour = Inventory.Team[2].Armour == arm ? null : Inventory.Team[2].Armour;
+            }
+            else if (item is Amulet amu)
+            {
+                Inventory.Team[0].Amulet = Inventory.Team[0].Amulet == amu ? null : Inventory.Team[0].Amulet;
+                Inventory.Team[1].Amulet = Inventory.Team[1].Amulet == amu ? null : Inventory.Team[1].Amulet;
+                Inventory.Team[2].Amulet = Inventory.Team[2].Amulet == amu ? null : Inventory.Team[2].Amulet;
+            }
+        }
+
+        public static void EquipItem(BaseItem item, int charIndex)
+        {
+            UnequipItem(item);
+
+            //Equip item
+            if (item.UniqueID.Contains("weapon"))
+            {
+                //Cast item to weapon
+                Weapon wpn = item as Weapon;
+
+                //Equip weapon
+                Inventory.Team[charIndex].Weapon = wpn;
+            }
+            else if (item.UniqueID.Contains("armour"))
+            {
+                Armour arm = item as Armour;
+                Inventory.Team[charIndex].Armour = arm;
+            }
+            else if (item.UniqueID.Contains("amulet"))
+            {
+                Amulet amu = item as Amulet;
+                Inventory.Team[charIndex].Amulet = amu;
+            }
+            else
+            {
+                throw new Exception("Item type not recognized.");
+            }
+        }
+
+        public static void ClearEquipment(int charIndex, string type)
+        {
+            //Remove equipment
+            if (type.ToUpper() == "WEAPON")
+            {
+                Inventory.Team[charIndex].Weapon = null;
+            }
+            else if (type.ToUpper() == "ARMOUR")
+            {
+                Inventory.Team[charIndex].Armour = null;
+            }
+            else if (type.ToUpper() == "AMULET")
+            {
+                Inventory.Team[charIndex].Amulet = null;
             }
         }
     }

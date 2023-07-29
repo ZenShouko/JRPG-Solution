@@ -4,6 +4,7 @@ using JRPG_Project.ClassLibrary.Items;
 using System;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -181,9 +182,17 @@ namespace JRPG_Project.ClassLibrary.Player
             Close();
         }
 
-        private void Window_KeyDown(object sender, KeyEventArgs e)
+
+        int keyCount = 0;
+        private void Window_KeyUp(object sender, KeyEventArgs e)
         {
-            Close();
+            //Close window if key is pressed 2 times
+            keyCount++;
+
+            if (keyCount > 1)
+            {
+                Close();
+            }
         }
     }
 }

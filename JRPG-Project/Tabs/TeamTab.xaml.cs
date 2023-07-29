@@ -135,6 +135,7 @@ namespace JRPG_Project.Tabs
                 TxtCrd.Text = Inventory.Team[CharacterIndex].GetAccumelatedStats().CRD.ToString();
 
                 CurrentShownStat = "CHARACTER";
+                HighlightItemBorder("NONE");
             }
             else if (item.ToUpper() == "WEAPON")
             {
@@ -256,40 +257,18 @@ namespace JRPG_Project.Tabs
             //Which item was clicked?
             Border border = (Border)sender;
 
-            //Display stat or change item?
+            //Display Stat
             if (border.Name.Contains("Weapon"))
             {
-                //If item stat is already displayed, open change item tab
-                if (CurrentShownStat == "WEAPON")
-                {
-                    ChangeItem("WEAPON");
-                }
-                else
-                {
-                    DisplayStats("WEAPON");
-                }
+                DisplayStats("WEAPON");
             }
             else if (border.Name.Contains("Armour"))
             {
-                if (CurrentShownStat == "ARMOUR")
-                {
-                    ChangeItem("ARMOUR");
-                }
-                else
-                {
-                    DisplayStats("ARMOUR");
-                }
+                DisplayStats("ARMOUR");
             }
             else if (border.Name.Contains("Amulet"))
             {
-                if (CurrentShownStat == "AMULET")
-                {
-                    ChangeItem("AMULET");
-                }
-                else
-                {
-                    DisplayStats("AMULET");
-                }
+                DisplayStats("AMULET");
             }
         }
 
@@ -297,11 +276,28 @@ namespace JRPG_Project.Tabs
         {
             ChangeEquipmentWindow window = new ChangeEquipmentWindow(item, CharacterIndex);
             window.ShowDialog();
+
+            //Reload tab
+            FocusOnCharacter();
         }
 
         private void BorderWeapon_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
-            ChangeItem("WEAPON");
+            //Get sender
+            Border border = (Border)sender;
+
+            if (border.Name == "BorderWeapon")
+            {
+                ChangeItem("WEAPON");
+            }
+            else if (border.Name == "BorderArmour")
+            {
+                ChangeItem("ARMOUR");
+            }
+            else if (border.Name == "BorderAmulet")
+            {
+                ChangeItem("AMULET");
+            }
         }
     }
 }

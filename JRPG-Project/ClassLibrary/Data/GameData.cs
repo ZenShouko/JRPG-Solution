@@ -69,8 +69,7 @@ namespace JRPG_Project.ClassLibrary.Data
             Inventory.Weapons[0].Value = 500;
             LevelData.AddXP(Inventory.Weapons[0], 10000);
 
-
-            Inventory.Amulets.Add(ItemData.ListAmulets.Find(x => x.ID == "AM1"));
+            PlayerActions.AddItem(ItemData.ListAmulets.Find(x => x.ID == "AM1"));
         }
 
         public static void Save()

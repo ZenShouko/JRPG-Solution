@@ -1,13 +1,10 @@
 ﻿using JRPG_Project.ClassLibrary.Entities;
 using JRPG_Project.ClassLibrary.Items;
+using JRPG_Project.ClassLibrary.Player;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 
@@ -74,6 +71,54 @@ namespace JRPG_Project.ClassLibrary.Data
             Image itemImage = new Image();
             itemImage.Source = new BitmapImage(new Uri(@"../../Resources/Assets/" + imageName, UriKind.Relative));
             return itemImage;
+        }
+
+        /// <summary>
+        /// Returns name of owner. If no one has this item equipped, returns "/"
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        public static string GetOwnersName(BaseItem item)
+        {
+            if (item.UniqueID.Contains("weapon"))
+            {
+                Weapon wpn = item as Weapon;
+
+                foreach (Character character in Inventory.Team)
+                {
+                    if (character.Weapon != null && character.Weapon.UniqueID == wpn.UniqueID)
+                    {
+                        return character.Name;
+                    }
+                }
+            }
+            else if (item.UniqueID.Contains("armour"))
+            {
+                Armour arm = item as Armour;
+
+                foreach (Character character in Inventory.Team)
+                {
+                    if (character.Armour != null && character.Armour.UniqueID == arm.UniqueID)
+                    {
+                        return character.Name;
+                    }
+                }
+            }
+            else if (item.UniqueID.Contains("amulet"))
+            {
+                Amulet amu = item as Amulet;
+
+                foreach (Character character in Inventory.Team)
+                {
+                    if (character.Amulet != null && character.Amulet.UniqueID == amu.UniqueID)
+                    {
+                        return character.Name;
+                    }
+                }
+            }
+
+            //If no one has this item equipped, return "No one"
+            return "/";
         }
     }
 }

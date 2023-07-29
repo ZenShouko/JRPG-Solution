@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using JRPG_Project.ClassLibrary.Items;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,7 +33,20 @@ namespace JRPG_Project.ClassLibrary
 
         public virtual void CopyFrom(BaseItem otherItem)
         {
-            UniqueID = Guid.NewGuid().ToString();
+            //Include item type in unique ID
+            if (otherItem is Weapon)
+            {
+                UniqueID = "weapon" + Guid.NewGuid().ToString();
+            }
+            else if (otherItem is Armour)
+            {
+                UniqueID = "armour" + Guid.NewGuid().ToString();
+            }
+            else if (otherItem is Amulet)
+            {
+                 UniqueID = "amulet" + Guid.NewGuid().ToString();
+            }
+
             ID = otherItem.ID;
             Level = otherItem.Level;
             Rarity = otherItem.Rarity;

@@ -25,8 +25,8 @@ namespace JRPG_Project.ClassLibrary.Universal
         {
             InitializeComponent();
             PrepareGUI();
-            LoadItems(SortOptions[CboxSort.SelectedIndex]);
 
+            //LoadItems(SortOptions[CboxSort.SelectedIndex]);
             //Load all items
             //LoadAllitems();
         }
@@ -54,46 +54,26 @@ namespace JRPG_Project.ClassLibrary.Universal
         private void LoadAllitems()
         {
             //Display all collectable items
-            foreach (Collectable collectable in ItemData.ListCollectables)
+            foreach (ListBoxItem item in InventoryData.GetCollectablesAsListboxItem())
             {
-                ListBoxItem item = new ListBoxItem();
-                item.Content = collectable.ToString();
-                item.Tag = collectable.ID;
-                item.Foreground = GetBrush(collectable.Rarity);
-
                 LstCollectables.Items.Add(item);
             }
 
             //Display All weapons
-            foreach (Weapon weapon in ItemData.ListWeapons)
+            foreach (ListBoxItem item in InventoryData.GetWeaponsAsListboxItem())
             {
-                ListBoxItem item = new ListBoxItem();
-                item.Content = weapon.ToString();
-                item.Tag = weapon.ID;
-                item.Foreground = GetBrush(weapon.Rarity);
-
                 LstWeapons.Items.Add(item);
             }
 
             //Display all armours
-            foreach (Armour armour in ItemData.ListArmours)
+            foreach (ListBoxItem item in InventoryData.GetArmoursAsListboxItem())
             {
-                ListBoxItem item = new ListBoxItem();
-                item.Content = armour.ToString();
-                item.Tag = armour.ID;
-                item.Foreground = GetBrush(armour.Rarity);
-
                 LstArmours.Items.Add(item);
             }
 
             //Display all amulets
-            foreach (Amulet amulet in ItemData.ListAmulets)
+            foreach (ListBoxItem item in InventoryData.GetAmuletsAsListboxItem())
             {
-                ListBoxItem item = new ListBoxItem();
-                item.Content = amulet.ToString();
-                item.Tag = amulet.ID;
-                item.Foreground = GetBrush(amulet.Rarity);
-
                 LstAmulets.Items.Add(item);
             }
         }

@@ -86,6 +86,7 @@
       <DependentUpon>ChangeEquipmentWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="ClassLibrary\Data\CharacterData.cs" />
+    <Compile Include="ClassLibrary\Data\InventoryData.cs" />
     <Compile Include="ClassLibrary\Data\ItemData.cs" />
     <Compile Include="ClassLibrary\Data\LevelData.cs" />
     <Compile Include="ClassLibrary\Data\LootboxData.cs" />
@@ -128,6 +129,9 @@
     <Compile Include="SaveWindow.xaml.cs">
       <DependentUpon>SaveWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="StatsWindow.xaml.cs">
+      <DependentUpon>StatsWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Tabs\InventoryTab.xaml.cs">
       <DependentUpon>InventoryTab.xaml</DependentUpon>
     </Compile>
@@ -152,6 +156,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="SaveWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="StatsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -378,6 +386,44 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Assets\GUI\empty.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Assets\GUI\heart.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Assets\GUI\alligator.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Assets\GUI\atomn.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Assets\GUI\clover.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Assets\GUI\green-lamp.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Assets\GUI\shield.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Assets\GUI\speed.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Assets\GUI\tank.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Assets\GUI\win11.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Assets\GUI\winbloom.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>

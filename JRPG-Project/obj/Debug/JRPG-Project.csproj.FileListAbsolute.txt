@@ -36,3 +36,5 @@ C:\Users\emre_\Documents\Visual Studio 2022\Personal Solutions\JRPG-Solution\JRP
 C:\Users\emre_\Documents\Visual Studio 2022\Personal Solutions\JRPG-Solution\JRPG-Project\obj\Debug\JRPG-Project.csproj.CopyComplete
 C:\Users\emre_\Documents\Visual Studio 2022\Personal Solutions\JRPG-Solution\JRPG-Project\obj\Debug\JRPG-Project.exe
 C:\Users\emre_\Documents\Visual Studio 2022\Personal Solutions\JRPG-Solution\JRPG-Project\obj\Debug\JRPG-Project.pdb
+C:\Users\emre_\Documents\Visual Studio 2022\Personal Solutions\JRPG-Solution\JRPG-Project\obj\Debug\StatsWindow.g.cs
+C:\Users\emre_\Documents\Visual Studio 2022\Personal Solutions\JRPG-Solution\JRPG-Project\obj\Debug\StatsWindow.baml

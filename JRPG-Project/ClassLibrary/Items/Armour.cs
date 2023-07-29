@@ -18,7 +18,7 @@ namespace JRPG_Project.ClassLibrary.Items
 
             if (otherItem is Armour arm)
             {
-                arm.Stats = new Stats()
+                Stats = new Stats()
                 {
                     HP = arm.Stats.HP,
                     DEF = arm.Stats.DEF,
