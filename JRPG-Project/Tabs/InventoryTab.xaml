@@ -15,7 +15,6 @@
         <StackPanel x:Name="ButtonPanel" Orientation="Horizontal" Height="30" Margin="0 6 0 0" HorizontalAlignment="Center" VerticalAlignment="Stretch">
             <Button Content="Return" Style="{StaticResource menu-button}" Margin="5 0" Click="Button_Click"/>
             <Button Content="Discard" Style="{StaticResource menu-button}" Margin="5 0"/>
-            <Button Content="Sell" Style="{StaticResource menu-button}" Margin="5 0"/>
             <ComboBox x:Name="CboxSort" Margin="5 0" SelectionChanged="CboxSort_SelectionChanged"
                       HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="6">
             </ComboBox>

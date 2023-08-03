@@ -2,16 +2,18 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <!--Default Styles (All Controls) [Fontfamily]-->
     <Style TargetType="TextBlock">
-        <Setter Property="FontFamily" Value="Arial Rounded MT Bold"/>
+        <Setter Property="FontFamily" Value="/Resources/Poppins-Regular.ttf"/>
+        <Setter Property="FontWeight" Value="Medium"/>
     </Style>
 
     <Style TargetType="Button">
         <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="FontWeight" Value="Bold"/>
     </Style>
     
     <!--Listbox-->
     <Style TargetType="ListBox">
-        <Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="FontWeight" Value="Bold"/>
         <Setter Property="FontSize" Value="16"/>
     </Style>
     

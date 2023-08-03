@@ -38,3 +38,5 @@ C:\Users\emre_\Documents\Visual Studio 2022\Personal Solutions\JRPG-Solution\JRP
 C:\Users\emre_\Documents\Visual Studio 2022\Personal Solutions\JRPG-Solution\JRPG-Project\obj\Debug\JRPG-Project.pdb
 C:\Users\emre_\Documents\Visual Studio 2022\Personal Solutions\JRPG-Solution\JRPG-Project\obj\Debug\StatsWindow.g.cs
 C:\Users\emre_\Documents\Visual Studio 2022\Personal Solutions\JRPG-Solution\JRPG-Project\obj\Debug\StatsWindow.baml
+C:\Users\emre_\Documents\Visual Studio 2022\Personal Solutions\JRPG-Solution\JRPG-Project\obj\Debug\Tabs\MarketTab.g.cs
+C:\Users\emre_\Documents\Visual Studio 2022\Personal Solutions\JRPG-Solution\JRPG-Project\obj\Debug\Tabs\MarketTab.baml

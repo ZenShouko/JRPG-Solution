@@ -144,6 +144,9 @@
     <Compile Include="PlatformFinder.xaml.cs">
       <DependentUpon>PlatformFinder.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Tabs\MarketTab.xaml.cs">
+      <DependentUpon>MarketTab.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Tabs\TeamTab.xaml.cs">
       <DependentUpon>TeamTab.xaml</DependentUpon>
     </Compile>
@@ -195,6 +198,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Tabs\MarketTab.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Tabs\TeamTab.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -220,6 +227,9 @@
     </EmbeddedResource>
     <None Include="JRPG-key.pfx" />
     <None Include="Resources\Data\Lootbox.json" />
+    <Resource Include="Resources\Poppins-Regular.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <None Include="Stages\BIGU.json" />
     <None Include="Stages\Ideal Platform.json" />
     <None Include="Stages\kirby.json" />
@@ -424,6 +434,11 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Assets\GUI\winbloom.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Assets\GUI\coin.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>

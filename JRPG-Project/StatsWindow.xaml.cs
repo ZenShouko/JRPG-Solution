@@ -157,7 +157,7 @@ namespace JRPG_Project
             TxtRarity.Text = ItemInfo["Rarity"];
             TxtRarity.Foreground = GetBrush(ItemInfo["Rarity"]);
 
-            ImgItem.Source = new BitmapImage(new Uri(ItemInfo["ImageSource"], UriKind.Relative));
+            ImgItem.Source = new BitmapImage(new Uri(ItemInfo["ImageSource"], UriKind.RelativeOrAbsolute));
             //GridBackground.ImageSource = new BitmapImage(new Uri(ItemInfo["ImageSource"], UriKind.Relative));
 
             BorderColorBrush.Color = GetColor(ItemInfo["Rarity"]);

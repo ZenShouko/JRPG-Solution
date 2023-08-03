@@ -74,6 +74,35 @@ namespace JRPG_Project.ClassLibrary.Data
         }
 
         /// <summary>
+        /// Can retrieve image for any item.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        public static Image GetItemImage(BaseItem item)
+        {
+            Image itemImage = new Image();
+
+            if (item is Weapon wpn)
+            {
+                itemImage.Source = new BitmapImage(new Uri(@"../../Resources/Assets/Weapons/" + wpn.ImageName, UriKind.Relative));
+            }
+            else if (item is Armour arm)
+            {
+                itemImage.Source = new BitmapImage(new Uri(@"../../Resources/Assets/Armours/" + arm.ImageName, UriKind.Relative));
+            }
+            else if (item is Amulet amu)
+            {
+                itemImage.Source = new BitmapImage(new Uri(@"../../Resources/Assets/Amulets/" + amu.ImageName, UriKind.Relative));
+            }
+            else if (item is Collectable col)
+            {
+                itemImage.Source = new BitmapImage(new Uri(@"../../Resources/Assets/Collectables/" + col.ImageName, UriKind.Relative));
+            }
+
+            return itemImage;
+        }
+
+        /// <summary>
         /// Returns name of owner. If no one has this item equipped, returns "/"
         /// </summary>
         /// <param name="item"></param>
@@ -119,6 +148,57 @@ namespace JRPG_Project.ClassLibrary.Data
 
             //If no one has this item equipped, return "No one"
             return "/";
+        }
+
+        public static string GetItemType(BaseItem item)
+        {
+            if (item.UniqueID.Contains("weapon") || item.ID.Contains("W"))
+            {
+                return "Weapon";
+            }
+            else if (item.UniqueID.Contains("armour") || item.ID.Contains("A"))
+            {
+                return "Armour";
+            }
+            else if (item.UniqueID.Contains("amulet") || item.ID.Contains("AM"))
+            {
+                return "Amulet";
+            }
+            else if (item.UniqueID.Contains("collectable") || item.ID.Contains("C"))
+            {
+                return "Collectable";
+            }
+            else
+            {
+                return "Not Recognized";
+            }
+        }
+
+
+        /// <summary>
+        /// Gets item based on UNIQUE ID
+        /// </summary>
+        public static BaseItem GetItemByUniqueID(string uniqueID)
+        {
+            if (uniqueID.Contains("weapon"))
+            {
+                return Inventory.Weapons.Find(x => x.UniqueID == uniqueID);
+            }
+            else if (uniqueID.Contains("armour"))
+            {
+                return Inventory.Armours.Find(x => x.UniqueID == uniqueID);
+            }
+            else if (uniqueID.Contains("amulet"))
+            {
+                return Inventory.Amulets.Find(x => x.UniqueID == uniqueID);
+            }
+            else { return null; }
+        }
+
+        public static void CalculateValue(BaseItem item)
+        {
+            /// <summary>
+            /// Calculate item value based on item type and item stats.
         }
     }
 }

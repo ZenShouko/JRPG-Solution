@@ -67,7 +67,7 @@ namespace JRPG_Project.ClassLibrary.Data
             Inventory.Weapons[0].Name = "Cursed " + Inventory.Weapons[0].Name;
             Inventory.Weapons[0].Description = "Cursed by yo moms baking poweder ... !! \n >:-(";
             Inventory.Weapons[0].Value = 500;
-            LevelData.AddXP(Inventory.Weapons[0], 10000);
+            LevelData.AddXP(Inventory.Weapons[0], 2000);
 
             PlayerActions.AddItem(ItemData.ListAmulets.Find(x => x.ID == "AM1"));
         }
@@ -97,10 +97,12 @@ namespace JRPG_Project.ClassLibrary.Data
 
             //Copy PlayerData to Inventory
             Inventory.Capacity = data.Capacity;
+            Inventory.Coins = data.Coins;
             Inventory.Collectables = data.Collectables;
             Inventory.Weapons = data.Weapons;
             Inventory.Armours = data.Armours;
             Inventory.Amulets = data.Amulets;
+            //Inventory.ShoppingBag = data.ShoppingBag;
 
             //Generate image for each item
             foreach (Collectable item in Inventory.Collectables)
@@ -169,17 +171,9 @@ namespace JRPG_Project.ClassLibrary.Data
             //#Team
             data.Team = Inventory.Team;
 
-            //foreach (Character character in Inventory.Team)
-            //{
-            //    CharacterSave charSaveData = new CharacterSave();
-            //    charSaveData.Armour = character.Armour;
-            //    charSaveData.Amulet = character.Amulet;
-            //    charSaveData.Weapon = character.Weapon;
-            //    charSaveData.Level = character.Level;
-            //    charSaveData.Stats = character.Stats;
-
-            //    data.Team.Add(charSaveData);
-            //}
+            //#Economy
+            data.Coins = Inventory.Coins;
+            //data.ShoppingBag = Inventory.ShoppingBag;
 
             //#Save Time
             data.LastSaveTime = DateTime.Now;

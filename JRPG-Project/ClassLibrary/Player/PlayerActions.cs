@@ -1,14 +1,6 @@
-﻿using JRPG_ClassLibrary;
-using JRPG_Project.ClassLibrary.Data;
-using JRPG_Project.ClassLibrary.Entities;
+﻿using JRPG_Project.ClassLibrary.Entities;
 using JRPG_Project.ClassLibrary.Items;
 using System;
-using System.CodeDom;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 
 namespace JRPG_Project.ClassLibrary.Player
 {
@@ -58,6 +50,30 @@ namespace JRPG_Project.ClassLibrary.Player
                 item = new Collectable();
                 item.CopyFrom(referenceItem);
                 Inventory.Collectables.Add(item as Collectable);
+            }
+            else
+            {
+                throw new Exception("Item type not supported.");
+            }
+        }
+
+        public static void RemoveItem(BaseItem referenceItem)
+        {
+            if (referenceItem is Weapon)
+            {
+                Inventory.Weapons.RemoveAt(Inventory.Weapons.FindIndex(x => x.UniqueID == referenceItem.UniqueID));
+            }
+            else if (referenceItem is Armour)
+            {
+                Inventory.Armours.RemoveAt(Inventory.Armours.FindIndex(x => x.UniqueID == referenceItem.UniqueID));
+            }
+            else if (referenceItem is Amulet)
+            {
+                Inventory.Amulets.RemoveAt(Inventory.Amulets.FindIndex(x => x.UniqueID == referenceItem.UniqueID));
+            }
+            else if (referenceItem is Collectable)
+            {
+                Inventory.Collectables.RemoveAt(Inventory.Collectables.FindIndex(x => x.UniqueID == referenceItem.UniqueID));
             }
             else
             {

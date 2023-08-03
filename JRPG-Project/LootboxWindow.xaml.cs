@@ -1,4 +1,5 @@
-﻿using JRPG_Project.ClassLibrary.Data;
+﻿using JRPG_ClassLibrary;
+using JRPG_Project.ClassLibrary.Data;
 using JRPG_Project.ClassLibrary.Entities;
 using JRPG_Project.ClassLibrary.Items;
 using System;
@@ -103,44 +104,10 @@ namespace JRPG_Project.ClassLibrary.Player
             }
         }
 
-        /// <summary>
-        /// Generates a number between min and max. Min and Max are included in the range.
-        /// </summary>
-        /// <param name="min"></param>
-        /// <param name="max"></param>
-        /// <returns></returns>
-        private int GetRandomNumber(int min, int max)
-        {
-            //Make max inclusive
-            max++;
-
-            //Generate random number
-            using (RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider())
-            {
-                byte[] randomNumber = new byte[4]; // 4 bytes for a 32-bit integer
-
-                rng.GetBytes(randomNumber);
-
-                // Convert the random bytes to a 32-bit signed integer
-                int generatedNumber = Math.Abs(BitConverter.ToInt32(randomNumber, 0));
-
-                // Scale the number to be within the desired range
-                try
-                {
-                    return min + (generatedNumber % (max - min));
-                }
-                catch (Exception e)
-                {
-                    MessageBox.Show($"MIN= {min}, MAX= {max}\n" + e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                    return 0;
-                }
-            }
-        }
-
         private int GetRandomNumber(int max)
         {
             //Get random number between 0 and max
-            return GetRandomNumber(0, max);
+            return Interaction.GetRandomNumber(0, max);
         }
 
         private void DisplayItem(string name, Image image)

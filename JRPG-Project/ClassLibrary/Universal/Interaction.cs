@@ -2,6 +2,8 @@
 using JRPG_Project.ClassLibrary.Data;
 using JRPG_Project.ClassLibrary.Universal;
 using JRPG_Project.Tabs;
+using System.Security.Cryptography;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -49,6 +51,13 @@ namespace JRPG_ClassLibrary
                         OpenTab("MainTab");
                         break;
                     }
+                    case "BTNMARKET":
+                    {
+                        MarketTab shopTab = new MarketTab();
+                        Grid.Children.Clear();
+                        Grid.Children.Add(shopTab);
+                        break;
+                    }
                 default:
                     {
                         MessageBox.Show("tab not recognized.");
@@ -64,6 +73,36 @@ namespace JRPG_ClassLibrary
             Grid.Children.Clear();
             DispatchTab dispatchTab = new DispatchTab(stageName);
             Grid.Children.Add(dispatchTab);
+        }
+
+        /// <summary>
+        /// Generates a number between min and max. Min and Max are included in the range.
+        /// </summary>
+        public static int GetRandomNumber(int min, int max)
+        {
+            //Make max inclusive
+            max++;
+
+            //Generate random number
+            using (RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider())
+            {
+                byte[] randomNumber = new byte[4]; // 4 bytes for a 32-bit integer
+
+                rng.GetBytes(randomNumber);
+
+                // Convert the random bytes to a 32-bit signed integer
+                int generatedNumber = Math.Abs(BitConverter.ToInt32(randomNumber, 0));
+
+                // Scale the number to be within the desired range
+                try
+                {
+                    return min + (generatedNumber % (max - min));
+                }
+                catch
+                {
+                    return 0;
+                }
+            }
         }
     }
 }

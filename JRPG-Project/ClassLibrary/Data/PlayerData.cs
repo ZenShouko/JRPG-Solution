@@ -21,10 +21,12 @@ namespace JRPG_Project.ClassLibrary.Data
 
         //Player Inventory
         public int Capacity { get; set; }
+        public int Coins { get; set; }
         public List<Collectable> Collectables { get; set; } = new List<Collectable>();
         public List<Weapon> Weapons { get; set; } = new List<Weapon>();
         public List<Armour> Armours { get; set; } = new List<Armour>();
         public List<Amulet> Amulets { get; set; } = new List<Amulet>();
+        public List<BaseItem> ShoppingBag { get; set; } = new List<BaseItem>();
 
         //Misceallaneous
         public DateTime LastSaveTime { get; set; }

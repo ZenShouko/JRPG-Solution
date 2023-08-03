@@ -3,9 +3,12 @@
 
 #Known Issues
 >-------------
+- Inventory doesn't display collectable's stats. It's stuck on one 'random' stat.
+(Need investigation --)
+
 - Need a better way of identifying equipment. Trying to equip one will now randomly equip one of the same type.
 	>Need a more specific way of identifying equipment. 
-(Need implementation --)
+(Need implementation --Fixed) -> Introduced UniqueID
 
 - Saving the game then opening team tab causes the game to crash. 
 This is due to the fact that the team is not getting saved.

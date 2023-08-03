@@ -4,15 +4,18 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Windows;
 
 namespace JRPG_Project.ClassLibrary.Data
 {
     public static class LevelData
     {
+        //Dictionary of XP needed for each level
         public static Dictionary<int, (int, Stats)> CharacterXPTable = new Dictionary<int, (int, Stats)>();
         public static Dictionary<int, (int, Stats)> WeaponXPTable = new Dictionary<int, (int, Stats)>();
         public static Dictionary<int, (int, Stats)> ArmourXPTable = new Dictionary<int, (int, Stats)>();
         public static Dictionary<int, (int, Stats)> AmuletXPTable = new Dictionary<int, (int, Stats)>();
+
         public static void InitializeDictionaries()
         {
             //Characters
@@ -57,66 +60,6 @@ namespace JRPG_Project.ClassLibrary.Data
             stats.STR = (int)(level * 1.25) + (int)(level * 1.2);
 
             return stats;
-        }
-
-        private static void LevelUp(Character character)
-        {
-
-        }
-
-        private static void LevelUp(Weapon weapon)
-        {
-            //Cancel if weapon is max level
-            if (weapon.Level == WeaponXPTable.Keys.LastOrDefault())
-            {
-                //Reset xp to max xp
-                weapon.Stats.XP = WeaponXPTable[weapon.Level + 1].Item1;
-                return;
-            }
-
-            //Substract required xp from current xp
-            weapon.Stats.XP -= WeaponXPTable[weapon.Level + 1].Item1;
-
-            //Increase stats
-            Stats levelUpStats = WeaponXPTable[weapon.Level + 1].Item2;
-            weapon.Stats.HP += levelUpStats.HP;
-            weapon.Stats.DEF += levelUpStats.DEF;
-            weapon.Stats.DMG += levelUpStats.DMG;
-            weapon.Stats.SPD += levelUpStats.SPD;
-            weapon.Stats.CRC += levelUpStats.CRC;
-            weapon.Stats.CRD += levelUpStats.CRD;
-            weapon.Stats.STA += levelUpStats.STA;
-            weapon.Stats.STR += levelUpStats.STR;
-
-            //Increase level
-            weapon.Level++;
-
-            //Reset xp to max xp if weapon is max level
-            if (weapon.Level == WeaponXPTable.Keys.LastOrDefault())
-            {
-                weapon.Stats.XP = WeaponXPTable[weapon.Level].Item1;
-            }
-        }
-
-        public static void AddXP(Character character, int xp)
-        {
-
-        }
-
-        public static void AddXP(Weapon weapon, int xp)
-        {
-            //Cancel if weapon is max level
-            if (weapon.Level == WeaponXPTable.Keys.LastOrDefault()) 
-                return;
-
-            //Add xp
-            weapon.Stats.XP += xp;
-
-            //Check if weapon can level up
-            while (weapon.Level < 10 && weapon.Stats.XP > WeaponXPTable[weapon.Level + 1].Item1)
-            {
-                LevelUp(weapon);
-            }
         }
 
         public static string GetMaxXpAsString(object item)
@@ -168,5 +111,51 @@ namespace JRPG_Project.ClassLibrary.Data
 
             return "error-404";
         }
+
+
+        #region Add XP
+        public static void AddXP(Character character, int xp)
+        {
+
+        }
+
+        public static void AddXP(BaseItem item, int xp)
+        {
+            if (item is Weapon wpn)
+            {
+                if (wpn.Level == WeaponXPTable.Keys.LastOrDefault())
+                    return;
+
+                wpn.Stats.XP += xp;
+
+                while (wpn.Level < WeaponXPTable.Keys.LastOrDefault() && wpn.Stats.XP > WeaponXPTable[wpn.Level + 1].Item1)
+                {
+                    wpn.LevelUp(wpn);
+                }
+            }
+            else if (item is Armour arm)
+            {
+                if (arm.Level == ArmourXPTable.Keys.LastOrDefault())
+                    return;
+                arm.Stats.XP += xp;
+
+                while (arm.Level < ArmourXPTable.Keys.LastOrDefault() && arm.Stats.XP > ArmourXPTable[arm.Level + 1].Item1)
+                {
+                    arm.LevelUp(arm);
+                }
+            }
+            else if (item is Amulet amu)
+            {
+                if (amu.Level == AmuletXPTable.Keys.LastOrDefault())
+                    return;
+                amu.Stats.XP += xp;
+
+                while (amu.Level < AmuletXPTable.Keys.LastOrDefault() && amu.Stats.XP > AmuletXPTable[amu.Level + 1].Item1)
+                {
+                    amu.LevelUp(amu);
+                }
+            }
+        }
+        #endregion
     }
 }

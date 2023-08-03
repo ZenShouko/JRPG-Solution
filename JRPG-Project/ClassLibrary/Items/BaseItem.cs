@@ -1,4 +1,6 @@
-﻿using JRPG_Project.ClassLibrary.Items;
+﻿using JRPG_Project.ClassLibrary.Data;
+using JRPG_Project.ClassLibrary.Entities;
+using JRPG_Project.ClassLibrary.Items;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -31,6 +33,10 @@ namespace JRPG_Project.ClassLibrary
             return $"[{Level}] {Name}";
         }
 
+        /// <summary>
+        /// Copies the attributes of another (reference) item.
+        /// </summary>
+        /// <param name="otherItem"></param>
         public virtual void CopyFrom(BaseItem otherItem)
         {
             //Include item type in unique ID
@@ -46,6 +52,10 @@ namespace JRPG_Project.ClassLibrary
             {
                  UniqueID = "amulet" + Guid.NewGuid().ToString();
             }
+            else if (otherItem is Collectable)
+            {
+                UniqueID = "collectable" + Guid.NewGuid().ToString();
+            }
 
             ID = otherItem.ID;
             Level = otherItem.Level;
@@ -54,6 +64,95 @@ namespace JRPG_Project.ClassLibrary
             Description = otherItem.Description;
             ImageName = otherItem.ImageName;
             Value = otherItem.Value;
+        }
+
+        /// <summary>
+        /// Levels up item and adds stats.
+        /// </summary>
+        /// <param name="item"></param>
+        public virtual void LevelUp(BaseItem item)
+        {
+            if (item is Weapon wpn)
+            {
+                //Increase the level
+                wpn.Level++;
+
+                //Substract the required XP
+                wpn.Stats.XP -= LevelData.WeaponXPTable[wpn.Level].Item1;
+
+                //Get the stats of the next level
+                Stats levelUpStats = LevelData.WeaponXPTable[wpn.Level].Item2;
+
+                //Add the stats to the item
+                wpn.Stats.HP += levelUpStats.HP;
+                wpn.Stats.DEF += levelUpStats.DEF;
+                wpn.Stats.DMG += levelUpStats.DMG;
+                wpn.Stats.SPD += levelUpStats.SPD;
+                wpn.Stats.STA += levelUpStats.STA;
+                wpn.Stats.STR += levelUpStats.STR;
+                wpn.Stats.CRC += levelUpStats.CRC;
+                wpn.Stats.CRD += levelUpStats.CRD;
+
+                //Reset xp to max if level is max
+                if (wpn.Level == LevelData.WeaponXPTable.Keys.LastOrDefault())
+                {
+                    wpn.Stats.XP = LevelData.WeaponXPTable[wpn.Level].Item1;
+                }
+            }
+            else if (item is Armour arm)
+            {
+                //Increase the level
+                arm.Level++;
+
+                //Substract the required XP
+                arm.Stats.XP -= LevelData.ArmourXPTable[arm.Level].Item1;
+
+                //Get the stats of the next level
+                Stats levelUpStats = LevelData.ArmourXPTable[arm.Level].Item2;
+
+                //Add the stats to the item
+                arm.Stats.HP += levelUpStats.HP;
+                arm.Stats.DEF += levelUpStats.DEF;
+                arm .Stats.DMG += levelUpStats.DMG;
+                arm.Stats.SPD += levelUpStats.SPD;
+                arm.Stats.STA += levelUpStats.STA;
+                arm.Stats.STR += levelUpStats.STR;
+                arm.Stats.CRC += levelUpStats.CRC;
+                arm.Stats.CRD += levelUpStats.CRD;
+
+                //Reset xp to max if level is max
+                if (arm.Level == LevelData.ArmourXPTable.Keys.LastOrDefault())
+                {
+                    arm.Stats.XP = LevelData.ArmourXPTable[arm.Level].Item1;
+                }
+            }
+            else if (item is Amulet amu)
+            {
+                //Increase the level
+                amu.Level++;
+
+                //Substract the required XP
+                amu.Stats.XP -= LevelData.AmuletXPTable[amu.Level].Item1;
+
+                //Get the stats of the next level
+                Stats levelUpStats = LevelData.AmuletXPTable[amu.Level].Item2;
+
+                //Add the stats to the item
+                amu.Stats.HP += levelUpStats.HP;
+                amu.Stats.DEF += levelUpStats.DEF;
+                amu.Stats.DMG += levelUpStats.DMG;
+                amu.Stats.SPD += levelUpStats.SPD;
+                amu.Stats.STA += levelUpStats.STA;
+                amu.Stats.STR += levelUpStats.STR;
+                amu.Stats.CRC += levelUpStats.CRC;
+                amu.Stats.CRD += levelUpStats.CRD;
+
+                //Reset xp to max if level is max
+                if (amu.Level == LevelData.AmuletXPTable.Keys.LastOrDefault())
+                {
+                    amu.Stats.XP = LevelData.AmuletXPTable[amu.Level].Item1;
+                }
+            }
         }
     }
 }

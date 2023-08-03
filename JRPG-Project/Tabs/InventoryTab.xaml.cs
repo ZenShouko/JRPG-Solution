@@ -31,6 +31,8 @@ namespace JRPG_Project.ClassLibrary.Universal
             //LoadAllitems();
         }
 
+        string SelectedItemUniqueID = "";
+
         Dictionary<int, string> SortOptions = new Dictionary<int, string>()
         {
             { 0, "Rarity Asc" },
@@ -187,7 +189,16 @@ namespace JRPG_Project.ClassLibrary.Universal
             foreach (Weapon item in weapons)
             {
                 ListBoxItem listItem = new ListBoxItem();
-                listItem.Content = item.ToString();
+                //Display who equiped the item
+                string owner = ItemData.GetOwnersName(item);
+                if (owner == "/")
+                {
+                    listItem.Content = item.ToString();
+                }
+                else
+                {
+                    listItem.Content = item.ToString() + " --> " + owner;
+                }
                 listItem.Tag = item.UniqueID;
                 listItem.Foreground = GetBrush(item.Rarity);
                 LstWeapons.Items.Add(listItem);
@@ -196,7 +207,16 @@ namespace JRPG_Project.ClassLibrary.Universal
             foreach (Armour item in armours)
             {
                 ListBoxItem listItem = new ListBoxItem();
-                listItem.Content = item.ToString();
+                //Display who equiped the item
+                string owner = ItemData.GetOwnersName(item);
+                if (owner == "/")
+                {
+                    listItem.Content = item.ToString();
+                }
+                else
+                {
+                    listItem.Content = item.ToString() + " --> " + owner;
+                }
                 listItem.Tag = item.UniqueID;
                 listItem.Foreground = GetBrush(item.Rarity);
                 LstArmours.Items.Add(listItem);
@@ -205,7 +225,16 @@ namespace JRPG_Project.ClassLibrary.Universal
             foreach (Amulet item in amulets)
             {
                 ListBoxItem listItem = new ListBoxItem();
-                listItem.Content = item.ToString();
+                //Display who equiped the item
+                string owner = ItemData.GetOwnersName(item);
+                if (owner == "/")
+                {
+                    listItem.Content = item.ToString();
+                }
+                else
+                {
+                    listItem.Content = item.ToString() + " --> " + owner;
+                }
                 listItem.Tag = item.UniqueID;
                 listItem.Foreground = GetBrush(item.Rarity);
                 LstAmulets.Items.Add(listItem);
@@ -225,6 +254,9 @@ namespace JRPG_Project.ClassLibrary.Universal
 
             //Get selected item
             ListBoxItem listItem = (ListBoxItem)listbox.SelectedItem;
+
+            //Save unique id
+            SelectedItemUniqueID = (string)listItem.Tag;
 
             //Get selected item & display
             try

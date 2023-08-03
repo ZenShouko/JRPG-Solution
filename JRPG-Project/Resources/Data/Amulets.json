@@ -7,14 +7,14 @@
         "ImageName": "skullcoin-talisman.png",
         "Value": "10",
         "Stats": {
-            "HP": "0",
-            "DMG": "0",
-            "DEF": "0",
-            "SPD": "0",
-            "CRC": "0",
-            "CRD": "0",
-            "STA": "0",
-            "STR": "0"
+            "HP": "10",
+            "DMG": "5",
+            "DEF": "5",
+            "SPD": "5",
+            "CRC": "2",
+            "CRD": "5",
+            "STA": "5",
+            "STR": "3"
         },
         "CharmID": ""
     },
@@ -26,14 +26,14 @@
         "ImageName": "coralburst-ring.png",
         "Value": "10",
         "Stats": {
-            "HP": "0",
-            "DMG": "0",
-            "DEF": "0",
-            "SPD": "0",
-            "CRC": "0",
-            "CRD": "0",
-            "STA": "0",
-            "STR": "0"
+            "HP": "5",
+            "DMG": "10",
+            "DEF": "10",
+            "SPD": "5",
+            "CRC": "5",
+            "CRD": "10",
+            "STA": "10",
+            "STR": "5"
         },
         "CharmID": ""
     },
@@ -45,14 +45,14 @@
         "ImageName": "seadog-token.png",
         "Value": "10",
         "Stats": {
-            "HP": "0",
-            "DMG": "0",
-            "DEF": "0",
-            "SPD": "0",
-            "CRC": "0",
-            "CRD": "0",
-            "STA": "0",
-            "STR": "0"
+            "HP": "10",
+            "DMG": "10",
+            "DEF": "5",
+            "SPD": "15",
+            "CRC": "5",
+            "CRD": "10",
+            "STA": "15",
+            "STR": "10"
         },
         "CharmID": ""
     },
@@ -64,14 +64,14 @@
         "ImageName": "cyclopsoul-tablet.png",
         "Value": "10",
         "Stats": {
-            "HP": "0",
-            "DMG": "0",
-            "DEF": "0",
-            "SPD": "0",
-            "CRC": "0",
-            "CRD": "0",
-            "STA": "0",
-            "STR": "0"
+            "HP": "20",
+            "DMG": "10",
+            "DEF": "12",
+            "SPD": "5",
+            "CRC": "10",
+            "CRD": "20",
+            "STA": "15",
+            "STR": "2"
         },
         "CharmID": ""
     },
@@ -83,14 +83,14 @@
         "ImageName": "heartstone-pendant.png",
         "Value": "10",
         "Stats": {
-            "HP": "0",
-            "DMG": "0",
-            "DEF": "0",
-            "SPD": "0",
-            "CRC": "0",
-            "CRD": "0",
-            "STA": "0",
-            "STR": "0"
+            "HP": "50",
+            "DMG": "25",
+            "DEF": "20",
+            "SPD": "10",
+            "CRC": "10",
+            "CRD": "20",
+            "STA": "20",
+            "STR": "20"
         },
         "CharmID": ""
     },
@@ -102,14 +102,14 @@
         "ImageName": "gearforged-ring.png",
         "Value": "10",
         "Stats": {
-            "HP": "0",
-            "DMG": "0",
-            "DEF": "0",
-            "SPD": "0",
-            "CRC": "0",
-            "CRD": "0",
-            "STA": "0",
-            "STR": "0"
+            "HP": "65",
+            "DMG": "35",
+            "DEF": "40",
+            "SPD": "25",
+            "CRC": "25",
+            "CRD": "50",
+            "STA": "30",
+            "STR": "20"
         },
         "CharmID": ""
     }

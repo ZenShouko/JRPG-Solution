@@ -1,5 +1,6 @@
 ﻿using JRPG_ClassLibrary;
 using JRPG_Project.ClassLibrary.Data;
+using JRPG_Project.ClassLibrary.Player;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +26,12 @@ namespace JRPG_Project.Tabs
         public MainTab()
         {
             InitializeComponent();
+            UpdateGUI();
+        }
+
+        private void UpdateGUI()
+        {
+            TxtCoins.Text = Inventory.Coins.ToString();
         }
 
         private void OpenTab(object sender, RoutedEventArgs e)
