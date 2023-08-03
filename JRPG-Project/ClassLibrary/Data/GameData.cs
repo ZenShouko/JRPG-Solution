@@ -68,6 +68,7 @@ namespace JRPG_Project.ClassLibrary.Data
             Inventory.Weapons[0].Description = "Cursed by yo moms baking poweder ... !! \n >:-(";
             Inventory.Weapons[0].Value = 500;
             LevelData.AddXP(Inventory.Weapons[0], 2000);
+            ItemData.CalculateValue(Inventory.Weapons[0]);
 
             PlayerActions.AddItem(ItemData.ListAmulets.Find(x => x.ID == "AM1"));
         }

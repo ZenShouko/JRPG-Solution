@@ -93,6 +93,7 @@
     <Compile Include="ClassLibrary\Data\PlayerData.cs" />
     <Compile Include="ClassLibrary\Entities\Character.cs" />
     <Compile Include="ClassLibrary\Entities\Coordinates.cs" />
+    <Compile Include="ClassLibrary\Entities\ItemValueFormula.cs" />
     <Compile Include="ClassLibrary\Entities\Lootbox.cs" />
     <Compile Include="ClassLibrary\Entities\MapObject.cs" />
     <Compile Include="ClassLibrary\Entities\Serialization\CharacterSave.cs" />
@@ -226,6 +227,9 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="JRPG-key.pfx" />
+    <None Include="Resources\Data\ItemValueMultipliers.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\Data\Lootbox.json" />
     <Resource Include="Resources\Poppins-Regular.ttf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

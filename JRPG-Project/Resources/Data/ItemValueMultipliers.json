@@ -1,0 +1,35 @@
+[
+    {
+        "ItemType": "WEAPON",
+        "DmgMultiplier": "10",
+        "DefMultiplier": "5",
+        "HpMultiplier": "9",
+        "SpdMultiplier": "10",
+        "CrcMultiplier": "15",
+        "CrdMultiplier": "9",
+        "StaMultiplier": "8",
+        "StrMultiplier": "6"
+    },
+    {
+        "ItemType": "ARMOUR",
+        "DmgMultiplier": "7",
+        "DefMultiplier": "10",
+        "HpMultiplier": "12",
+        "SpdMultiplier": "8",
+        "CrcMultiplier": "20",
+        "CrdMultiplier": "15",
+        "StaMultiplier": "15",
+        "StrMultiplier": "10"
+    },
+    {
+        "ItemType": "AMULET",
+        "DmgMultiplier": "10",
+        "DefMultiplier": "8",
+        "HpMultiplier": "8",
+        "SpdMultiplier": "8",
+        "CrcMultiplier": "15",
+        "CrdMultiplier": "12",
+        "StaMultiplier": "10",
+        "StrMultiplier": "10"
+    }
+]
