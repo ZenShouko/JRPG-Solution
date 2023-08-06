@@ -26,12 +26,14 @@ namespace JRPG_Project.ClassLibrary.Data
         public List<Weapon> Weapons { get; set; } = new List<Weapon>();
         public List<Armour> Armours { get; set; } = new List<Armour>();
         public List<Amulet> Amulets { get; set; } = new List<Amulet>();
-        public List<BaseItem> ShoppingBag { get; set; } = new List<BaseItem>();
+        public Dictionary<string, bool> MarketRequests { get; set; } = new Dictionary<string, bool>();
+        public Dictionary<string, int> Materials { get; set; } = new Dictionary<string, int>();
 
         //Misceallaneous
         public DateTime LastSaveTime { get; set; }
+        public DateTime MarketRefresh { get; set; }
 
         //Methods
-        
+
     }
 }

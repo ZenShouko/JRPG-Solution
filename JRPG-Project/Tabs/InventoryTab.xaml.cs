@@ -6,11 +6,8 @@ using JRPG_Project.ClassLibrary.Player;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
@@ -25,7 +22,7 @@ namespace JRPG_Project.ClassLibrary.Universal
         {
             InitializeComponent();
             PrepareGUI();
-
+            DisplayBlank();
             //LoadItems(SortOptions[CboxSort.SelectedIndex]);
             //Load all items
             //LoadAllitems();
@@ -77,6 +74,39 @@ namespace JRPG_Project.ClassLibrary.Universal
             foreach (ListBoxItem item in InventoryData.GetAmuletsAsListboxItem())
             {
                 LstAmulets.Items.Add(item);
+            }
+        }
+
+        private void LoadMaterials()
+        {
+            //@Materials do not follow regular sorting rules
+            //Clear list
+            LstMaterials.Items.Clear();
+
+            List<Material> materials = new List<Material>();
+
+            //Add all materials to list
+            foreach (var item in Inventory.Materials)
+            {
+                Material mat = ItemData.ListMaterials.FirstOrDefault(x => x.ID == item.Key);
+
+                //Skip if player has no materials of this type
+                if (Inventory.Materials[item.Key] == 0)
+                    continue;
+
+                materials.Add(mat);
+            }
+
+            //Sort list based on xp descending
+            materials = materials.OrderByDescending(x => x.Stats.XP).ToList();
+
+            //Display all materials
+            foreach (Material mat in materials)
+            {
+                ListBoxItem boxItem = new ListBoxItem();
+                boxItem.Content = $"[x{Inventory.Materials[mat.ID]}] {mat.Name}";
+                boxItem.Tag = mat.ID;
+                LstMaterials.Items.Add(boxItem);
             }
         }
 
@@ -166,6 +196,9 @@ namespace JRPG_Project.ClassLibrary.Universal
 
             //Add to listboxes
             AddToList(collectables, weapons, armours, amulets);
+
+            //Load materials (Materials do not follow sorting options)
+            LoadMaterials();
         }
 
         private void AddToList(List<Collectable> collectables, List<Weapon> weapons, List<Armour> armours, List<Amulet> amulets)
@@ -366,6 +399,25 @@ namespace JRPG_Project.ClassLibrary.Universal
                             }
                             break;
                         }
+                    case "LstMaterials":
+                        {
+                            //Get selected item as collectable
+                            Material mat = ItemData.ListMaterials.FirstOrDefault(i => i.ID == (string)listItem.Tag);
+                            TxtItemName.Text = mat.Name;
+                            TxtItemDescription.Text = mat.Description;
+                            Txtlevel.Text = mat.Level.ToString();
+                            TxtValue.Text = mat.Value.ToString();
+                            TxtRarity.Text = mat.Rarity;
+                            TxtRarity.Foreground = mat.Rarity == "COMMON" ? Brushes.White : GetBrush(mat.Rarity);
+                            ImgItem.Source = mat.ItemImage.Source;
+                            DisplayItemStats(mat.Stats.ToString());
+
+                            TxtXp.Text = mat.Stats.GetXP() + "xp";
+                            TxtMaxXp.Text = "MAX";
+                            ProgressbarXP.Maximum = 250;
+                            ProgressbarXP.Value = mat.Stats.XP;
+                            break;
+                        }
                 }
             }
             catch (Exception ex)
@@ -405,7 +457,32 @@ namespace JRPG_Project.ClassLibrary.Universal
             GridStats.Visibility = Visibility.Collapsed;
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void DisplayBlank()
+        {
+            //Count mat amount
+            int matCount = 0;
+            foreach (var count in Inventory.Materials.Values)
+            {
+                matCount += count;
+            }
+
+            //Get selected item as amulet
+            TxtItemName.Text = "My Inventory";
+            TxtItemDescription.Text = $"You've got: {Inventory.Weapons.Count} weapons, {Inventory.Armours.Count} armours, {Inventory.Amulets.Count} amulets, {Inventory.Collectables.Count} collectables and {matCount} materials.";
+            Txtlevel.Text = "1";
+            TxtValue.Text = "0";
+            TxtRarity.Text = "COMMON";
+            TxtRarity.Foreground = Brushes.White;
+            ImgItem.Source = new BitmapImage(new Uri("pack://application:,,,/Resources/Assets/GUI/alligator.png", UriKind.RelativeOrAbsolute));
+            DisplayItemStats("0;0;0;0;0;0;0;0");
+
+            TxtXp.Text = (Inventory.Weapons.Count + Inventory.Armours.Count + Inventory.Amulets.Count).ToString();
+            TxtMaxXp.Text = Inventory.Capacity.ToString();
+            ProgressbarXP.Maximum = Convert.ToInt32(TxtMaxXp.Text);
+            ProgressbarXP.Value = Convert.ToInt16(TxtXp.Text);
+        }
+
+        private void ReturnButton_Click(object sender, RoutedEventArgs e)
         {
             Interaction.OpenTab("MainTab");
         }
@@ -413,6 +490,45 @@ namespace JRPG_Project.ClassLibrary.Universal
         private void CboxSort_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             LoadItems(SortOptions[CboxSort.SelectedIndex]);
+        }
+
+        private void ExtractEssence_Click(object sender, RoutedEventArgs e)
+        {
+            //Get selected item as base item
+            BaseItem item;
+
+            if (LstCollectables.SelectedIndex != -1)
+            {
+                ListBoxItem listItem = (ListBoxItem)LstCollectables.SelectedItem;
+                item = Inventory.Collectables.FirstOrDefault(i => i.UniqueID == (string)listItem.Tag);
+            }
+            else if (LstWeapons.SelectedIndex != -1)
+            {
+                ListBoxItem listItem = (ListBoxItem)LstWeapons.SelectedItem;
+                item = Inventory.Weapons.FirstOrDefault(i => i.UniqueID == (string)listItem.Tag);
+            }
+            else if (LstArmours.SelectedIndex != -1)
+            {
+                ListBoxItem listItem = (ListBoxItem)LstArmours.SelectedItem;
+                item = Inventory.Armours.FirstOrDefault(i => i.UniqueID == (string)listItem.Tag);
+            }
+            else if (LstAmulets.SelectedIndex != -1)
+            {
+                ListBoxItem listItem = (ListBoxItem)LstAmulets.SelectedItem;
+                item = Inventory.Amulets.FirstOrDefault(i => i.UniqueID == (string)listItem.Tag);
+            }
+            else
+            {
+                return;
+            }
+
+            //Open extract essence window
+            EssenceExtractionWindow window = new EssenceExtractionWindow(item);
+            window.ShowDialog();
+
+            //Refresh inventory
+            LoadItems(SortOptions[CboxSort.SelectedIndex]);
+            DisplayBlank();
         }
     }
 }

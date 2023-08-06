@@ -10,11 +10,11 @@ none
 false
 DEBUG;TRACE
 C:\Users\emre_\Documents\Visual Studio 2022\Personal Solutions\JRPG-Solution\JRPG-Project\App.xaml
-121006303433
+15-1453984589
 
-55539308812
-14-88557406
-ChangeEquipmentWindow.xaml;LootboxWindow.xaml;SaveWindow.xaml;StatsWindow.xaml;Tabs\InventoryTab.xaml;MainWindow.xaml;Resources\ResourceDictionary.xaml;Tabs\MainTab.xaml;Tabs\DispatchTab.xaml;PlatformFinder.xaml;Tabs\MarketTab.xaml;Tabs\TeamTab.xaml;
+59-1152707304
+15252156838
+ChangeEquipmentWindow.xaml;EssenceExtractionWindow.xaml;LootboxWindow.xaml;SaveWindow.xaml;StatsWindow.xaml;Tabs\InventoryTab.xaml;MainWindow.xaml;Resources\ResourceDictionary.xaml;Tabs\MainTab.xaml;Tabs\DispatchTab.xaml;PlatformFinder.xaml;Tabs\MarketTab.xaml;Tabs\TeamTab.xaml;Tabs\UpgradesTab.xaml;VendingMachineTab.xaml;
 
 False
 

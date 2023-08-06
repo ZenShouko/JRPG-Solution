@@ -39,24 +39,7 @@ namespace JRPG_Project.ClassLibrary
         /// <param name="otherItem"></param>
         public virtual void CopyFrom(BaseItem otherItem)
         {
-            //Include item type in unique ID
-            if (otherItem is Weapon)
-            {
-                UniqueID = "weapon" + Guid.NewGuid().ToString();
-            }
-            else if (otherItem is Armour)
-            {
-                UniqueID = "armour" + Guid.NewGuid().ToString();
-            }
-            else if (otherItem is Amulet)
-            {
-                 UniqueID = "amulet" + Guid.NewGuid().ToString();
-            }
-            else if (otherItem is Collectable)
-            {
-                UniqueID = "collectable" + Guid.NewGuid().ToString();
-            }
-
+            UniqueID = otherItem.GetType().Name.ToLower() + Guid.NewGuid().ToString();
             ID = otherItem.ID;
             Level = otherItem.Level;
             Rarity = otherItem.Rarity;
@@ -72,6 +55,42 @@ namespace JRPG_Project.ClassLibrary
         /// <param name="item"></param>
         public virtual void LevelUp(BaseItem item)
         {
+            //Vars
+            IStatsHolder obj = item as IStatsHolder;
+            Dictionary<int, (int, Stats)> xpTable = new Dictionary<int, (int, Stats)>();
+
+            //Get the correct xp table
+            if (item.GetType().Name.ToUpper() == "WEAPON")
+                xpTable = LevelData.WeaponXPTable;
+            else if (item.GetType().Name.ToUpper() == "ARMOUR")
+                xpTable = LevelData.ArmourXPTable;
+            else if (item.GetType().Name.ToUpper() == "AMULET")
+                xpTable = LevelData.AmuletXPTable;
+
+            //Apply the level up
+            item.Level++;
+
+            //Substract the required XP
+            obj.Stats.XP -= xpTable[item.Level].Item1;
+
+            //Add the stats to the item
+            obj.Stats.HP += xpTable[item.Level].Item2.HP;
+            obj.Stats.DEF += xpTable[item.Level].Item2.DEF;
+            obj.Stats.DMG += xpTable[item.Level].Item2.DMG;
+            obj.Stats.SPD += xpTable[item.Level].Item2.SPD;
+            obj.Stats.STA += xpTable[item.Level].Item2.STA;
+            obj.Stats.STR += xpTable[item.Level].Item2.STR;
+            obj.Stats.CRC += xpTable[item.Level].Item2.CRC;
+            obj.Stats.CRD += xpTable[item.Level].Item2.CRD;
+
+            //Reset xp to max if level is max
+            if (item.Level == xpTable.Keys.LastOrDefault())
+            {
+                obj.Stats.XP = xpTable[item.Level].Item1;
+            }
+            return;
+
+            //Old code
             if (item is Weapon wpn)
             {
                 //Increase the level

@@ -8,62 +8,119 @@
              d:DesignHeight="600" d:DesignWidth="800">
     <Grid Background="White">
         <Grid.RowDefinitions>
-            <RowDefinition Height="2*"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="225"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         
         <!--Requests-->
-        <DockPanel Margin="10">
-            <TextBlock DockPanel.Dock="Top" Text="Open requests:" FontSize="22" TextAlignment="Center"/>
+        <DockPanel>
+            <DockPanel.Background>
+                <SolidColorBrush Color="#2B2A4C" Opacity="0.8"/>
+            </DockPanel.Background>
+            <TextBlock DockPanel.Dock="Top" Text="Open requests:" FontSize="22" HorizontalAlignment="Center" Margin="0 10 0 0" Padding="4"
+                       Foreground="White">
+                <TextBlock.Background>
+                    <SolidColorBrush Color="Black" Opacity="0.4"/>
+                </TextBlock.Background>
+            </TextBlock>
             <StackPanel Orientation="Horizontal" Margin="10 5" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <Border Name="BorderItem1" BorderThickness="1 1 2 2" BorderBrush="Black" CornerRadius="2" Padding="5" Margin="10 0" Width="160">
+                    <Border.Background>
+                        <SolidColorBrush Color="#F5EFE7" Opacity="1"/>
+                    </Border.Background>
                     <DockPanel>
-                        <TextBlock x:Name="TxtItem1Name" DockPanel.Dock="Top" Text="Trainees Edge" TextAlignment="Center" FontSize="15"/>
+                        <TextBlock x:Name="TxtItem1Name" DockPanel.Dock="Top" Text="Trainees Edge" TextAlignment="Center" FontSize="15"
+                                   Foreground="Black" Padding="2">
+                            <TextBlock.Background>
+                                <SolidColorBrush Color="Black" Opacity="0.1"/>
+                            </TextBlock.Background>
+                        </TextBlock>
                         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 6 0 5">
                             <Button Content="Stats" Style="{StaticResource menu-button}" Width="50" Height="25" FontSize="12" Margin="1 0"
                                     x:Name="BtnStats1" Click="StatsButton_Click"/>
                             <Button Content="Sell" Style="{StaticResource menu-button}" Width="50" Height="25" FontSize="13" Margin="1 0"
                                     x:Name="BtnSell1" Click="SellButton_Click"/>
                         </StackPanel>
-                        <TextBlock x:Name="TxtItem1Reward" DockPanel.Dock="Bottom" Text="Reward: 400 coins" TextAlignment="Center"/>
+                        <TextBlock x:Name="TxtItem1Reward" DockPanel.Dock="Bottom" Text="Reward: 400 coins" TextAlignment="Center"
+                                   FontWeight="Bold" Foreground="Black" Padding="2">
+                            <TextBlock.Background>
+                                <SolidColorBrush Color="Black" Opacity="0.1"/>
+                            </TextBlock.Background>
+                        </TextBlock>
                         <Image x:Name="ImgItem1" Source="/Resources/Assets/Weapons/trainees-edge.png" Height="150" Margin="0 10"/>
                     </DockPanel>
                 </Border>
                 <Border Name="BorderItem2" BorderThickness="1 1 2 2" BorderBrush="Black" CornerRadius="2" Padding="5" Margin="10 0" Width="160">
+                    <Border.Background>
+                        <SolidColorBrush Color="#F5EFE7" Opacity="1"/>
+                    </Border.Background>
                     <DockPanel>
-                        <TextBlock x:Name="TxtItem2Name" DockPanel.Dock="Top" Text="Trainees Edge" TextAlignment="Center" FontSize="15"/>
+                        <TextBlock x:Name="TxtItem2Name" DockPanel.Dock="Top" Text="Trainees Edge" TextAlignment="Center" FontSize="15"
+                                   Foreground="Black" Padding="2">
+                            <TextBlock.Background>
+                                <SolidColorBrush Color="Black" Opacity="0.1"/>
+                            </TextBlock.Background>
+                        </TextBlock>
                         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 6 0 5">
                             <Button Content="Stats" Style="{StaticResource menu-button}" Width="50" Height="25" FontSize="12" Margin="1 0"
                                     x:Name="BtnStats2" Click="StatsButton_Click"/>
                             <Button Content="Sell" Style="{StaticResource menu-button}" Width="50" Height="25" FontSize="13" Margin="1 0"
                                     x:Name="BtnSell2" Click="SellButton_Click"/>
                         </StackPanel>
-                        <TextBlock x:Name="TxtItem2Reward" DockPanel.Dock="Bottom" Text="Reward: 400 coins" TextAlignment="Center"/>
+                        <TextBlock x:Name="TxtItem2Reward" DockPanel.Dock="Bottom" Text="Reward: 400 coins" TextAlignment="Center"
+                                   FontWeight="Bold" Foreground="Black" Padding="2">
+                            <TextBlock.Background>
+                                <SolidColorBrush Color="Black" Opacity="0.1"/>
+                            </TextBlock.Background>
+                        </TextBlock>
                         <Image x:Name="ImgItem2" Source="/Resources/Assets/Weapons/trainees-edge.png" Height="150" Margin="0 10"/>
                     </DockPanel>
                 </Border>
                 <Border Name="BorderItem3" BorderThickness="1 1 2 2" BorderBrush="Black" CornerRadius="2" Padding="5" Margin="10 0" Width="160">
+                    <Border.Background>
+                        <SolidColorBrush Color="#F5EFE7" Opacity="1"/>
+                    </Border.Background>
                     <DockPanel>
-                        <TextBlock x:Name="TxtItem3Name" DockPanel.Dock="Top" Text="Trainees Edge" TextAlignment="Center" FontSize="15"/>
+                        <TextBlock x:Name="TxtItem3Name" DockPanel.Dock="Top" Text="Trainees Edge" TextAlignment="Center" FontSize="15"
+                                   Foreground="Black" Padding="2">
+                            <TextBlock.Background>
+                                <SolidColorBrush Color="Black" Opacity="0.1"/>
+                            </TextBlock.Background>
+                        </TextBlock>
                         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 6 0 5">
                             <Button Content="Stats" Style="{StaticResource menu-button}" Width="50" Height="25" FontSize="12" Margin="1 0"
                                     x:Name="BtnStats3" Click="StatsButton_Click"/>
                             <Button Content="Sell" Style="{StaticResource menu-button}" Width="50" Height="25" FontSize="13" Margin="1 0"
                                     x:Name="BtnSell3" Click="SellButton_Click"/>
                         </StackPanel>
-                        <TextBlock x:Name="TxtItem3Reward" DockPanel.Dock="Bottom" Text="Reward: 400 coins" TextAlignment="Center"/>
+                        <TextBlock x:Name="TxtItem3Reward" DockPanel.Dock="Bottom" Text="Reward: 400 coins" TextAlignment="Center"
+                                   FontWeight="Bold" Foreground="Black" Padding="2">
+                            <TextBlock.Background>
+                                <SolidColorBrush Color="Black" Opacity="0.1"/>
+                            </TextBlock.Background>
+                        </TextBlock>
                         <Image x:Name="ImgItem3" Source="/Resources/Assets/Weapons/trainees-edge.png" Height="150" Margin="0 10"/>
                     </DockPanel>
                 </Border>
             </StackPanel>
         </DockPanel>
 
+        <!--TIME MIDDLE-->
+        <TextBlock Grid.Row="1" x:Name="TxtNextRefreshTime" Text="Next refresh at 00:00" VerticalAlignment="Top" TextAlignment="Center"
+                   Foreground="White" FontSize="12.5">
+            <TextBlock.Background>
+                <SolidColorBrush Color="Black" Opacity="0.8"/>
+            </TextBlock.Background>
+        </TextBlock>
+
+        <!--Vending Machine-->
+        <Grid x:Name="VendingMachinePanel" Grid.Row="2" Background="#322653"/>
+
         <!--Buttons-->
-        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
-            <Button Content="Return" Style="{StaticResource menu-button}" Click="ReturnButton_Click" Margin="5 0"/>
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Stretch" Background="#2B2730">
+            <Button Content="Return" Style="{StaticResource menu-button}" Click="ReturnButton_Click" Margin="5"/>
         </StackPanel>
-        
-        <!--Bottom-->
-        <TextBlock Grid.Row="1" x:Name="TxtNextRefreshTime" Text="Next refresh at 00:00" VerticalAlignment="Top" TextAlignment="Center"/>
     </Grid>
 </UserControl>

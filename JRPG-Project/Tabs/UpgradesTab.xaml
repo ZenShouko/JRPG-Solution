@@ -1,0 +1,100 @@
+﻿<UserControl x:Class="JRPG_Project.Tabs.UpgradesTab"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:JRPG_Project.Tabs"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="800">
+    <Grid Background="#272829">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="225"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="35"/>
+        </Grid.RowDefinitions>
+        
+        <!--Item Preview-->
+        <Grid Background="#F6F4EB">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="250"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            
+            <!--Item Image-->
+            <Image x:Name="ItemImage" Source="/Resources/Assets/Weapons/hareblade.png" Height="150" Stretch="Uniform"/>
+            
+            <!--Upgrade Info-->
+            <StackPanel Grid.Column="1" Margin="6" VerticalAlignment="Center">
+                <!--Stats Preview-->
+                <TextBlock Text="Preview Upgrade:" FontSize="24" Margin="2 0 0 5"/>
+                <Border Background="WhiteSmoke" BorderBrush="Black" BorderThickness="1" CornerRadius="2" HorizontalAlignment="Center">
+                    <StackPanel>
+                        <WrapPanel HorizontalAlignment="Center" Margin="0 5">
+                            <DockPanel Margin="8 0" ToolTip="HP">
+                                <Image Source="\Resources\Assets\GUI\heart.png" Height="24"/>
+                                <TextBlock x:Name="TxtHpPreview" Text="20 -> 25" FontSize="14" VerticalAlignment="Center" Margin="5 0"/>
+                            </DockPanel>
+                            <DockPanel Margin="8 0" ToolTip="DMG">
+                                <Image Source="\Resources\Assets\GUI\tank.png" Height="24"/>
+                                <TextBlock x:Name="TxtDmgPreview" Text="20 -> 25" FontSize="14" VerticalAlignment="Center" Margin="5 0"/>
+                            </DockPanel>
+                            <DockPanel Margin="8 0" ToolTip="DEF">
+                                <Image Source="\Resources\Assets\GUI\shield.png" Height="24"/>
+                                <TextBlock x:Name="TxtDefPreview" Text="20 -> 25" FontSize="14" VerticalAlignment="Center" Margin="5 0"/>
+                            </DockPanel>
+                            <DockPanel Margin="8 0" ToolTip="SPD">
+                                <Image Source="\Resources\Assets\GUI\speed.png" Height="24"/>
+                                <TextBlock x:Name="TxtSpdPreview" Text="20 -> 25" FontSize="14" VerticalAlignment="Center" Margin="5 0"/>
+                            </DockPanel>
+                        </WrapPanel>
+                        <WrapPanel HorizontalAlignment="Center" Margin="0 5">
+                            <DockPanel Margin="8 0" ToolTip="STA">
+                                <Image Source="\Resources\Assets\GUI\green-lamp.png" Height="24"/>
+                                <TextBlock x:Name="TxtStaPreview" Text="20 -> 25" FontSize="14" VerticalAlignment="Center" Margin="5 0"/>
+                            </DockPanel>
+                            <DockPanel Margin="8 0" ToolTip="STR">
+                                <Image Source="\Resources\Assets\GUI\atomn.png" Height="24"/>
+                                <TextBlock x:Name="TxtStrPreview" Text="20 -> 25" FontSize="14" VerticalAlignment="Center" Margin="5 0"/>
+                            </DockPanel>
+                            <DockPanel Margin="8 0" ToolTip="CRC">
+                                <Image Source="\Resources\Assets\GUI\clover.png" Height="24"/>
+                                <TextBlock x:Name="TxtCrcPreview" Text="20 -> 25" FontSize="14" VerticalAlignment="Center" Margin="5 0"/>
+                            </DockPanel>
+                            <DockPanel Margin="8 0" ToolTip="CRD">
+                                <Image Source="\Resources\Assets\GUI\alligator.png" Height="24"/>
+                                <TextBlock x:Name="TxtCrdPreview" Text="20 -> 25" FontSize="14" VerticalAlignment="Center" Margin="5 0"/>
+                            </DockPanel>
+                        </WrapPanel>
+                    </StackPanel>
+                </Border>
+                
+                <!--Level& Value preview-->
+                <StackPanel Orientation="Horizontal" Margin="15" HorizontalAlignment="Center">
+                    <Border Width="200" Background="#4A55A2" BorderBrush="Black" BorderThickness="1" CornerRadius="2" 
+                            Margin="5 0" Padding="4" ToolTip="Level">
+                        <TextBlock x:Name="TxtLevelPreview" Text="1 -> 2" FontSize="20" Foreground="White" 
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <Border Width="200" Background="#606C5D" BorderBrush="Black" BorderThickness="1" CornerRadius="2" 
+                            Margin="5 0" Padding="4" ToolTip="Value">
+                        <TextBlock x:Name="TxtValuePreview" Text="600 -> 23400" FontSize="20" Foreground="White" 
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                </StackPanel>
+
+                <!--Xp Preview-->
+                <DockPanel Margin="0 10 0 0">
+                    <TextBlock DockPanel.Dock="Left" x:Name="TxtCurrentXp" Text="0xp" VerticalAlignment="Center" FontSize="14"/>
+                    <TextBlock DockPanel.Dock="Right" x:Name="TxtMaxXp" Text="1000xp" VerticalAlignment="Center" FontSize="14"/>
+                    <ProgressBar x:Name="XpBar" Height="20" Width="350" Style="{StaticResource XpProgressBar}" Margin="10 0"/>
+                </DockPanel>
+            </StackPanel>
+        </Grid>
+        
+        
+        <!--Buttons-->
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="2">
+            <Button Content="Return" Style="{StaticResource menu-button}"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

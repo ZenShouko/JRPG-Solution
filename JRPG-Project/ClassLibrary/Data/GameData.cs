@@ -13,11 +13,9 @@ namespace JRPG_Project.ClassLibrary.Data
 {
     public static class GameData
     {
-        public static DataSet DB_Game = new DataSet("DB_JRPG"); //to be removed
-
         public static void InitializeData()
         {
-            //TODO: CHANGE (Initialize Foe Table and add to database)
+            //TODO: CHANGE (Initialize Foe Table and add to database) // scraped
             //FoeData.InitializeTable();
             //DB_Game.Tables.Add(FoeData.FoeTable);
 
@@ -59,14 +57,13 @@ namespace JRPG_Project.ClassLibrary.Data
                 PlayerActions.AddItem(ItemData.ListWeapons.Find(x => x.ID == "W1"));
             }
 
+            //@Add All Materials
+            foreach (Material material in ItemData.ListMaterials)
+            {
+                Inventory.Materials.Add(material.ID, 0);
+            }
+
             //(Test) Enhance first weapon
-            Inventory.Weapons[0].Stats.DMG += 100;
-            Inventory.Weapons[0].Stats.SPD += 100;
-            Inventory.Weapons[0].Stats.DEF -= 100;
-            Inventory.Weapons[0].Rarity = "CURSED";
-            Inventory.Weapons[0].Name = "Cursed " + Inventory.Weapons[0].Name;
-            Inventory.Weapons[0].Description = "Cursed by yo moms baking poweder ... !! \n >:-(";
-            Inventory.Weapons[0].Value = 500;
             LevelData.AddXP(Inventory.Weapons[0], 2000);
             ItemData.CalculateValue(Inventory.Weapons[0]);
 
@@ -96,36 +93,41 @@ namespace JRPG_Project.ClassLibrary.Data
             //Deserialize PlayerData
             PlayerData data = JsonConvert.DeserializeObject<PlayerData>(json);
 
-            //Copy PlayerData to Inventory
+            //#Copy PlayerData to Inventory
             Inventory.Capacity = data.Capacity;
             Inventory.Coins = data.Coins;
+            Inventory.LastSaveTime = data.LastSaveTime;
+
+            //#Copy items to inventory
             Inventory.Collectables = data.Collectables;
             Inventory.Weapons = data.Weapons;
             Inventory.Armours = data.Armours;
             Inventory.Amulets = data.Amulets;
-            //Inventory.ShoppingBag = data.ShoppingBag;
+            Inventory.Materials = data.Materials;
 
             //Generate image for each item
             foreach (Collectable item in Inventory.Collectables)
             {
-                item.ItemImage = ItemData.GetItemImage("Collectables/" + item.ImageName);
+                item.ItemImage = ItemData.GetItemImage(item);
             }
             foreach (Weapon item in Inventory.Weapons)
             {
-                item.ItemImage = ItemData.GetItemImage("Weapons/" + item.ImageName);
+                item.ItemImage = ItemData.GetItemImage(item);
             }
             foreach (Armour item in Inventory.Armours)
             {
-                item.ItemImage = ItemData.GetItemImage("Armours/" + item.ImageName);
+                item.ItemImage = ItemData.GetItemImage(item);
             }
             foreach (Amulet item in Inventory.Amulets)
             {
-                item.ItemImage = ItemData.GetItemImage("Amulets/" + item.ImageName);
+                item.ItemImage = ItemData.GetItemImage(item);
             }
 
-            Inventory.LastSaveTime = data.LastSaveTime;
+            //#Load Market
+            Inventory.MarketRefresh = data.MarketRefresh;
+            Inventory.MarketRequests = data.MarketRequests;
 
-            //Load team
+            //#Load team
             Inventory.Team = data.Team;
             for (int i = 0; i < 3; i++)
             {
@@ -141,12 +143,6 @@ namespace JRPG_Project.ClassLibrary.Data
                 File.Delete(@"../../Resources/Data/PlayerData.json");
             }
             catch { }
-        }
-
-        public static bool HasUnsavedChanges()
-        {
-            //Scraped
-            return false;
         }
 
         public static bool IsThereASaveFile()
@@ -168,6 +164,7 @@ namespace JRPG_Project.ClassLibrary.Data
             data.Armours = Inventory.Armours;
             data.Amulets = Inventory.Amulets;
             data.Collectables = Inventory.Collectables;
+            data.Materials = Inventory.Materials;
 
             //#Team
             data.Team = Inventory.Team;
@@ -178,6 +175,10 @@ namespace JRPG_Project.ClassLibrary.Data
 
             //#Save Time
             data.LastSaveTime = DateTime.Now;
+
+            //#Market
+            data.MarketRefresh = Inventory.MarketRefresh;
+            data.MarketRequests = Inventory.MarketRequests;
 
             return data;
         }

@@ -17,6 +17,7 @@ namespace JRPG_Project.ClassLibrary.Data
         public static List<Weapon> ListWeapons = new List<Weapon>();
         public static List<Armour> ListArmours = new List<Armour>();
         public static List<Amulet> ListAmulets = new List<Amulet>();
+
         public static List<ItemValueFormula> ListValueMultipliers = new List<ItemValueFormula>();
         public static Dictionary<string, double> RarityMultipliers = new Dictionary<string, double>()
         {
@@ -25,6 +26,8 @@ namespace JRPG_Project.ClassLibrary.Data
             { "CURSED", 2 },
             { "LEGENDARY", 2.5 }
         };
+
+        public static List<Material> ListMaterials = new List<Material>();
 
         public static void InitializeLists()
         {
@@ -39,7 +42,7 @@ namespace JRPG_Project.ClassLibrary.Data
             //Generate image for each collectable
             foreach (Collectable collectable in ListCollectables)
             {
-                collectable.ItemImage = GetItemImage("Collectables/" + collectable.ImageName);
+                collectable.ItemImage = GetItemImage(collectable);
             }
 
             //#Read Weapon json file
@@ -49,7 +52,7 @@ namespace JRPG_Project.ClassLibrary.Data
             //Generate image for each weapon & calculate value
             foreach (Weapon weapon in ListWeapons)
             {
-                weapon.ItemImage = GetItemImage("Weapons/" + weapon.ImageName);
+                weapon.ItemImage = GetItemImage(weapon);
                 CalculateValue(weapon);
             }
 
@@ -60,7 +63,7 @@ namespace JRPG_Project.ClassLibrary.Data
             //Generate image for each armour & calculate value
             foreach (Armour armour in ListArmours)
             {
-                armour.ItemImage = GetItemImage("Armours/" + armour.ImageName);
+                armour.ItemImage = GetItemImage(armour);
                 CalculateValue(armour);
             }
 
@@ -71,8 +74,18 @@ namespace JRPG_Project.ClassLibrary.Data
             //Generate image for each amulet & calculate value
             foreach (Amulet amulet in ListAmulets)
             {
-                amulet.ItemImage = GetItemImage("Amulets/" + amulet.ImageName);
+                amulet.ItemImage = GetItemImage(amulet);
                 CalculateValue(amulet);
+            }
+
+            //#Read Upgrade Materials json file
+            json = File.ReadAllText(@"../../Resources/Data/Materials.json");
+            ListMaterials = JsonConvert.DeserializeObject<List<Material>>(json);
+
+            //Generate image for each material
+            foreach (Material material in ListMaterials)
+            {
+                material.ItemImage = GetItemImage(material);
             }
         }
 
@@ -83,6 +96,7 @@ namespace JRPG_Project.ClassLibrary.Data
         /// <returns></returns>
         public static Image GetItemImage(string imageName)
         {
+            /// Replaced ---
             Image itemImage = new Image();
             itemImage.Source = new BitmapImage(new Uri(@"../../Resources/Assets/" + imageName, UriKind.Relative));
             return itemImage;
@@ -112,6 +126,10 @@ namespace JRPG_Project.ClassLibrary.Data
             else if (item is Collectable col)
             {
                 itemImage.Source = new BitmapImage(new Uri(@"../../Resources/Assets/Collectables/" + col.ImageName, UriKind.Relative));
+            }
+            else if (item is Material mat)
+            {
+                itemImage.Source = new BitmapImage(new Uri(@"../../Resources/Assets/Collectables/" + mat.ImageName, UriKind.Relative));
             }
 
             return itemImage;
@@ -216,73 +234,26 @@ namespace JRPG_Project.ClassLibrary.Data
             /// Calculate item value based on item type and item stats. Adds 10*level to value as well.
             /// 
 
-            //Get item value multiplier based on item type
-            if (item is Weapon wpn)
-            {
-                ItemValueFormula multipliers = ListValueMultipliers.Find(x => x.ItemType == "WEAPON");
+            IStatsHolder obj = item as IStatsHolder;
+            ItemValueFormula multipliers = ListValueMultipliers.Find(x => x.ItemType == item.GetType().Name.ToUpper());
 
-                //Calculate value based on stats
-                double value = (wpn.Stats.DMG * multipliers.DmgMultiplier) + (wpn.Stats.DEF * multipliers.DefMultiplier)
-                    + (wpn.Stats.HP * multipliers.HpMultiplier) + (wpn.Stats.SPD * multipliers.SpdMultiplier) +
-                    (wpn.Stats.STA * multipliers.StaMultiplier) + (wpn.Stats.STR * multipliers.StrMultiplier) +
-                    (wpn.Stats.CRC * multipliers.CrcMultiplier) + (wpn.Stats.CRD * multipliers.CrdMultiplier);
+            //Calculate value based on stats
+            double value = (obj.Stats.DMG * multipliers.DmgMultiplier) + (obj.Stats.DEF * multipliers.DefMultiplier)
+                + (obj.Stats.HP * multipliers.HpMultiplier) + (obj.Stats.SPD * multipliers.SpdMultiplier) +
+                (obj.Stats.STA * multipliers.StaMultiplier) + (obj.Stats.STR * multipliers.StrMultiplier) +
+                (obj.Stats.CRC * multipliers.CrcMultiplier) + (obj.Stats.CRD * multipliers.CrdMultiplier);
 
-                //Incorporate rarity multiplier
-                value *= RarityMultipliers[wpn.Rarity];
+            //Incorporate rarity multiplier
+            value *= RarityMultipliers[item.Rarity];
 
-                //Add 10*level to value
-                value += (10 * wpn.Level);
+            //Add 10*level to value
+            value += (10 * item.Level);
 
-                //Round value to nearest 5
-                value = Math.Round(value / 5) * 5;
+            //Round value to nearest 5
+            value = Math.Round(value / 5) * 5;
 
-                //Set value
-                wpn.Value = Convert.ToInt32(value);
-            }
-            else if (item is Armour arm)
-            {
-                ItemValueFormula multipliers = ListValueMultipliers.Find(x => x.ItemType == "ARMOUR");
-
-                //Calculate value based on stats
-                double value = (arm.Stats.DMG * multipliers.DmgMultiplier) + (arm.Stats.DEF * multipliers.DefMultiplier)
-                    + (arm.Stats.HP * multipliers.HpMultiplier) + (arm.Stats.SPD * multipliers.SpdMultiplier) +
-                    (arm.Stats.STA * multipliers.StaMultiplier) + (arm.Stats.STR * multipliers.StrMultiplier) +
-                    (arm.Stats.CRC * multipliers.CrcMultiplier) + (arm.Stats.CRD * multipliers.CrdMultiplier);
-
-                //Incorporate rarity multiplier
-                value *= RarityMultipliers[arm.Rarity];
-
-                //Add 10*level to value
-                value += (10 * arm.Level);
-
-                //Round value to nearest 5
-                value = Math.Round(value / 5) * 5;
-
-                //Set value
-                arm.Value = Convert.ToInt32(value);
-            }
-            else if (item is Amulet amu)
-            {
-                ItemValueFormula multipliers = ListValueMultipliers.Find(x => x.ItemType == "ARMOUR");
-
-                //Calculate value based on stats
-                double value = (amu.Stats.DMG * multipliers.DmgMultiplier) + (amu.Stats.DEF * multipliers.DefMultiplier)
-                    + (amu.Stats.HP * multipliers.HpMultiplier) + (amu.Stats.SPD * multipliers.SpdMultiplier) +
-                    (amu.Stats.STA * multipliers.StaMultiplier) + (amu.Stats.STR * multipliers.StrMultiplier) +
-                    (amu.Stats.CRC * multipliers.CrcMultiplier) + (amu.Stats.CRD * multipliers.CrdMultiplier);
-
-                //Incorporate rarity multiplier
-                value *= RarityMultipliers[amu.Rarity];
-
-                //Add 10*level to value
-                value += (10 * amu.Level);
-
-                //Round value to nearest 5
-                value = Math.Round(value / 5) * 5;
-
-                //Set value
-                amu.Value = Convert.ToInt32(value);
-            }
+            //Set value
+            item.Value = Convert.ToInt32(value);
         }
     }
 }

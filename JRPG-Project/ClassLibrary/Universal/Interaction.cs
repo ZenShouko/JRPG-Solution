@@ -6,6 +6,7 @@ using System.Security.Cryptography;
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using JRPG_Project.ClassLibrary.Player;
 
 namespace JRPG_ClassLibrary
 {
@@ -56,6 +57,13 @@ namespace JRPG_ClassLibrary
                         MarketTab shopTab = new MarketTab();
                         Grid.Children.Clear();
                         Grid.Children.Add(shopTab);
+                        break;
+                    }
+                case "BTNUPGRADES":
+                    {
+                        UpgradesTab upgradeTab = new UpgradesTab(Inventory.Weapons[0], false);
+                        Grid.Children.Clear();
+                        Grid.Children.Add(upgradeTab);
                         break;
                     }
                 default:

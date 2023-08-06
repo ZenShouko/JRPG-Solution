@@ -34,7 +34,7 @@ namespace JRPG_Project.ClassLibrary
                 };
 
                 Type = wpn.Type;
-                ItemImage = ItemData.GetItemImage("Weapons/" + wpn.ImageName);
+                ItemImage = ItemData.GetItemImage(wpn);
             }
         }
     }

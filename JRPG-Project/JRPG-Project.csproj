@@ -76,6 +76,9 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="XamlAnimatedGif, Version=2.0.0.0, Culture=neutral, PublicKeyToken=20a987d8023d9690, processorArchitecture=MSIL">
+      <HintPath>..\packages\XamlAnimatedGif.2.2.0\lib\net45\XamlAnimatedGif.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -115,8 +118,12 @@
     <Compile Include="ClassLibrary\Entities\Tile.cs" />
     <Compile Include="ClassLibrary\FoeControls.cs" />
     <Compile Include="ClassLibrary\Foes.cs" />
+    <Compile Include="ClassLibrary\Items\Material.cs" />
     <Compile Include="ClassLibrary\Mechanics.cs" />
     <Compile Include="ClassLibrary\Player\Inventory.cs" />
+    <Compile Include="EssenceExtractionWindow.xaml.cs">
+      <DependentUpon>EssenceExtractionWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="LootboxWindow.xaml.cs">
       <DependentUpon>LootboxWindow.xaml</DependentUpon>
     </Compile>
@@ -151,7 +158,17 @@
     <Compile Include="Tabs\TeamTab.xaml.cs">
       <DependentUpon>TeamTab.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Tabs\UpgradesTab.xaml.cs">
+      <DependentUpon>UpgradesTab.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="VendingMachineTab.xaml.cs">
+      <DependentUpon>VendingMachineTab.xaml</DependentUpon>
+    </Compile>
     <Page Include="ChangeEquipmentWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="EssenceExtractionWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -204,6 +221,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Tabs\TeamTab.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Tabs\UpgradesTab.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="VendingMachineTab.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -444,6 +469,42 @@
   <ItemGroup>
     <Resource Include="Resources\Assets\GUI\coin.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Assets\GUI\card-green-bg.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Assets\GUI\box-check.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Assets\GUI\vendingmachine.gif">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Assets\Collectables\essence-bottle.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Assets\Collectables\essence-orb.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Assets\Collectables\scroll.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Assets\GUI\bg-uniflowers.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Assets\GUI\bg-blueabstr.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

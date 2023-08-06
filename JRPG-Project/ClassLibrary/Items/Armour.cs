@@ -30,7 +30,7 @@ namespace JRPG_Project.ClassLibrary.Items
                     CRD = arm.Stats.CRD
                 };
 
-                ItemImage = ItemData.GetItemImage("Armours/" + arm.ImageName);
+                ItemImage = ItemData.GetItemImage(arm);
             }
         }
     }

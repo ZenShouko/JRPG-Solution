@@ -1,0 +1,120 @@
+[
+    {
+        "ID": "M1",
+        "Name": "Bottle of Essence",
+        "Description": "Essence caught in a bottle. Default resource for upgrades.",
+        "Rarity": "COMMON",
+        "ImageName": "essence-bottle.png",
+        "Stats": {
+            "XP": "40"
+        },
+        "IsSellable": "False"
+    },
+    {
+        "ID": "M2",
+        "Name": "Orb of Essence",
+        "Description": "A whole essence orb. Stronger than a basic bottle.",
+        "Rarity": "SPECIAL",
+        "ImageName": "essence-orb.png",
+        "Stats": {
+            "XP": "250"
+        },
+        "IsSellable": "False"
+    },
+    {
+        "ID": "M3",
+        "Name": "Scroll of Damage",
+        "Description": "A scroll that enhances damage.",
+        "Rarity": "SPECIAL",
+        "ImageName": "scroll.png",
+        "Stats": {
+            "DMG": "10", 
+            "XP": "10"
+        },
+        "IsSellable": "False"
+    },
+    {
+        "ID": "M4",
+        "Name": "Scroll of Health",
+        "Description": "A scroll that enhances health.",
+        "Rarity": "SPECIAL",
+        "ImageName": "scroll.png",
+        "Stats": {
+            "HP": "10", 
+            "XP": "10"
+        },
+        "IsSellable": "False"
+    },
+    {
+        "ID": "M5",
+        "Name": "Scroll of Defence",
+        "Description": "A scroll that enhances defence.",
+        "Rarity": "SPECIAL",
+        "ImageName": "scroll.png",
+        "Stats": {
+            "DEF": "10", 
+            "XP": "10"
+        },
+        "IsSellable": "False"
+    },
+    {
+        "ID": "M6",
+        "Name": "Scroll of Speed",
+        "Description": "A scroll that enhances speed.",
+        "Rarity": "SPECIAL",
+        "ImageName": "scroll.png",
+        "Stats": {
+            "SPD": "10", 
+            "XP": "10"
+        },
+        "IsSellable": "False"
+    },
+    {
+        "ID": "M7",
+        "Name": "Scroll of Stamina",
+        "Description": "A scroll that enhances stamina.",
+        "Rarity": "SPECIAL",
+        "ImageName": "scroll.png",
+        "Stats": {
+            "STA": "10", 
+            "XP": "10"
+        },
+        "IsSellable": "False"
+    },
+    {
+        "ID": "M8",
+        "Name": "Scroll of Regeneration",
+        "Description": "A scroll that enhances stamina regeneration.",
+        "Rarity": "SPECIAL",
+        "ImageName": "scroll.png",
+        "Stats": {
+            "STR": "10", 
+            "XP": "10"
+        },
+        "IsSellable": "False"
+    },
+    {
+        "ID": "M9",
+        "Name": "Scroll of Crit-Chance",
+        "Description": "A scroll that enhances critical chance.",
+        "Rarity": "SPECIAL",
+        "ImageName": "scroll.png",
+        "Stats": {
+            "CRC": "10", 
+            "XP": "10"
+        },
+        "IsSellable": "False"
+    },
+    {
+        "ID": "M10",
+        "Name": "Scroll of Crit-Damage",
+        "Description": "A scroll that enhances critical damage.",
+        "Rarity": "SPECIAL",
+        "ImageName": "scroll.png",
+        "Stats": {
+            "CRD": "10", 
+            "XP": "10"
+        },
+        "IsSellable": "False"
+    }
+]

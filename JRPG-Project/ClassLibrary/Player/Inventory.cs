@@ -18,6 +18,7 @@ namespace JRPG_Project.ClassLibrary.Player
         public static List<Armour> Armours { get; set; } = new List<Armour>();
         public static List<Weapon> Weapons { get; set; } = new List<Weapon>();
         public static List<Amulet> Amulets { get; set; } = new List<Amulet>();
+        public static Dictionary<string, int> Materials { get; set; } = new Dictionary<string, int>(); //Name, Amount
 
         /// <summary>
         /// UniqueID, IsCompleted
@@ -27,6 +28,7 @@ namespace JRPG_Project.ClassLibrary.Player
         //Misceallaneous
         public static DateTime LastSaveTime { get; set; }
         public static DateTime MarketRefresh { get; set; }
+        public static string CurrentTicket { get; set; }
 
         //Methods
         

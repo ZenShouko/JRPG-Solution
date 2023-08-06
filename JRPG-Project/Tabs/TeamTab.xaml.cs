@@ -56,7 +56,7 @@ namespace JRPG_Project.Tabs
             {
                 TxtWeaponName.Text = Inventory.Team[CharacterIndex].Weapon.Name;
                 TxtWeaponLevel.Text = "Level " + Inventory.Team[CharacterIndex].Weapon.Level.ToString();
-                CharacterWeaponImage.Source = ItemData.GetItemImage("Weapons/" + Inventory.Team[CharacterIndex].Weapon.ImageName).Source;
+                CharacterWeaponImage.Source = ItemData.GetItemImage(Inventory.Team[CharacterIndex].Weapon).Source;
             }
             else
             {
@@ -69,7 +69,7 @@ namespace JRPG_Project.Tabs
             {
                 TxtArmourName.Text = Inventory.Team[CharacterIndex].Armour.Name;
                 TxtArmourLevel.Text = "Level " + Inventory.Team[CharacterIndex].Armour.Level.ToString();
-                CharacterArmourImage.Source = ItemData.GetItemImage("Armours/" + Inventory.Team[CharacterIndex].Armour.ImageName).Source;
+                CharacterArmourImage.Source = ItemData.GetItemImage(Inventory.Team[CharacterIndex].Armour).Source;
             }
             else
             {
@@ -82,7 +82,7 @@ namespace JRPG_Project.Tabs
             {
                 TxtAmuletName.Text = Inventory.Team[CharacterIndex].Amulet.Name;
                 TxtAmuletLevel.Text = "Level " + Inventory.Team[CharacterIndex].Amulet.Level.ToString();
-                CharacterAmuletImage.Source = ItemData.GetItemImage("Amulets/" + Inventory.Team[CharacterIndex].Amulet.ImageName).Source;
+                CharacterAmuletImage.Source = ItemData.GetItemImage(Inventory.Team[CharacterIndex].Amulet).Source;
             }
             else
             {

@@ -32,7 +32,7 @@ namespace JRPG_Project.ClassLibrary.Items
                 };
 
                 CharmID = amu.CharmID;
-                ItemImage = ItemData.GetItemImage("Amulets/" + amu.ImageName);
+                ItemImage = ItemData.GetItemImage(amu);
 
                 //Keep track of this one, might cause problems
                 Charm = amu.Charm;

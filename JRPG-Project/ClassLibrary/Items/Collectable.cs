@@ -18,7 +18,7 @@ namespace JRPG_Project.ClassLibrary.Entities
             if (otherItem is Collectable col)
             {
                 IsSellable = col.IsSellable;
-                ItemImage = ItemData.GetItemImage("Collectables/" + col.ImageName);
+                ItemImage = ItemData.GetItemImage(col);
             }
         }
     }

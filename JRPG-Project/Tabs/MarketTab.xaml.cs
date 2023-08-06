@@ -22,11 +22,12 @@ namespace JRPG_Project.Tabs
 
         private void RefreshMarket()
         {
-            //Has 10 min passed since last refresh?
-            if (Inventory.MarketRefresh.AddMinutes(10) < DateTime.Now)
+            //Has 3 min passed since last refresh?
+            if (Inventory.MarketRefresh.AddMinutes(3) < DateTime.Now)
             {
                 Inventory.MarketRefresh = DateTime.Now;
                 RefreshMarketRequests();
+                GenerateNewTicket();
             }
         }
 
@@ -81,15 +82,44 @@ namespace JRPG_Project.Tabs
             }
         }
 
+        private void GenerateNewTicket()
+        {
+            //ODS: 1/4 chance to get nothing, 1/4 chance to get 1 basic ticket, 1/4 chance to get 1 special ticket, 1/4 chance to get 1 golden ticket
+            int chance = Interaction.GetRandomNumber(1, 4);
+            if (chance == 1)
+            {
+                Inventory.CurrentTicket = "Nothing";
+            }
+            else if (chance == 2)
+            {
+                Inventory.CurrentTicket = "Normal";
+            }
+            else if (chance == 3)
+            {
+                Inventory.CurrentTicket = "Special";
+            }
+            else if (chance == 4)
+            {
+                Inventory.CurrentTicket = "Golden";
+            }
+        }
+
         private void UpdateGUI()
         {
-            //Display next refresh time
-            TxtNextRefreshTime.Text = "Next refresh: " + Inventory.MarketRefresh.AddMinutes(10).ToString("HH:mm");
+            //#Vending Machine
+            VendingMachineTab tab = new VendingMachineTab();
+            VendingMachinePanel.Children.Clear();
+            VendingMachinePanel.Children.Add(tab);
+
+            //#Display next refresh time
+            TxtNextRefreshTime.Text = "Next refresh: " + Inventory.MarketRefresh.AddMinutes(3).ToString("HH:mm");
 
             //Display market requests
-            if (Inventory.MarketRequests.Keys.ElementAt(0) == null || Inventory.MarketRequests.Values.ElementAt(0) == true)
+            if (Inventory.MarketRequests.Count < 1 || Inventory.MarketRequests.Values.ElementAt(0) == true)
             {
                 FillItemSlotWithNothing(1);
+                BtnSell1.IsEnabled = false;
+                BtnStats1.IsEnabled = false;
             }
             else
             {
@@ -99,9 +129,11 @@ namespace JRPG_Project.Tabs
                 ImgItem1.Source = item.ItemImage.Source;
             }
 
-            if (Inventory.MarketRequests.Keys.ElementAt(1) == null)
+            if (Inventory.MarketRequests.Count < 2 || Inventory.MarketRequests.Values.ElementAt(1) == true)
             {
                 FillItemSlotWithNothing(2);
+                BtnSell2.IsEnabled = false;
+                BtnStats2.IsEnabled = false;
             }
             else
             {
@@ -111,9 +143,11 @@ namespace JRPG_Project.Tabs
                 ImgItem2.Source = item.ItemImage.Source;
             }
 
-            if (Inventory.MarketRequests.Keys.ElementAt(2) == null)
+            if (Inventory.MarketRequests.Count < 3 || Inventory.MarketRequests.Values.ElementAt(2) == true)
             {
                 FillItemSlotWithNothing(3);
+                BtnSell3.IsEnabled = false;
+                BtnStats3.IsEnabled = false;
             }
             else
             {
@@ -128,21 +162,21 @@ namespace JRPG_Project.Tabs
         {
             if (slot == 1)
             {
-                TxtItem1Name.Text = "Nothing";
-                TxtItem1Reward.Text = "";
-                ImgItem1.Source = new BitmapImage(new Uri(@"/Resources/Assets/GUI/empty.png", UriKind.RelativeOrAbsolute));
+                TxtItem1Name.Text = "Completed";
+                TxtItem1Reward.Text = ":)";
+                ImgItem1.Source = new BitmapImage(new Uri(@"/Resources/Assets/GUI/box-check.png", UriKind.RelativeOrAbsolute));
             }
             else if (slot == 2)
             {
-                TxtItem2Name.Text = "Nothing";
-                TxtItem2Reward.Text = "";
-                ImgItem2.Source = new BitmapImage(new Uri(@"/Resources/Assets/GUI/empty.png", UriKind.RelativeOrAbsolute));
+                TxtItem2Name.Text = "Completed";
+                TxtItem2Reward.Text = ":)";
+                ImgItem2.Source = new BitmapImage(new Uri(@"/Resources/Assets/GUI/box-check.png", UriKind.RelativeOrAbsolute));
             }
             else if (slot == 3)
             {
-                TxtItem3Name.Text = "Nothing";
-                TxtItem3Reward.Text = "";
-                ImgItem3.Source = new BitmapImage(new Uri(@"/Resources/Assets/GUI/empty.png", UriKind.RelativeOrAbsolute));
+                TxtItem3Name.Text = "Completed";
+                TxtItem3Reward.Text = ":)";
+                ImgItem3.Source = new BitmapImage(new Uri(@"/Resources/Assets/GUI/box-check.png", UriKind.RelativeOrAbsolute));
             }
         }
 
@@ -158,7 +192,7 @@ namespace JRPG_Project.Tabs
             if (btn.Name.Contains("1"))
             {
                 //Cancel if no request or request already completed
-                if (Inventory.MarketRequests.Keys.ElementAt(0) == null)
+                if (Inventory.MarketRequests.Keys.ElementAt(0) == null || Inventory.MarketRequests.Values.ElementAt(0) == true)
                     return;
 
                 //Display item stats
@@ -168,7 +202,7 @@ namespace JRPG_Project.Tabs
             else if (btn.Name.Contains("2"))
             {
                 //Cancel if no request
-                if (Inventory.MarketRequests.Keys.ElementAt(1) == null)
+                if (Inventory.MarketRequests.Keys.ElementAt(1) == null || Inventory.MarketRequests.Values.ElementAt(1) == true)
                     return;
 
                 StatsWindow window = new StatsWindow(Inventory.MarketRequests.Keys.ElementAt(1), false);
@@ -177,7 +211,7 @@ namespace JRPG_Project.Tabs
             else if (btn.Name.Contains("3"))
             {
                 //Cancel if no request
-                if (Inventory.MarketRequests.Keys.ElementAt(2) == null)
+                if (Inventory.MarketRequests.Keys.ElementAt(2) == null || Inventory.MarketRequests.Values.ElementAt(2) == true)
                     return;
 
                 StatsWindow window = new StatsWindow(Inventory.MarketRequests.Keys.ElementAt(2), false);
@@ -206,8 +240,45 @@ namespace JRPG_Project.Tabs
                 PlayerActions.RemoveItem(ItemData.GetItemByUniqueID(Inventory.MarketRequests.Keys.ElementAt(0)));
 
                 //Let them know
-                MessageBox.Show("Sold :)");
-                TxtItem1Reward.Text = "Completed";
+                TxtItem1Reward.Text = "(Completed)";
+            }
+            else if (btn.Name.Contains("2"))
+            {
+                //Cancel if already sold
+                if (Inventory.MarketRequests.Values.ElementAt(1) == true)
+                    return;
+
+                //Sell item
+                Inventory.MarketRequests[Inventory.MarketRequests.Keys.ElementAt(1)] = true;
+                Inventory.Coins += ItemData.GetItemByUniqueID(Inventory.MarketRequests.Keys.ElementAt(1)).Value;
+
+                //Unequip item if equipped
+                CharacterData.UnequipItem(ItemData.GetItemByUniqueID(Inventory.MarketRequests.Keys.ElementAt(1)));
+
+                //Remove item from inventory
+                PlayerActions.RemoveItem(ItemData.GetItemByUniqueID(Inventory.MarketRequests.Keys.ElementAt(1)));
+
+                //Let them know
+                TxtItem2Reward.Text = "(Completed)";
+            }
+            else if (btn.Name.Contains("3"))
+            {
+                //Cancel if already sold
+                if (Inventory.MarketRequests.Values.ElementAt(2) == true)
+                    return;
+
+                //Sell item
+                Inventory.MarketRequests[Inventory.MarketRequests.Keys.ElementAt(2)] = true;
+                Inventory.Coins += ItemData.GetItemByUniqueID(Inventory.MarketRequests.Keys.ElementAt(2)).Value;
+
+                //Unequip item if equipped
+                CharacterData.UnequipItem(ItemData.GetItemByUniqueID(Inventory.MarketRequests.Keys.ElementAt(2)));
+
+                //Remove item from inventory
+                PlayerActions.RemoveItem(ItemData.GetItemByUniqueID(Inventory.MarketRequests.Keys.ElementAt(2)));
+
+                //Let them know
+                TxtItem3Reward.Text = "(Completed)";
             }
         }
     }

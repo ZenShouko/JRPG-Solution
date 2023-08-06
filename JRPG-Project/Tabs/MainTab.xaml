@@ -17,6 +17,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="32"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         
         <!--Header-->
@@ -32,22 +33,50 @@
         </Border>
 
         <!--Buttons-->
-        <StackPanel Grid.Row="1" Margin="15" VerticalAlignment="Center">
-            <Button x:Name="BtnDispatch" Content="Dispatch" Style="{StaticResource menu-button}" Margin="0 10" Click="OpenTab"/>
-            <Button x:Name="BtnInventory" Content="Inventory" Style="{StaticResource menu-button}" Margin="0 10" Click="OpenTab"/>
-            <Button x:Name="BtnTeam" Content="Team" Style="{StaticResource menu-button}" Margin="0 10" Click="OpenTab"/>
-            <Button x:Name="BtnMarket" Content="Market" Style="{StaticResource menu-button}" Margin="0 10" Click="OpenTab"/>
-            <Button x:Name="BtnSettings" Content="Settings" Style="{StaticResource menu-button}" Margin="0 10"/>
-            <Button x:Name="BtnSave" Content="Manage save" Style="{StaticResource menu-button}" Margin="0 10" Click="OpenTab"/>
-            <Button x:Name="BtnExit" Content="Exit" Style="{StaticResource menu-button}" Foreground="Crimson" Margin="0 10" Click="BtnExit_Click"/>
-        </StackPanel>
+        <Border CornerRadius="3" Grid.Row="1" Grid.RowSpan="2" Margin="15" VerticalAlignment="Center" HorizontalAlignment="Center"
+                Padding="8" BorderThickness="1 1 2 2">
+            <Border.Background>
+                <SolidColorBrush Color="White" Opacity="0.2"/>
+            </Border.Background>
+            <Border.BorderBrush>
+                <SolidColorBrush Color="Black" Opacity="0.2"/>
+            </Border.BorderBrush>
+            <StackPanel >
+                <Button x:Name="BtnDispatch" Content="Dispatch" Style="{StaticResource menu-button}" Margin="5 10" Click="OpenTab"/>
+                <Button x:Name="BtnInventory" Content="Inventory" Style="{StaticResource menu-button}" Margin="5 10" Click="OpenTab"/>
+                <Button x:Name="BtnTeam" Content="Team" Style="{StaticResource menu-button}" Margin="5 10" Click="OpenTab"/>
+                <Button x:Name="BtnUpgrades" Content="Upgrades" Style="{StaticResource menu-button}" Margin="5 10" Click="OpenTab"/>
+                <Button x:Name="BtnMarket" Content="Market" Style="{StaticResource menu-button}" Margin="5 10" Click="OpenTab"/>
+            </StackPanel>
+        </Border>
+        
+        <!--App Buttons-->
+        <Border CornerRadius="3" Grid.Row="2" Grid.ColumnSpan="2" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10"
+                Padding="4" BorderThickness="1 1 2 2">
+            <Border.Background>
+                <SolidColorBrush Color="White" Opacity="0.2"/>
+            </Border.Background>
+            <Border.BorderBrush>
+                <SolidColorBrush Color="Black" Opacity="0.2"/>
+            </Border.BorderBrush>
+            <StackPanel  Orientation="Horizontal">
+                <Button x:Name="BtnSettings" Content="Settings" Style="{StaticResource menu-button}" Margin="5 10"/>
+                <Button x:Name="BtnSave" Content="Manage save" Style="{StaticResource menu-button}" Margin="5 10" Click="OpenTab"/>
+                <Button x:Name="BtnExit" Content="Exit" Style="{StaticResource menu-button}" Foreground="Crimson" Margin="5 10" Click="BtnExit_Click"/>
+            </StackPanel>
+        </Border>
+
 
         <!--Progress-->
-        <Border Grid.Row="1" Background="Black" Margin="5" Opacity="0.7" Grid.Column="1" Height="75" Width="300" VerticalAlignment="Center" CornerRadius="4"/>
-
-        <StackPanel Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="15">
-            <TextBlock FontSize="20" Text="App version 1.0" Foreground="White"/>
-            <TextBlock Text="Still in full development!" Margin="2" Foreground="White"/>
-        </StackPanel>
+        <Border Grid.Row="1" Margin="5" Grid.Column="1" Height="75" Width="300" VerticalAlignment="Bottom" CornerRadius="4"
+                BorderThickness="1 1 2 2" BorderBrush="Black">
+            <Border.Background>
+                <SolidColorBrush Color="White" Opacity="0.9"/>
+            </Border.Background>
+            <StackPanel Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="15">
+                <TextBlock FontSize="20" Text="App version 1.0" Foreground="Black"/>
+                <TextBlock Text="Still in full development!" Margin="2" Foreground="Black"/>
+            </StackPanel>
+        </Border>
     </Grid>
 </UserControl>
