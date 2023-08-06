@@ -6,7 +6,9 @@ using JRPG_Project.ClassLibrary.Items;
 using JRPG_Project.ClassLibrary.Player;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -32,7 +34,7 @@ namespace JRPG_Project
 
         private Dictionary<string, int> ScrollChance = new Dictionary<string, int>()
         {
-            {"COMMON", 5 }, {"SPECIAL", 15 }, {"CURSED", 25 }, {"LEGENDARY", 35}
+            {"COMMON", 0 }, {"SPECIAL", 100 }, {"CURSED", 100 }, {"LEGENDARY", 100}
         };
 
         private void PrepareGUI()
@@ -96,16 +98,50 @@ namespace JRPG_Project
 
         private void ImgItem_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            StatsWindow window = new StatsWindow(Item.UniqueID, false);
-            window.ShowDialog();
+            if (Item.UniqueID is null || Item.UniqueID.Contains("collectable"))
+            {
+                StatsWindow window = new StatsWindow(Item);
+                window.ShowDialog();
+            }
+            else
+            {
+                StatsWindow window = new StatsWindow(Item.UniqueID, false);
+                window.ShowDialog();
+            }
         }
+
+        private void MaterialMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            //Get sender
+            Image img = (Image)sender;
+
+            if (img.Source.ToString().Contains("bottle"))
+            {
+                Material mat = ItemData.ListMaterials[0];
+                StatsWindow window = new StatsWindow(mat);
+                window.ShowDialog();
+            }
+            else if (img.Source.ToString().Contains("orb"))
+            {
+                Material mat = ItemData.ListMaterials[1];
+                StatsWindow window = new StatsWindow(mat);
+                window.ShowDialog();
+            }
+            else if (img.Source.ToString().Contains("scroll"))
+            {
+                Material mat = ItemData.ListMaterials.Find(x => x.Name.Contains(TxtScroll.Text));
+                StatsWindow window = new StatsWindow(mat);
+                window.ShowDialog();
+            }
+        }
+
 
         private void CancelButton(object sender, RoutedEventArgs e)
         {
             Close();
         }
 
-        private void ExtractButton(object sender, RoutedEventArgs e)
+        private async void ExtractButtonAsync(object sender, RoutedEventArgs e)
         {
             //IDs [Bottle of Essence: M1, Orb of Essence: M2]
             //Remove item from inventory
@@ -131,25 +167,129 @@ namespace JRPG_Project
             Inventory.Materials["M1"] += bottles;
             Inventory.Materials["M2"] += orbs;
 
-            //Display
-            BorderValue.Visibility = Visibility.Collapsed;
-            ConvertionSymbol.Visibility = Visibility.Collapsed;
+            //Buttons
             BtnClose.Foreground = Brushes.Black;
             BtnExtract.Visibility = Visibility.Collapsed;
 
-            //Check if we've received a scroll
             //Get scroll
             Material scroll = GetScroll();
-            if (scroll is null)
+            if (scroll != null)
+            {
+                //Display scroll
+                TxtScroll.Text =  scroll.Name.Replace("Scroll of", "");
+
+                //Add scroll to inventory
+                Inventory.Materials[scroll.ID] += 1;
+            }
+
+            //#Extract animation
+            await PlayExtractAnimation(scroll != null);
+
+            //#Idle animation
+            IdleAnimation(BottleContainer);
+            await Task.Delay(300);
+            IdleAnimation(OrbContainer);
+
+            if (scroll is null) 
                 return;
+            await Task.Delay(300);
+            IdleAnimation(ScrollContainer);
+        }
 
-            //Display scroll
-            ScrollContainer.Visibility = Visibility.Visible;
+        private async Task PlayExtractAnimation(bool withScroll)
+        {
+            //hide items
+            BorderValue.Visibility = Visibility.Hidden;
+            ConvertionSymbol.Visibility = Visibility.Hidden;
+
+            //Prep
+            int moveDistance = 52;
+            if (withScroll)
+            {
+                moveDistance += 44;
+            }
+
+            //Move essence to center
+            int margin = 0;
+            while (margin < moveDistance)
+            {
+                await Task.Delay(20);
+                margin += 4;
+                BottleContainer.Margin = new Thickness(-margin, 0, margin, 0);
+                FirstPlusSymbol.Margin = new Thickness(-margin + 8, 0, margin + 8, 0);
+                OrbContainer.Margin = new Thickness(-margin, 0, margin, 0);
+            }
+
+            //Wait a bit
+            await Task.Delay(200);
+
+            //Collapse & reset
+            BorderValue.Visibility = Visibility.Collapsed;
+            ConvertionSymbol.Visibility = Visibility.Collapsed;
+            BottleContainer.Margin = new Thickness(0, 0, 0, 0);
+            FirstPlusSymbol.Margin = new Thickness(8, 0, 8, 0);
+            OrbContainer.Margin = new Thickness(0, 0, 0, 0);
+
+            if (withScroll)
+            {
+                await PlayScrollAnimation();
+            }
+        }
+
+        private async Task PlayScrollAnimation()
+        {
+            ScrollContainer.Visibility = Visibility.Hidden;
             FinalPlusSymbol.Visibility = Visibility.Visible;
-            TxtScroll.Text = scroll.Name;
+            ScrollContainer.Opacity = 0.5;
+            FinalPlusSymbol.Opacity = 0.8;
 
-            //Add scroll to inventory
-            Inventory.Materials[scroll.ID] += 1;
+            for (int i = 0; i < 5; i++)
+            {
+                await Task.Delay(200);
+                ScrollContainer.Visibility = ScrollContainer.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
+            }
+
+            ScrollContainer.Opacity = 1;
+            FinalPlusSymbol.Opacity = 1;
+        }
+
+
+        private async void IdleAnimation(DockPanel panel)
+        {
+            while (true)
+            {
+                //Move up
+                await IdleMoveUp(panel);
+
+                //Move down
+                await IdleMoveDown(panel);
+            }
+        }
+
+        private async Task IdleMoveUp(DockPanel panel)
+        {
+            double margin = panel.Margin.Bottom;
+
+            while (margin < 2)
+            {
+                //Move up
+                panel.Margin = new Thickness(0, -margin, 0, margin);
+                margin += 1;
+                await Task.Delay(150);
+            }
+        }
+
+        private async Task IdleMoveDown(DockPanel panel)
+        {
+            double margin = panel.Margin.Bottom;
+
+            while (margin > -2)
+            {
+                //Move up
+                panel.Margin = new Thickness(0, -margin, 0, margin);
+                margin -= 1;
+                await Task.Delay(150);
+            }
         }
     }
 }

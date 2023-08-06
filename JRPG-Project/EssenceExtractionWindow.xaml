@@ -21,7 +21,8 @@
             <StackPanel.Background>
                 <SolidColorBrush Color="Black" Opacity="0.1"/>
             </StackPanel.Background>
-            <Border BorderBrush="Black" BorderThickness="1 1 2 2" CornerRadius="4" HorizontalAlignment="Center" Padding="4">
+            <Border BorderBrush="Black" BorderThickness="1 1 2 2" CornerRadius="4" HorizontalAlignment="Center" Padding="4"
+                    Margin="0 4 0 0">
                 <Border.Background>
                     <SolidColorBrush Color="#353535" Opacity="0.4"/>
                 </Border.Background>
@@ -37,32 +38,36 @@
         
         <!--Extraction Result-->
         <Border x:Name="BorderResults" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="15 4"
-                BorderBrush="Black" BorderThickness="1 1 2 3" CornerRadius="2">
+                BorderBrush="Black" BorderThickness="1 1 2 3" CornerRadius="2" Width="360">
             <Border.Background>
                 <SolidColorBrush Color="Black" Opacity="0.55"/>
             </Border.Background>
-            <StackPanel Orientation="Horizontal" Margin="5" Grid.Row="1">
+            <StackPanel Orientation="Horizontal" Margin="5" Grid.Row="1" HorizontalAlignment="Center">
+                <!--Value Container-->
                 <Border x:Name="BorderValue" BorderBrush="Black" BorderThickness="1 1 2 2" CornerRadius="4" HorizontalAlignment="Center" VerticalAlignment="Center"
                     Padding="12" Background="#33ca7f">
                     <TextBlock x:Name="TxtValue" Text="500" FontSize="24" FontWeight="Bold" Foreground="White"/>
                 </Border>
                 <TextBlock x:Name="ConvertionSymbol" Text=">" FontSize="44" VerticalAlignment="Center" Margin="10 0" Foreground="GhostWhite"/>
-                <DockPanel VerticalAlignment="Center">
+                <!--Bottle Container-->
+                <DockPanel x:Name="BottleContainer" VerticalAlignment="Center">
                     <TextBlock DockPanel.Dock="Bottom" x:Name="TxtBottleCount" Text="x100" FontSize="18" TextAlignment="Center" Foreground="#eaf4f4"/>
                     <Image DockPanel.Dock="Top" Source="Resources/Assets/Collectables/essence-bottle.png" Height="64" Margin="0 5"
-                           ToolTip="Bottle of Essence (+40xp)"/>
+                           ToolTip="Bottle of Essence (+40xp)" MouseUp="MaterialMouseUp" Cursor="Hand"/>
                 </DockPanel>
-                <TextBlock Text="+" FontSize="32" FontWeight="Bold" Margin="5 0" VerticalAlignment="Center" Foreground="GhostWhite"/>
-                <DockPanel VerticalAlignment="Center">
+                <TextBlock x:Name="FirstPlusSymbol" Text="+" FontSize="32" FontWeight="Bold" Margin="5 0" VerticalAlignment="Center" Foreground="GhostWhite"/>
+                <!--Orb Container-->
+                <DockPanel x:Name="OrbContainer" VerticalAlignment="Center">
                     <TextBlock DockPanel.Dock="Bottom" x:Name="TxtOrbCount" Text="x20" FontSize="18" TextAlignment="Center" Foreground="#eaf4f4"/>
                     <Image DockPanel.Dock="Top" Source="\Resources\Assets\Collectables\essence-orb.png" Height="64" Margin="0 5"
-                           ToolTip="Orb of Essence (+250xp)"/>
+                           ToolTip="Orb of Essence (+250xp)" MouseUp="MaterialMouseUp" Cursor="Hand"/>
                 </DockPanel>
+                <!--Scroll container-->
                 <TextBlock x:Name="FinalPlusSymbol" Visibility="Collapsed" Text="+" FontSize="32" FontWeight="Bold" Margin="5 0" VerticalAlignment="Center" Foreground="GhostWhite"/>
                 <DockPanel x:Name="ScrollContainer" Visibility="Collapsed" VerticalAlignment="Center">
                     <TextBlock DockPanel.Dock="Bottom" x:Name="TxtScroll" Text="x20" FontSize="11" TextWrapping="Wrap" TextAlignment="Center" Foreground="#eaf4f4"/>
                     <Image DockPanel.Dock="Top" Source="\Resources\Assets\Collectables\scroll.png" Height="64" Margin="0 5"
-                           ToolTip="Orb of Essence (+250xp)"/>
+                           ToolTip="Orb of Essence (+250xp)" MouseUp="MaterialMouseUp" Cursor="Hand"/>
                 </DockPanel>
             </StackPanel>
         </Border>
@@ -72,7 +77,7 @@
             <StackPanel.Background>
                 <SolidColorBrush Color="Black" Opacity="0.2"/>
             </StackPanel.Background>
-            <Button x:Name="BtnExtract" Content="Extract" Style="{StaticResource menu-button}" Margin="10 0" Click="ExtractButton"/>
+            <Button x:Name="BtnExtract" Content="Extract" Style="{StaticResource menu-button}" Margin="10 0" Click="ExtractButtonAsync"/>
             <Button x:Name="BtnClose" Content="Close" Style="{StaticResource menu-button}" Margin="10 0" Foreground="Crimson" Click="CancelButton"/>
         </StackPanel>
     </Grid>

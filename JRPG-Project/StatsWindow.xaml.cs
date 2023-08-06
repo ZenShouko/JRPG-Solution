@@ -1,4 +1,5 @@
 ﻿using JRPG_Project.ClassLibrary;
+using JRPG_Project.ClassLibrary.Entities;
 using JRPG_Project.ClassLibrary.Items;
 using JRPG_Project.ClassLibrary.Player;
 using System;
@@ -23,6 +24,13 @@ namespace JRPG_Project
             AnimateImage();
         }
 
+        public StatsWindow(BaseItem item)
+        {
+            InitializeComponent();
+            InitializeGUI(item);
+            AnimateImage();
+        }
+
         Dictionary<string, string> ItemInfo = new Dictionary<string, string>()
         {
             { "Name", "" },
@@ -32,6 +40,7 @@ namespace JRPG_Project
             { "ImageSource", "" }
         };
 
+        #region Animation
         int moveSpeed = 60;
         int moveDistance = 3;
         int aniDelay = 150;
@@ -91,6 +100,7 @@ namespace JRPG_Project
                 await Task.Delay(moveSpeed);
             }
         }
+        #endregion
 
         private void InitializeGUI(string uniqueId)
         {
@@ -100,6 +110,7 @@ namespace JRPG_Project
             Weapon wpn = Inventory.Weapons.Where(x => x.UniqueID == uniqueId).FirstOrDefault();
             Armour arm = Inventory.Armours.Where(x => x.UniqueID == uniqueId).FirstOrDefault();
             Amulet amu = Inventory.Amulets.Where(x => x.UniqueID == uniqueId).FirstOrDefault();
+            Collectable col = Inventory.Collectables.Where(x => x.UniqueID == uniqueId).FirstOrDefault();
 
             if (wpn != null)
             {
@@ -136,6 +147,27 @@ namespace JRPG_Project
             DisplayInfo();
         }
 
+        private void InitializeGUI(BaseItem item)
+        {
+            //Display default info
+            TxtName.Text = item.Name;
+            TxtRarity.Text = item.Rarity;
+            TxtRarity.Foreground = GetBrush(item.Rarity);
+            TxtLevel.Text = item.Level.ToString();
+            ImgItem.Source = item.ItemImage.Source;
+            BorderColorBrush.Color = GetColor(item.Rarity);
+
+            //Display stats?
+            if (item is IStatsHolder obj)
+            {
+                DisplayStats(obj.Stats);
+            }
+            else
+            {
+                DisplayStats(new Stats());
+            }
+        }
+
         private void DisplayStats(Stats stats)
         {
             //Display stats
@@ -153,12 +185,10 @@ namespace JRPG_Project
         {
             TxtName.Text = ItemInfo["Name"];
             TxtLevel.Text = "Level " + ItemInfo["Level"];
-            //TxtValue.Text = ItemInfo["Value"];
             TxtRarity.Text = ItemInfo["Rarity"];
             TxtRarity.Foreground = GetBrush(ItemInfo["Rarity"]);
 
             ImgItem.Source = new BitmapImage(new Uri(ItemInfo["ImageSource"], UriKind.RelativeOrAbsolute));
-            //GridBackground.ImageSource = new BitmapImage(new Uri(ItemInfo["ImageSource"], UriKind.Relative));
 
             BorderColorBrush.Color = GetColor(ItemInfo["Rarity"]);
         }
