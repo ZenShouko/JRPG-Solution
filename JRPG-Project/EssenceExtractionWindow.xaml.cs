@@ -6,11 +6,13 @@ using JRPG_Project.ClassLibrary.Items;
 using JRPG_Project.ClassLibrary.Player;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace JRPG_Project
 {
@@ -26,7 +28,15 @@ namespace JRPG_Project
             PrepareGUI();
         }
 
+        public EssenceExtractionWindow(List<BaseItem> itemList)
+        {
+            InitializeComponent();
+            Items = itemList;
+            PrepareGUI();
+        }
+
         BaseItem Item { get; set; }
+        List<BaseItem> Items { get; set; } = new List<BaseItem>();
         private Dictionary<string, double> RarityMultiplier = new Dictionary<string, double>()
         {
             {"COMMON", 1.2 }, {"SPECIAL", 1.5 }, {"CURSED", 2 }, {"LEGENDARY", 2.5 }
@@ -34,18 +44,31 @@ namespace JRPG_Project
 
         private Dictionary<string, int> ScrollChance = new Dictionary<string, int>()
         {
-            {"COMMON", 0 }, {"SPECIAL", 100 }, {"CURSED", 100 }, {"LEGENDARY", 100}
+            {"COMMON", 8 }, {"SPECIAL", 16 }, {"CURSED", 32 }, {"LEGENDARY", 40}
         };
 
         private void PrepareGUI()
         {
-            ImgItem.Source = Item.ItemImage.Source;
-            TxtName.Text = Item.Name;
-            TxtValue.Text = Item.Value.ToString();
-            (int bottles, int orbs) = CalculateEssenceGain();
+            if (Item != null)
+            {
+                ImgItem.Source = Item.ItemImage.Source;
+                TxtName.Text = Item.Name;
+                TxtValue.Text = Item.Value.ToString();
+                (int bottles, int orbs) = CalculateEssenceGain();
 
-            TxtBottleCount.Text = bottles.ToString();
-            TxtOrbCount.Text = orbs.ToString();
+                TxtBottleCount.Text = bottles.ToString();
+                TxtOrbCount.Text = orbs.ToString();
+            }
+            else
+            {
+                ImgItem.Source = new BitmapImage(new Uri("pack://application:,,,/Resources/Assets/GUI/alligator.png", UriKind.RelativeOrAbsolute));
+                TxtName.Text = $"Bulk Extract {Items.Count} items";
+                TxtValue.Text = Items.Sum(x => x.Value).ToString();
+                (int bottles, int orbs) = CalculateEssenceGain();
+
+                TxtBottleCount.Text = bottles.ToString();
+                TxtOrbCount.Text = orbs.ToString();
+            }
         }
 
         private (int bottles, int orbs) CalculateEssenceGain()
@@ -53,27 +76,32 @@ namespace JRPG_Project
             //Vars
             int bottleValue = ItemData.ListMaterials[0].Stats.XP;
             int orbValue = ItemData.ListMaterials[1].Stats.XP;
+            double essenceGain = 0;
 
-            //Formula: (Value / 10) * (Rarity)
-            var essenceGain = Math.Round((Item.Value / 5) * RarityMultiplier[Item.Rarity]);
+            //Calculate total essence gain
+            essenceGain = Item == null ? Math.Round((Items.Sum(x => x.Value) / 5) * RarityMultiplier[Items[0].Rarity]) :
+                Math.Round((Item.Value / 5) * RarityMultiplier[Item.Rarity]);
+
+            //Convert to int
             essenceGain = Convert.ToInt32(essenceGain);
 
+            //#Formula: (Value / 5) * (Rarity)
             //Calculate orbs
             int orbs = (int)essenceGain / orbValue;
 
-            //Calculate bottles with remainder
+            //Calculate bottles with remainder essence
             essenceGain -= orbs * orbValue;
             int bottles = (int)essenceGain / bottleValue;
 
             return (bottles, orbs);
         }
 
-        private Material GetScroll()
+        private Material GetScroll(string rarity)
         {
             //Odds of geting a scroll: (COMMON: 0%), SPECIAL: 10%, CURSED: 20%, LEGENDARY: 30%
             int roll = Interaction.GetRandomNumber(1, 100);
 
-            if (roll <= ScrollChance[Item.Rarity])
+            if (roll <= ScrollChance[rarity])
             {
                 //Get scroll
                 List<Material> listScrolls = new List<Material>();
@@ -98,6 +126,8 @@ namespace JRPG_Project
 
         private void ImgItem_MouseUp(object sender, MouseButtonEventArgs e)
         {
+            if (Item is null) return;
+
             if (Item.UniqueID is null || Item.UniqueID.Contains("collectable"))
             {
                 StatsWindow window = new StatsWindow(Item);
@@ -129,9 +159,12 @@ namespace JRPG_Project
             }
             else if (img.Source.ToString().Contains("scroll"))
             {
-                Material mat = ItemData.ListMaterials.Find(x => x.Name.Contains(TxtScroll.Text));
-                StatsWindow window = new StatsWindow(mat);
-                window.ShowDialog();
+                if (Item != null)
+                {
+                    Material mat = ItemData.ListMaterials.Find(x => x.Name.Contains(TxtScroll.Text));
+                    StatsWindow window = new StatsWindow(mat);
+                    window.ShowDialog();
+                }
             }
         }
 
@@ -141,26 +174,32 @@ namespace JRPG_Project
             Close();
         }
 
-        private async void ExtractButtonAsync(object sender, RoutedEventArgs e)
+        private void RemoveItem()
+        {
+            if (Item is null)
+            {
+                foreach (BaseItem item in Items)
+                {
+                    Inventory.Collectables.RemoveAll(x => x.UniqueID == item.UniqueID);
+                    Inventory.Weapons.RemoveAll(x => x.UniqueID == item.UniqueID);
+                    Inventory.Armours.RemoveAll(x => x.UniqueID == item.UniqueID);
+                    Inventory.Amulets.RemoveAll(x => x.UniqueID == item.UniqueID);
+                }
+            }
+            else
+            {
+                Inventory.Collectables.RemoveAll(x => x.UniqueID == Item.UniqueID);
+                Inventory.Weapons.RemoveAll(x => x.UniqueID == Item.UniqueID);
+                Inventory.Armours.RemoveAll(x => x.UniqueID == Item.UniqueID);
+                Inventory.Amulets.RemoveAll(x => x.UniqueID == Item.UniqueID);
+            }
+        }
+
+        private void ExtractButtonAsync(object sender, RoutedEventArgs e)
         {
             //IDs [Bottle of Essence: M1, Orb of Essence: M2]
             //Remove item from inventory
-            if (Item is Weapon wpn)
-            {
-                Inventory.Weapons.Remove(wpn);
-            }
-            else if (Item is Armour arm)
-            {
-                Inventory.Armours.Remove(arm);
-            }
-            else if (Item is Amulet amu)
-            {
-                Inventory.Amulets.Remove(amu);
-            }
-            else if (Item is Collectable col)
-            {
-                Inventory.Collectables.Remove(col);
-            }
+            RemoveItem();
 
             //Give essence
             (int bottles, int orbs) = CalculateEssenceGain();
@@ -171,29 +210,78 @@ namespace JRPG_Project
             BtnClose.Foreground = Brushes.Black;
             BtnExtract.Visibility = Visibility.Collapsed;
 
-            //Get scroll
-            Material scroll = GetScroll();
-            if (scroll != null)
+            //Handle scrolls
+            HandleScrolls();
+        }
+
+        private async void HandleScrolls()
+        {
+            if (Item != null)
             {
-                //Display scroll
-                TxtScroll.Text =  scroll.Name.Replace("Scroll of", "");
+                //Get scroll
+                Material scroll = GetScroll(Item.Rarity);
+                if (scroll != null)
+                {
+                    //Display scroll
+                    TxtScroll.Text = scroll.Name.Replace("Scroll of", "");
 
-                //Add scroll to inventory
-                Inventory.Materials[scroll.ID] += 1;
+                    //Add scroll to inventory
+                    Inventory.Materials[scroll.ID] += 1;
+                }
+
+                //#Extract animation
+                await PlayExtractAnimation(scroll != null);
+
+                //#Idle animation
+                IdleAnimation(BottleContainer);
+                await Task.Delay(300);
+                IdleAnimation(OrbContainer);
+
+                if (scroll is null)
+                    return;
+
+                await Task.Delay(300);
+                IdleAnimation(ScrollContainer);
             }
+            else
+            {
+                List<Material> scrolls = new List<Material>();
+                foreach (var item in Items)
+                {
+                    Material mat = GetScroll(item.Rarity);
+                    if (mat != null)
+                    {
+                        scrolls.Add(mat);
+                    }
+                }
 
-            //#Extract animation
-            await PlayExtractAnimation(scroll != null);
+                //Assign
+                if (scrolls.Count > 0)
+                {
+                    //Display
+                    TxtScroll.Text = $"{scrolls.Count}x Scrolls";
 
-            //#Idle animation
-            IdleAnimation(BottleContainer);
-            await Task.Delay(300);
-            IdleAnimation(OrbContainer);
+                    //Add to inventory
+                    foreach (Material scroll in scrolls)
+                    {
+                        Inventory.Materials[scroll.ID] += 1;
+                    }
+                }
 
-            if (scroll is null) 
-                return;
-            await Task.Delay(300);
-            IdleAnimation(ScrollContainer);
+                //#Extract animation
+                await PlayExtractAnimation(scrolls.Count > 0);
+
+                //#Idle animation
+                IdleAnimation(BottleContainer);
+                await Task.Delay(300);
+                IdleAnimation(OrbContainer);
+
+                if (scrolls.Count == 0)
+                    return;
+
+                await Task.Delay(300);
+                IdleAnimation(ScrollContainer);
+            }
         }
 
         private async Task PlayExtractAnimation(bool withScroll)

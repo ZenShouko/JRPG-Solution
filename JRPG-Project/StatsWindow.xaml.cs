@@ -161,6 +161,12 @@ namespace JRPG_Project
             if (item is IStatsHolder obj)
             {
                 DisplayStats(obj.Stats);
+
+                //Display XP for materials
+                if (item.Name.Contains("Essence"))
+                {
+                    TxtLevel.Text = obj.Stats.XP.ToString() + "xp";
+                }
             }
             else
             {

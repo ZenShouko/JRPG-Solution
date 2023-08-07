@@ -40,6 +40,8 @@ namespace JRPG_Project.ClassLibrary.Universal
             { 5, "Value Desc" }
         };
 
+        bool BulkExtract = false;
+
         private void PrepareGUI()
         {
             foreach (string option in SortOptions.Values)
@@ -426,11 +428,14 @@ namespace JRPG_Project.ClassLibrary.Universal
             }
 
             //Unselect item in other listboxes
-            foreach (TabItem item in tabControl.Items)
+            if (!BulkExtract)
             {
-                if (item.Content is ListBox box && box.Name != listbox.Name)
+                foreach (TabItem item in tabControl.Items)
                 {
-                    box.SelectedIndex = -1;
+                    if (item.Content is ListBox box && box.Name != listbox.Name)
+                    {
+                        box.SelectedIndex = -1;
+                    }
                 }
             }
         }
@@ -494,41 +499,122 @@ namespace JRPG_Project.ClassLibrary.Universal
 
         private void ExtractEssence_Click(object sender, RoutedEventArgs e)
         {
-            //Get selected item as base item
-            BaseItem item;
+            if (!BulkExtract)
+            {
+                //Get selected item as base item
+                BaseItem item;
 
-            if (LstCollectables.SelectedIndex != -1)
-            {
-                ListBoxItem listItem = (ListBoxItem)LstCollectables.SelectedItem;
-                item = Inventory.Collectables.FirstOrDefault(i => i.UniqueID == (string)listItem.Tag);
-            }
-            else if (LstWeapons.SelectedIndex != -1)
-            {
-                ListBoxItem listItem = (ListBoxItem)LstWeapons.SelectedItem;
-                item = Inventory.Weapons.FirstOrDefault(i => i.UniqueID == (string)listItem.Tag);
-            }
-            else if (LstArmours.SelectedIndex != -1)
-            {
-                ListBoxItem listItem = (ListBoxItem)LstArmours.SelectedItem;
-                item = Inventory.Armours.FirstOrDefault(i => i.UniqueID == (string)listItem.Tag);
-            }
-            else if (LstAmulets.SelectedIndex != -1)
-            {
-                ListBoxItem listItem = (ListBoxItem)LstAmulets.SelectedItem;
-                item = Inventory.Amulets.FirstOrDefault(i => i.UniqueID == (string)listItem.Tag);
+                if (LstCollectables.SelectedIndex != -1)
+                {
+                    ListBoxItem listItem = (ListBoxItem)LstCollectables.SelectedItem;
+                    item = Inventory.Collectables.FirstOrDefault(i => i.UniqueID == (string)listItem.Tag);
+                }
+                else if (LstWeapons.SelectedIndex != -1)
+                {
+                    ListBoxItem listItem = (ListBoxItem)LstWeapons.SelectedItem;
+                    item = Inventory.Weapons.FirstOrDefault(i => i.UniqueID == (string)listItem.Tag);
+                }
+                else if (LstArmours.SelectedIndex != -1)
+                {
+                    ListBoxItem listItem = (ListBoxItem)LstArmours.SelectedItem;
+                    item = Inventory.Armours.FirstOrDefault(i => i.UniqueID == (string)listItem.Tag);
+                }
+                else if (LstAmulets.SelectedIndex != -1)
+                {
+                    ListBoxItem listItem = (ListBoxItem)LstAmulets.SelectedItem;
+                    item = Inventory.Amulets.FirstOrDefault(i => i.UniqueID == (string)listItem.Tag);
+                }
+                else
+                {
+                    return;
+                }
+
+                //Open extract essence window
+                EssenceExtractionWindow window = new EssenceExtractionWindow(item);
+                window.ShowDialog();
+
+                //Refresh inventory
+                LoadItems(SortOptions[CboxSort.SelectedIndex]);
+                DisplayBlank();
             }
             else
             {
-                return;
+                //Get the selected items in a list
+                List<BaseItem> itemList = new List<BaseItem>();
+
+                //Itterate through all listboxes and add selected items to list
+                foreach (TabItem item in tabControl.Items)
+                {
+                    if (item.Content is ListBox box)
+                    {
+                        if (box.SelectedIndex != -1)
+                        {
+                            foreach (ListBoxItem boxItem in box.SelectedItems)
+                            {
+                                BaseItem obj = null;
+
+                                obj = boxItem.Tag.ToString().Contains("collectable") ?
+                                    Inventory.Collectables.FirstOrDefault(i => i.UniqueID == (string)boxItem.Tag) : obj;
+                                obj = boxItem.Tag.ToString().Contains("weapon") ?
+                                    Inventory.Weapons.FirstOrDefault(i => i.UniqueID == (string)boxItem.Tag) : obj;
+                                obj = boxItem.Tag.ToString().Contains("armour") ?
+                                    Inventory.Armours.FirstOrDefault(i => i.UniqueID == (string)boxItem.Tag) : obj;
+                                obj = boxItem.Tag.ToString().Contains("amulet") ?
+                                    Inventory.Amulets.FirstOrDefault(i => i.UniqueID == (string)boxItem.Tag) : obj;
+
+                                itemList.Add(obj);
+                            }
+                        }
+                    }
+                }
+
+                //If no items are selected, return
+                if (itemList.Count == 0)
+                {
+                    return;
+                }
+
+                //Open extract essence window
+                EssenceExtractionWindow window = new EssenceExtractionWindow(itemList);
+                window.ShowDialog();
+
+                //Refresh inventory
+                LoadItems(SortOptions[CboxSort.SelectedIndex]);
+                DisplayBlank();
+
+                //Reset bulk extract
+                ButtonBulkExtract_Click(sender, e);
             }
+        }
 
-            //Open extract essence window
-            EssenceExtractionWindow window = new EssenceExtractionWindow(item);
-            window.ShowDialog();
-
-            //Refresh inventory
-            LoadItems(SortOptions[CboxSort.SelectedIndex]);
+        private void ButtonBulkExtract_Click(object sender, RoutedEventArgs e)
+        {
+            BulkExtract = !BulkExtract;
+            BtnBulkExtract.Content = BulkExtract ? "Cancel" : "Bulk Extract";
+            BtnBulkExtract.Foreground = BulkExtract ? Brushes.Crimson : Brushes.Black;
+            UnselectedEverything();
+            SwitchMultipleSelection(BulkExtract);
             DisplayBlank();
+            CboxSort.IsEnabled = !BulkExtract;
+        }
+
+        private void UnselectedEverything()
+        {
+            foreach (TabItem item in tabControl.Items)
+            {
+                if (item.Content is ListBox box)
+                {
+                    box.SelectedIndex = -1;
+                }
+            }
+        }
+
+        private void SwitchMultipleSelection(bool on)
+        {
+            LstCollectables.SelectionMode = on ? SelectionMode.Multiple : SelectionMode.Single;
+            LstWeapons.SelectionMode = on ? SelectionMode.Multiple : SelectionMode.Single;
+            LstArmours.SelectionMode = on ? SelectionMode.Multiple : SelectionMode.Single;
+            LstAmulets.SelectionMode = on ? SelectionMode.Multiple : SelectionMode.Single;
         }
     }
 }
