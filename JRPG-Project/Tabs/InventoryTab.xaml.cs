@@ -615,6 +615,7 @@ namespace JRPG_Project.ClassLibrary.Universal
             LstWeapons.SelectionMode = on ? SelectionMode.Multiple : SelectionMode.Single;
             LstArmours.SelectionMode = on ? SelectionMode.Multiple : SelectionMode.Single;
             LstAmulets.SelectionMode = on ? SelectionMode.Multiple : SelectionMode.Single;
+            LstMaterials.IsEnabled = !on;
         }
     }
 }

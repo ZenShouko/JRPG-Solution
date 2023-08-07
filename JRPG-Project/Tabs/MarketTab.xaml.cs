@@ -117,66 +117,96 @@ namespace JRPG_Project.Tabs
             //Display market requests
             if (Inventory.MarketRequests.Count < 1 || Inventory.MarketRequests.Values.ElementAt(0) == true)
             {
-                FillItemSlotWithNothing(1);
+                FillItemSlotWithNothing(1, true);
                 BtnSell1.IsEnabled = false;
                 BtnStats1.IsEnabled = false;
             }
             else
             {
-                BaseItem item = ItemData.GetItemByUniqueID(Inventory.MarketRequests.Keys.ElementAt(0));
-                TxtItem1Name.Text = item.Name;
-                TxtItem1Reward.Text = Inventory.MarketRequests.Values.ElementAt(0) ? "Completed" : $"Reward: {item.Value} coins";
-                ImgItem1.Source = item.ItemImage.Source;
+                try
+                {
+                    BaseItem item = ItemData.GetItemByUniqueID(Inventory.MarketRequests.Keys.ElementAt(0));
+                    TxtItem1Name.Text = item.Name;
+                    TxtItem1Reward.Text = Inventory.MarketRequests.Values.ElementAt(0) ? "Completed" : $"Reward: {item.Value} coins";
+                    ImgItem1.Source = item.ItemImage.Source;
+                }
+                catch //If it fails, it means the item is not in the inventory anymore
+                {
+                    FillItemSlotWithNothing(1, false);
+                    BtnSell1.IsEnabled = false;
+                    BtnStats1.IsEnabled = false;
+                }
             }
 
             if (Inventory.MarketRequests.Count < 2 || Inventory.MarketRequests.Values.ElementAt(1) == true)
             {
-                FillItemSlotWithNothing(2);
+                FillItemSlotWithNothing(2, true);
                 BtnSell2.IsEnabled = false;
                 BtnStats2.IsEnabled = false;
             }
             else
             {
-                BaseItem item = ItemData.GetItemByUniqueID(Inventory.MarketRequests.Keys.ElementAt(1));
-                TxtItem2Name.Text = item.Name;
-                TxtItem2Reward.Text = $"Reward: {item.Value} coins";
-                ImgItem2.Source = item.ItemImage.Source;
+                try
+                {
+                    BaseItem item = ItemData.GetItemByUniqueID(Inventory.MarketRequests.Keys.ElementAt(1));
+                    TxtItem2Name.Text = item.Name;
+                    TxtItem2Reward.Text = $"Reward: {item.Value} coins";
+                    ImgItem2.Source = item.ItemImage.Source;
+                }
+                catch
+                {
+                    FillItemSlotWithNothing(2, false);
+                    BtnSell2.IsEnabled = false;
+                    BtnStats2.IsEnabled = false;
+                }
             }
 
             if (Inventory.MarketRequests.Count < 3 || Inventory.MarketRequests.Values.ElementAt(2) == true)
             {
-                FillItemSlotWithNothing(3);
+                FillItemSlotWithNothing(3, true);
                 BtnSell3.IsEnabled = false;
                 BtnStats3.IsEnabled = false;
             }
             else
             {
-                BaseItem item = ItemData.GetItemByUniqueID(Inventory.MarketRequests.Keys.ElementAt(2));
-                TxtItem3Name.Text = item.Name;
-                TxtItem3Reward.Text = $"Reward: {item.Value} coins";
-                ImgItem3.Source = item.ItemImage.Source;
+                try
+                {
+                    BaseItem item = ItemData.GetItemByUniqueID(Inventory.MarketRequests.Keys.ElementAt(2));
+                    TxtItem3Name.Text = item.Name;
+                    TxtItem3Reward.Text = $"Reward: {item.Value} coins";
+                    ImgItem3.Source = item.ItemImage.Source;
+                }
+                catch
+                {
+                    FillItemSlotWithNothing(3, false);
+                    BtnSell3.IsEnabled = false;
+                    BtnStats3.IsEnabled = false;
+                }
             }
         }
 
-        private void FillItemSlotWithNothing(int slot)
+        private void FillItemSlotWithNothing(int slot, bool happyEnd)
         {
             if (slot == 1)
             {
-                TxtItem1Name.Text = "Completed";
-                TxtItem1Reward.Text = ":)";
-                ImgItem1.Source = new BitmapImage(new Uri(@"/Resources/Assets/GUI/box-check.png", UriKind.RelativeOrAbsolute));
+                TxtItem1Name.Text = happyEnd ? "Completed" : ">:(";
+                TxtItem1Reward.Text = happyEnd ? ":)" : "Should've sold it to me!!";
+                ImgItem1.Source = happyEnd ? new BitmapImage(new Uri(@"/Resources/Assets/GUI/monkey-happy.png", UriKind.RelativeOrAbsolute)) : 
+                    new BitmapImage(new Uri(@"/Resources/Assets/GUI/monkey-angry.png", UriKind.RelativeOrAbsolute));
             }
             else if (slot == 2)
             {
-                TxtItem2Name.Text = "Completed";
-                TxtItem2Reward.Text = ":)";
-                ImgItem2.Source = new BitmapImage(new Uri(@"/Resources/Assets/GUI/box-check.png", UriKind.RelativeOrAbsolute));
+                TxtItem2Name.Text = happyEnd ? "Completed" : ">:(";
+                TxtItem2Reward.Text = happyEnd ? ":)" : "Should've sold it to me!!";
+                ImgItem2.Source = happyEnd ? new BitmapImage(new Uri(@"/Resources/Assets/GUI/monkey-happy.png", UriKind.RelativeOrAbsolute)) :
+                    new BitmapImage(new Uri(@"/Resources/Assets/GUI/monkey-angry.png", UriKind.RelativeOrAbsolute));
             }
             else if (slot == 3)
             {
-                TxtItem3Name.Text = "Completed";
-                TxtItem3Reward.Text = ":)";
-                ImgItem3.Source = new BitmapImage(new Uri(@"/Resources/Assets/GUI/box-check.png", UriKind.RelativeOrAbsolute));
+                TxtItem3Name.Text = happyEnd ? "Completed" : ">:(";
+                TxtItem3Reward.Text = happyEnd ? ":)" : "Should've sold it to me!!";
+                ImgItem3.Source = happyEnd ? new BitmapImage(new Uri(@"/Resources/Assets/GUI/monkey-happy.png", UriKind.RelativeOrAbsolute)) :
+                    new BitmapImage(new Uri(@"/Resources/Assets/GUI/monkey-angry.png", UriKind.RelativeOrAbsolute));
             }
         }
 

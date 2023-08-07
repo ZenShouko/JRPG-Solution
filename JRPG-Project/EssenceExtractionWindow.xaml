@@ -67,7 +67,7 @@
                 <DockPanel x:Name="ScrollContainer" Visibility="Collapsed" VerticalAlignment="Center">
                     <TextBlock DockPanel.Dock="Bottom" x:Name="TxtScroll" Text="x20" FontSize="11" TextWrapping="Wrap" TextAlignment="Center" Foreground="#eaf4f4"/>
                     <Image DockPanel.Dock="Top" Source="\Resources\Assets\Collectables\scroll.png" Height="64" Margin="0 5"
-                           ToolTip="Orb of Essence (+250xp)" MouseUp="MaterialMouseUp" Cursor="Hand"/>
+                           ToolTip="Scroll" MouseUp="MaterialMouseUp" Cursor="Hand"/>
                 </DockPanel>
             </StackPanel>
         </Border>

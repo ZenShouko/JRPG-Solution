@@ -259,6 +259,7 @@
     <Resource Include="Resources\Poppins-Regular.ttf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <None Include="Resources\Data\Materials.json" />
     <None Include="Stages\BIGU.json" />
     <None Include="Stages\Ideal Platform.json" />
     <None Include="Stages\kirby.json" />
@@ -504,6 +505,14 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Assets\GUI\bg-blueabstr.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Assets\GUI\monkey-angry.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Assets\GUI\monkey-happy.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
