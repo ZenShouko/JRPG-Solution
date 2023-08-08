@@ -1,6 +1,0 @@
-C:\Users\emre_\Documents\Visual Studio 2022\Personal Solutions\JRPG-Solution\JRPG-ClassLibrary\bin\Debug\JRPG-ClassLibrary.dll
-C:\Users\emre_\Documents\Visual Studio 2022\Personal Solutions\JRPG-Solution\JRPG-ClassLibrary\bin\Debug\JRPG-ClassLibrary.pdb
-C:\Users\emre_\Documents\Visual Studio 2022\Personal Solutions\JRPG-Solution\JRPG-ClassLibrary\obj\Debug\JRPG-ClassLibrary.csproj.AssemblyReference.cache
-C:\Users\emre_\Documents\Visual Studio 2022\Personal Solutions\JRPG-Solution\JRPG-ClassLibrary\obj\Debug\JRPG-ClassLibrary.csproj.CoreCompileInputs.cache
-C:\Users\emre_\Documents\Visual Studio 2022\Personal Solutions\JRPG-Solution\JRPG-ClassLibrary\obj\Debug\JRPG-ClassLibrary.dll
-C:\Users\emre_\Documents\Visual Studio 2022\Personal Solutions\JRPG-Solution\JRPG-ClassLibrary\obj\Debug\JRPG-ClassLibrary.pdb
