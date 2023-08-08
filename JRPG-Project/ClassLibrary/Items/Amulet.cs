@@ -28,7 +28,8 @@ namespace JRPG_Project.ClassLibrary.Items
                     STA = amu.Stats.STA,
                     STR = amu.Stats.STR,
                     CRC = amu.Stats.CRC,
-                    CRD = amu.Stats.CRD
+                    CRD = amu.Stats.CRD,
+                    XP = amu.Stats.XP
                 };
 
                 CharmID = amu.CharmID;

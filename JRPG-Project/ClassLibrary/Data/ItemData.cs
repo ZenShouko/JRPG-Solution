@@ -53,7 +53,7 @@ namespace JRPG_Project.ClassLibrary.Data
             foreach (Weapon weapon in ListWeapons)
             {
                 weapon.ItemImage = GetItemImage(weapon);
-                CalculateValue(weapon);
+                SetValue(weapon);
             }
 
             //#Read Armour json file
@@ -64,7 +64,7 @@ namespace JRPG_Project.ClassLibrary.Data
             foreach (Armour armour in ListArmours)
             {
                 armour.ItemImage = GetItemImage(armour);
-                CalculateValue(armour);
+                SetValue(armour);
             }
 
             //#Read Amulet json file
@@ -75,7 +75,7 @@ namespace JRPG_Project.ClassLibrary.Data
             foreach (Amulet amulet in ListAmulets)
             {
                 amulet.ItemImage = GetItemImage(amulet);
-                CalculateValue(amulet);
+                SetValue(amulet);
             }
 
             //#Read Upgrade Materials json file
@@ -228,7 +228,13 @@ namespace JRPG_Project.ClassLibrary.Data
             else { return null; }
         }
 
-        public static void CalculateValue(BaseItem item)
+        public static void SetValue(BaseItem item)
+        {
+            //Set value
+            item.Value = GetValue(item);
+        }
+
+        public static int GetValue(BaseItem item)
         {
             /// <summary>
             /// Calculate item value based on item type and item stats. Adds 10*level to value as well.
@@ -253,7 +259,7 @@ namespace JRPG_Project.ClassLibrary.Data
             value = Math.Round(value / 5) * 5;
 
             //Set value
-            item.Value = Convert.ToInt32(value);
+            return Convert.ToInt32(value);
         }
     }
 }

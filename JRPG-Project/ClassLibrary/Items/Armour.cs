@@ -27,7 +27,8 @@ namespace JRPG_Project.ClassLibrary.Items
                     STA = arm.Stats.STA,
                     STR = arm.Stats.STR,
                     CRC = arm.Stats.CRC,
-                    CRD = arm.Stats.CRD
+                    CRD = arm.Stats.CRD,
+                    XP = arm.Stats.XP
                 };
 
                 ItemImage = ItemData.GetItemImage(arm);

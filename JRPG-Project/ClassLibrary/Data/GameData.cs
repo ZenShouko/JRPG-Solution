@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using System;
 using System.Data;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -56,6 +57,7 @@ namespace JRPG_Project.ClassLibrary.Data
             {
                 PlayerActions.AddItem(ItemData.ListWeapons.Find(x => x.ID == "W1"));
             }
+            PlayerActions.AddItem(ItemData.ListAmulets.Find(x => x.ID == "AM1"));
 
             //@Add All Materials
             foreach (Material material in ItemData.ListMaterials)
@@ -65,9 +67,12 @@ namespace JRPG_Project.ClassLibrary.Data
 
             //(Test) Enhance first weapon
             LevelData.AddXP(Inventory.Weapons[0], 2000);
-            ItemData.CalculateValue(Inventory.Weapons[0]);
+            ItemData.SetValue(Inventory.Weapons[0]);
 
-            PlayerActions.AddItem(ItemData.ListAmulets.Find(x => x.ID == "AM1"));
+            foreach (string key in Inventory.Materials.Keys.ToList())
+            {
+                Inventory.Materials[key] = 25;
+            }
         }
 
         public static void Save()

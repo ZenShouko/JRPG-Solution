@@ -30,7 +30,8 @@ namespace JRPG_Project.ClassLibrary
                     STA = wpn.Stats.STA,
                     STR = wpn.Stats.STR,
                     CRC = wpn.Stats.CRC,
-                    CRD = wpn.Stats.CRD
+                    CRD = wpn.Stats.CRD,
+                    XP = wpn.Stats.XP
                 };
 
                 Type = wpn.Type;

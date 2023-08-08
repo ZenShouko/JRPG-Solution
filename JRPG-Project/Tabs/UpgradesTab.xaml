@@ -83,7 +83,7 @@
                 </StackPanel>
 
                 <!--Xp Preview-->
-                <DockPanel Margin="0 10 0 0">
+                <DockPanel Margin="5" Width="450">
                     <TextBlock DockPanel.Dock="Left" x:Name="TxtCurrentXp" Text="0xp" VerticalAlignment="Center" FontSize="14"/>
                     <TextBlock DockPanel.Dock="Right" x:Name="TxtMaxXp" Text="1000xp" VerticalAlignment="Center" FontSize="14"/>
                     <ProgressBar x:Name="XpBar" Height="20" Width="350" Style="{StaticResource XpProgressBar}" Margin="10 0"/>
@@ -91,103 +91,19 @@
             </StackPanel>
         </Grid>
         
-        <!--Materials-->
-        <StackPanel Margin="5" Grid.Row="1">
-            <!--Used Materials-->
-            <Grid x:Name="UsingMaterialsPanel" Margin="5 10" VerticalAlignment="Top" HorizontalAlignment="Stretch" 
-                       Background="GhostWhite">
-                <!--Grid Definitions-->
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                </Grid.RowDefinitions>
-                <!--Mats-->
-                <DockPanel Margin="10 5" Grid.Row="1" ToolTip="Bottle of Essence">
-                    <Image DockPanel.Dock="Left" Source="/Resources/Assets/Collectables/essence-bottle.png" Height="24"/>
-                    <TextBlock DockPanel.Dock="Right" x:Name="TxtBottleCount" Text="0" FontSize="16" FontWeight="Bold" VerticalAlignment="Center" Margin="10 0 0 0"/>
-                </DockPanel>
-                <DockPanel Grid.Column="1" Grid.Row="1" Margin="10 5" ToolTip="Orb of Essence">
-                    <Image DockPanel.Dock="Left" Source="/Resources/Assets/Collectables/essence-orb.png" Height="24"/>
-                    <TextBlock DockPanel.Dock="Right" x:Name="TxtOrbCount" Text="0" FontSize="16" FontWeight="Bold" VerticalAlignment="Center" Margin="10 0 0 0"/>
-                </DockPanel>
-                <!--Scrolls-->
-                <DockPanel Grid.Column="2" Grid.Row="1" Margin="10 5" ToolTip="Scroll of Health">
-                    <Image DockPanel.Dock="Left" Source="/Resources/Assets/Collectables/scroll.png" Height="24"/>
-                    <TextBlock DockPanel.Dock="Right" x:Name="TxtScrollHpCount" Text="0" FontSize="16" FontWeight="Bold" VerticalAlignment="Center" Margin="10 0 0 0"/>
-                </DockPanel>
-                <DockPanel Grid.Column="3" Grid.Row="1" Margin="10 5" ToolTip="Scroll of Defence">
-                    <Image DockPanel.Dock="Left" Source="/Resources/Assets/Collectables/scroll.png" Height="24"/>
-                    <TextBlock DockPanel.Dock="Right" x:Name="TxtScrollDefCount" Text="0" FontSize="16" FontWeight="Bold" VerticalAlignment="Center" Margin="10 0 0 0"/>
-                </DockPanel>
-                <DockPanel Grid.Column="4" Grid.Row="1" Margin="10 5" ToolTip="Scroll of Damage">
-                    <Image DockPanel.Dock="Left" Source="/Resources/Assets/Collectables/scroll.png" Height="24"/>
-                    <TextBlock DockPanel.Dock="Right" x:Name="TxtScrollDmgCount" Text="0" FontSize="16" FontWeight="Bold" VerticalAlignment="Center" Margin="10 0 0 0"/>
-                </DockPanel>
-                <DockPanel Grid.Column="5" Grid.Row="1" Margin="10 5" ToolTip="Scroll of Speed">
-                    <Image DockPanel.Dock="Left" Source="/Resources/Assets/Collectables/scroll.png" Height="24"/>
-                    <TextBlock DockPanel.Dock="Right" x:Name="TxtScrollSpdCount" Text="0" FontSize="16" FontWeight="Bold" VerticalAlignment="Center" Margin="10 0 0 0"/>
-                </DockPanel>
-                <DockPanel Grid.Column="6" Grid.Row="1" Margin="10 5" ToolTip="Scroll of Stamina">
-                    <Image DockPanel.Dock="Left" Source="/Resources/Assets/Collectables/scroll.png" Height="24"/>
-                    <TextBlock DockPanel.Dock="Right" x:Name="TxtScrollStaCount" Text="0" FontSize="16" FontWeight="Bold" VerticalAlignment="Center" Margin="10 0 0 0"/>
-                </DockPanel>
-                <DockPanel Grid.Column="7" Grid.Row="1" Margin="10 5" ToolTip="Scroll of Regeneration">
-                    <Image DockPanel.Dock="Left" Source="/Resources/Assets/Collectables/scroll.png" Height="24"/>
-                    <TextBlock DockPanel.Dock="Right" x:Name="TxtScrollStrCount" Text="0" FontSize="16" FontWeight="Bold" VerticalAlignment="Center" Margin="10 0 0 0"/>
-                </DockPanel>
-                <DockPanel Grid.Column="8" Grid.Row="1" Margin="10 5" ToolTip="Scroll of Crit-Chance">
-                    <Image DockPanel.Dock="Left" Source="/Resources/Assets/Collectables/scroll.png" Height="24"/>
-                    <TextBlock DockPanel.Dock="Right" x:Name="TxtScrollCrcCount" Text="0" FontSize="16" FontWeight="Bold" VerticalAlignment="Center" Margin="10 0 0 0"/>
-                </DockPanel>
-                <DockPanel Grid.Column="9" Grid.Row="1" Margin="10 5" ToolTip="Scroll of Crit-Damage">
-                    <Image DockPanel.Dock="Left" Source="/Resources/Assets/Collectables/scroll.png" Height="24"/>
-                    <TextBlock DockPanel.Dock="Right" x:Name="TxtScrollCrdCount" Text="0" FontSize="16" FontWeight="Bold" VerticalAlignment="Center" Margin="10 0 0 0"/>
-                </DockPanel>
-                    
-                    <!--Material Names-->
-                <TextBlock Text="Bottle" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" TextAlignment="Center"
-                               Grid.Column="0" Grid.Row="0" FontSize="13" Background="#4A55A2" Foreground="WhiteSmoke"/>
-                <TextBlock Text="Orb" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" TextAlignment="Center"
-                               Grid.Column="1" Grid.Row="0" FontSize="13" Background="#606C5D" Foreground="WhiteSmoke"/>
-                <TextBlock Text="Hp" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" TextAlignment="Center"
-                               Grid.Column="2" Grid.Row="0" FontSize="13" Background="#4A55A2" Foreground="WhiteSmoke"/>
-                <TextBlock Text="Def" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" TextAlignment="Center"
-                               Grid.Column="3" Grid.Row="0" FontSize="13" Background="#606C5D" Foreground="WhiteSmoke"/>
-                <TextBlock Text="Dmg" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" TextAlignment="Center"
-                               Grid.Column="4" Grid.Row="0" FontSize="13" Background="#4A55A2" Foreground="WhiteSmoke"/>
-                <TextBlock Text="Spd" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" TextAlignment="Center"
-                               Grid.Column="5" Grid.Row="0" FontSize="13" Background="#606C5D" Foreground="WhiteSmoke"/>
-                <TextBlock Text="Sta" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" TextAlignment="Center"
-                               Grid.Column="6" Grid.Row="0" FontSize="13" Background="#4A55A2" Foreground="WhiteSmoke"/>
-                <TextBlock Text="Str" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" TextAlignment="Center"
-                               Grid.Column="7" Grid.Row="0" FontSize="13" Background="#606C5D" Foreground="WhiteSmoke"/>
-                <TextBlock Text="Crc" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" TextAlignment="Center"
-                               Grid.Column="8" Grid.Row="0" FontSize="13" Background="#4A55A2" Foreground="WhiteSmoke"/>
-                <TextBlock Text="Crd" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" TextAlignment="Center"
-                               Grid.Column="9" Grid.Row="0" FontSize="13" Background="#606C5D" Foreground="WhiteSmoke"/>
-            </Grid>
+        <!--Materials (new)-->
+        <ScrollViewer Grid.Row="1" Margin="5" Width="550" VerticalScrollBarVisibility="Auto">
+            <DockPanel x:Name="MaterialsContainer" Grid.Row="1" Margin="5" LastChildFill="False" Width="500" >
+                <TextBlock DockPanel.Dock="Top" FontSize="24" Foreground="GhostWhite" Text="Materials:" Margin="6 0 0 4"/>
+            </DockPanel>
+        </ScrollViewer>
 
-            <!--Player Materials-->
-            <WrapPanel x:Name="MaterialsPanel" Grid.Row="1" Margin="5" VerticalAlignment="Top" HorizontalAlignment="Center"/>
-
-        </StackPanel>
-
-        
         <!--Buttons-->
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="2">
-            <Button Content="Return" Style="{StaticResource menu-button}" Click="Button_Click"/>
+            <Button Content="Upgrade" Style="{StaticResource menu-button}" Margin="5 0"/>
+            <Button Content="Auto => Level" Style="{StaticResource menu-button}" Margin="5 0"
+                    ToolTip="Automatically adds the required essence to get to the next level."/>
+            <Button Content="Return" Style="{StaticResource menu-button}" Click="Button_Click" Margin="50 0 5 0"/>
         </StackPanel>
     </Grid>
 </UserControl>

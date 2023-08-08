@@ -161,4 +161,29 @@
         <Setter Property="Width" Value="125"/>
         <Setter Property="Padding" Value="1"/>
     </Style>
+    
+    <!--Textbox-->
+    <Style x:Key="RoundedCornerTextBox" TargetType="TextBox">
+        <Setter Property="SelectionBrush" Value="#5e60ce"/>
+        <Setter Property="Foreground" Value="Black"/>
+        <Setter Property="Padding" Value="4, 2, 4, 2"/>
+
+        <!--Corner-->
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TextBox">
+                    <Grid>
+                        <Border x:Name="border" BorderBrush="#6c698d" BorderThickness="1 1 1 2" Background="#e9ecef" CornerRadius="4"/>
+                        <ScrollViewer x:Name="PART_ContentHost"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="BorderBrush" Value="#aeb8fe"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 </ResourceDictionary>
