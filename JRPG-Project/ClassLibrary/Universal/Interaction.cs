@@ -7,6 +7,9 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 using JRPG_Project.ClassLibrary.Player;
+using JRPG_Project.ClassLibrary;
+using System.Collections.Generic;
+using JRPG_Project.ClassLibrary.Entities;
 
 namespace JRPG_ClassLibrary
 {
@@ -59,11 +62,11 @@ namespace JRPG_ClassLibrary
                         Grid.Children.Add(shopTab);
                         break;
                     }
-                case "BTNUPGRADES":
+                case "BTNBATTLE":
                     {
-                        UpgradesTab upgradeTab = new UpgradesTab(Inventory.Weapons[0], false);
+                        BattleTab battleTab = new BattleTab(FoeData.GetGenericFoeTeam());
                         Grid.Children.Clear();
-                        Grid.Children.Add(upgradeTab);
+                        Grid.Children.Add(battleTab);
                         break;
                     }
                 default:
@@ -81,6 +84,13 @@ namespace JRPG_ClassLibrary
             Grid.Children.Clear();
             DispatchTab dispatchTab = new DispatchTab(stageName);
             Grid.Children.Add(dispatchTab);
+        }
+
+        public static void OpenUpgradeTab(BaseItem Item)
+        {
+            UpgradesTab upgradeTab = new UpgradesTab(Item);
+            Grid.Children.Clear();
+            Grid.Children.Add(upgradeTab);
         }
 
         /// <summary>

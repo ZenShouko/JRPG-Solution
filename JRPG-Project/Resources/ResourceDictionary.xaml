@@ -5,6 +5,11 @@
         <Setter Property="FontFamily" Value="/Resources/Poppins-Regular.ttf"/>
         <Setter Property="FontWeight" Value="Medium"/>
     </Style>
+    
+    <!--Cool Japanese style font-->
+    <Style TargetType="TextBlock" x:Key="CoolFont">
+        <Setter Property="FontFamily" Value="/Resources/RampartOne-Regular.ttf"/>
+    </Style>
 
     <Style TargetType="Button">
         <Setter Property="Cursor" Value="Hand"/>

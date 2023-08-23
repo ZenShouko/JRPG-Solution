@@ -3,51 +3,79 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using System.Windows.Controls;
 
 namespace JRPG_Project.ClassLibrary.Data
 {
     public static class FoeData
     {
-        public static DataTable FoeTable = new DataTable("FoeTable");
+        public static List<Character> FoeList = new List<Character>();
 
-        public static void InitializeTable()
+        public static void InitializeList()
         {
-            //Create columns
-            //DataColumn name = new DataColumn("Name", typeof(string));
-            //DataColumn level = new DataColumn("Level", typeof(int));
-            //DataColumn hp = new DataColumn("HP", typeof(int));
-            //DataColumn iconNames = new DataColumn("IconNames", typeof(string));
-            //DataColumn movementBehaviour = new DataColumn("MovementBehaviour", typeof(string));
+            //Get the data from the json file
+            string json = File.ReadAllText(@"../../Resources/Data/FoeList.json");
+            FoeList = JsonConvert.DeserializeObject<List<Character>>(json);
 
-            ////Add columns to table
-            //FoeTable.Columns.Add(name);
-            //FoeTable.Columns.Add(level);
-            //FoeTable.Columns.Add(hp);
-            //FoeTable.Columns.Add(iconNames);
-            //FoeTable.Columns.Add(movementBehaviour);
-
-            ////Add rows to table
-            //ReadFoeData();
-        }
-
-        private static void ReadFoeData()
-        {
-            List<MapFoe> foes = new List<MapFoe>();
-
-            //Deserialize JSON file FoeList.json
-            string json = File.ReadAllText(@"../../Resources/Data/FoeList.JSON");
-            foes = JsonConvert.DeserializeObject<List<MapFoe>>(json);
-
-            //Add foes to FoeTable
-            foreach (MapFoe foe in foes)
+            //Generate image for each character
+            foreach (Character character in FoeList)
             {
-                AddFoe(foe);
+                character.CharImage = CharacterData.GetCharacterImage(character.ImageName);
             }
         }
 
-        private static void AddFoe(MapFoe foe)
+        public static List<Character> GetGenericFoeTeam()
         {
-            //FoeTable.Rows.Add(foe.Name, foe.Level, foe.HP, foe.IconNames, foe.MovementBehaviour);
+            List<Character> list = new List<Character>();
+            list.Add(GetCharacter("F1"));
+            list.Add(GetCharacter("F1"));
+
+            //Modify second foe
+            list[1].Name += " V2";
+            list[1].Stats.HP += 10;
+            list[1].Stats.DMG += 4;
+            list[1].Stats.DEF += 3;
+            list[1].Stats.SPD -= 5;
+            list[1].Stats.STA += 2;
+            list[1].Stats.STR += 4;
+            list[1].Stats.CRC += 2;
+            list[1].Stats.CRD += 5;
+
+            return list;
+        }
+
+        public static Character GetCharacter(string id)
+        {
+            //Vars
+            Character reference = FoeList.Find(x => x.ID == id);
+            Character character = new Character();
+
+            //Safety meassure
+            if (reference is null)
+            {
+                return null;
+            }
+            
+            //Copy the reference
+            character.ID = id;
+            character.Name = reference.Name;
+            character.Description = reference.Description;
+            character.Level = reference.Level;
+            character.Stats.HP = reference.Stats.HP;
+            character.Stats.DMG = reference.Stats.DMG;
+            character.Stats.DEF = reference.Stats.DEF;
+            character.Stats.SPD = reference.Stats.SPD;
+            character.Stats.STA = reference.Stats.STA;
+            character.Stats.STR = reference.Stats.STR;
+            character.Stats.CRC = reference.Stats.CRC;
+            character.Stats.CRD = reference.Stats.CRD;
+            character.ImageName = reference.ImageName;
+
+            Image img = new Image();
+            img.Source = CharacterData.GetCharacterImage(reference.ImageName).Source;
+            character.CharImage = img;
+
+            return character;
         }
     }
 }

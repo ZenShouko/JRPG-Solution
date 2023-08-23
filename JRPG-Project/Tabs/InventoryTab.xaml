@@ -16,6 +16,7 @@
             <Button Content="Return" Style="{StaticResource menu-button}" Margin="5 0" Click="ReturnButton_Click"/>
             <Button x:Name="BtnExtractEssence" Content="Extract Essence" Style="{StaticResource menu-button}" Margin="5 0" Click="ExtractEssence_Click"/>
             <Button x:Name="BtnBulkExtract" Content="Bulk Extract" Style="{StaticResource menu-button}" Margin="5 0" Click="ButtonBulkExtract_Click"/>
+            <Button x:Name="BtnUpgrade" Content="Upgrade" Style="{StaticResource menu-button}" Margin="5 0" Click="BtnUpgrade_Click"/>
             <ComboBox x:Name="CboxSort" Margin="5 0" SelectionChanged="CboxSort_SelectionChanged"
                       HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="6">
             </ComboBox>

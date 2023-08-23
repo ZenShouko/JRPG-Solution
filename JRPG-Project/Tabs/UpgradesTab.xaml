@@ -9,6 +9,7 @@
     <Grid Background="#272829">
         <Grid.RowDefinitions>
             <RowDefinition Height="225"/>
+            <RowDefinition Height="30"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="35"/>
         </Grid.RowDefinitions>
@@ -26,7 +27,7 @@
             <!--Upgrade Info-->
             <StackPanel Grid.Column="1" Margin="6" VerticalAlignment="Center">
                 <!--Stats Preview-->
-                <TextBlock Text="Preview Upgrade:" FontSize="24" Margin="2 0 0 5"/>
+                <TextBlock x:Name="TxtName" Text="Item name" FontSize="24" Margin="2 0 0 5"/>
                 <Border Background="WhiteSmoke" BorderBrush="Black" BorderThickness="1" CornerRadius="2" HorizontalAlignment="Center">
                     <StackPanel>
                         <WrapPanel HorizontalAlignment="Center" Margin="0 5">
@@ -84,26 +85,35 @@
 
                 <!--Xp Preview-->
                 <DockPanel Margin="5" Width="450">
-                    <TextBlock DockPanel.Dock="Left" x:Name="TxtCurrentXp" Text="0xp" VerticalAlignment="Center" FontSize="14"/>
-                    <TextBlock DockPanel.Dock="Right" x:Name="TxtMaxXp" Text="1000xp" VerticalAlignment="Center" FontSize="14"/>
-                    <ProgressBar x:Name="XpBar" Height="20" Width="350" Style="{StaticResource XpProgressBar}" Margin="10 0"/>
+                    <TextBlock DockPanel.Dock="Left" x:Name="TxtCurrentXp" MinWidth="100" TextAlignment="Center" Text="0xp" VerticalAlignment="Center" FontSize="14" Margin="5 0"/>
+                    <TextBlock DockPanel.Dock="Right" x:Name="TxtMaxXp" MinWidth="100" TextAlignment="Center" Text="1000xp" VerticalAlignment="Center" FontSize="14" Margin="5 0"/>
+                    <ProgressBar x:Name="XpBar" Height="20" MaxWidth="300" MinWidth="200" Style="{StaticResource XpProgressBar}" Margin="10 0"/>
                 </DockPanel>
             </StackPanel>
         </Grid>
         
-        <!--Materials (new)-->
-        <ScrollViewer Grid.Row="1" Margin="5" Width="550" VerticalScrollBarVisibility="Auto">
-            <DockPanel x:Name="MaterialsContainer" Grid.Row="1" Margin="5" LastChildFill="False" Width="500" >
-                <TextBlock DockPanel.Dock="Top" FontSize="24" Foreground="GhostWhite" Text="Materials:" Margin="6 0 0 4"/>
-            </DockPanel>
-        </ScrollViewer>
+        <!--Upgrade availability-->
+        <TextBlock Grid.Row="1" x:Name="TxtUpgradeStatus" FontSize="14" Text="Upgrade Available!" HorizontalAlignment="Center" VerticalAlignment="Center"
+                   Foreground="White" FontWeight="Bold" Margin="4"/>
+        <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Right" Margin="5 0">
+            <Image x:Name="ImgGold" Source="/Resources/Assets/Collectables/essence-bottle.png" Height="22" Margin="0 0 5 0"/>
+            <TextBlock x:Name="TxtBottles" Text="10" FontSize="16" Foreground="WhiteSmoke" VerticalAlignment="Center" Margin="0 0 5 0"/>
+            <Image Source="/Resources/Assets/Collectables/essence-orb.png" Height="22" Margin="10 0 5 0"/>
+            <TextBlock x:Name="TxtOrbs" Text="10" FontSize="16" Foreground="WhiteSmoke" VerticalAlignment="Center" Margin="0 0 5 0"/>
+        </StackPanel>
 
-        <!--Buttons-->
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="2">
-            <Button Content="Upgrade" Style="{StaticResource menu-button}" Margin="5 0"/>
-            <Button Content="Auto => Level" Style="{StaticResource menu-button}" Margin="5 0"
-                    ToolTip="Automatically adds the required essence to get to the next level."/>
-            <Button Content="Return" Style="{StaticResource menu-button}" Click="Button_Click" Margin="50 0 5 0"/>
+        <!--Materials (new)-->
+            <ScrollViewer Grid.Row="2" Margin="5" Width="550" VerticalScrollBarVisibility="Auto">
+                <DockPanel x:Name="MaterialsContainer" Grid.Row="1" Margin="5" LastChildFill="False" Width="500" >
+                    <TextBlock DockPanel.Dock="Top" FontSize="24" Foreground="GhostWhite" Text="Scrolls:" Margin="6 0 0 4"/>
+                </DockPanel>
+            </ScrollViewer>
+
+
+            <!--Buttons-->
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="3">
+            <Button x:Name="BtnUpgrade" IsEnabled="False" Content="Upgrade Level" Style="{StaticResource menu-button}" Margin="5 0" Click="BtnUpgrade_Click"/>
+            <Button Content="Return" Style="{StaticResource menu-button}" Click="ReturnButton" Margin="20 0 5 0"/>
         </StackPanel>
     </Grid>
 </UserControl>

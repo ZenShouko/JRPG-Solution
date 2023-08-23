@@ -1,9 +1,19 @@
 [
     {
-        "Name": "ILLUFOE",
+        "ID": "F1",
+        "Name": "Maniani",
         "Level": "1",
-        "HP": "10",
-        "IconNames": "foe-neutral.png;foe-alert.png",
-        "MovementBehaviour": "StraightForward"
+        "Stats": {
+            "HP": "10",
+            "DMG": "10",
+            "DEF": "10",
+            "SPD": "10",
+            "STA": "10",
+            "STR": "10",
+            "CRC": "10",
+            "CRD": "10"
+        },
+        "Description": "Claims that it's not a cat but a rare pokemon.",
+        "ImageName": "maniani.png"
     }
 ]

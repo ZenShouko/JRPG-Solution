@@ -617,5 +617,34 @@ namespace JRPG_Project.ClassLibrary.Universal
             LstAmulets.SelectionMode = on ? SelectionMode.Multiple : SelectionMode.Single;
             LstMaterials.IsEnabled = !on;
         }
+
+        private void BtnUpgrade_Click(object sender, RoutedEventArgs e)
+        {
+            //Get selected item as base item
+            BaseItem item;
+
+            if (LstWeapons.SelectedIndex != -1)
+            {
+                ListBoxItem listItem = (ListBoxItem)LstWeapons.SelectedItem;
+                item = Inventory.Weapons.FirstOrDefault(i => i.UniqueID == (string)listItem.Tag);
+            }
+            else if (LstArmours.SelectedIndex != -1)
+            {
+                ListBoxItem listItem = (ListBoxItem)LstArmours.SelectedItem;
+                item = Inventory.Armours.FirstOrDefault(i => i.UniqueID == (string)listItem.Tag);
+            }
+            else if (LstAmulets.SelectedIndex != -1)
+            {
+                ListBoxItem listItem = (ListBoxItem)LstAmulets.SelectedItem;
+                item = Inventory.Amulets.FirstOrDefault(i => i.UniqueID == (string)listItem.Tag);
+            }
+            else
+            {
+                return;
+            }
+
+            //Open upgrade tab
+            Interaction.OpenUpgradeTab(item);
+        }
     }
 }

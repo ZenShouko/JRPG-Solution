@@ -6,19 +6,9 @@ using JRPG_Project.ClassLibrary.Player;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Media.Media3D;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using JRPG_ClassLibrary.Entities;
 
 namespace JRPG_Project.Tabs
 {
@@ -27,161 +17,76 @@ namespace JRPG_Project.Tabs
     /// </summary>
     public partial class UpgradesTab : UserControl
     {
-        public UpgradesTab(BaseItem item, bool refinement)
+        public UpgradesTab(BaseItem item)
         {
             InitializeComponent();
             Item = item;
-            if (!refinement)
-                PrepareGuiForUpgrade();
+            PrepareGuiForUpgrade();
         }
+
         /// <summary>
         /// Item in question, used for reference.
         /// </summary>
         BaseItem Item { get; set; }
+        IStatsHolder ItemStatObj { get; set; }
         /// <summary>
         /// Item after upgrades.
         /// </summary>
-        BaseItem UpgradePreview { get; set; }
+        BaseItem ItemPreview { get; set; }
+        IStatsHolder ItemPreviewStatObj { get; set; }
 
-        Dictionary<string, int> MaterialsToUse = new Dictionary<string, int>(); //ID, amount
-        Dictionary<string, TextBox> TextboxCorrelatedToMat = new Dictionary<string, TextBox>();
+        Dictionary<int, int> XpPerLevel = new Dictionary<int, int>(); //Level, XP
+        Dictionary<string, Border> ScrollContainers = new Dictionary<string, Border>();
+        Dictionary<string, TextBlock> ScrollTextblocks = new Dictionary<string, TextBlock>();
 
+
+        #region Prep
         private void PrepareGuiForUpgrade()
         {
-            //Add all material ID's to dictionary
-            foreach (string id in Inventory.Materials.Keys)
-            {
-                MaterialsToUse.Add(id, 0);
-            }
+            //Initialize ItemPreview
+            if (Item is Weapon)
+                ItemPreview = new Weapon();
+            else if (Item is Armour)
+                ItemPreview = new Armour();
+            else if (Item is Amulet)
+                ItemPreview = new Amulet();
+
+            //Copy item to upgrade preview
+            ItemPreview.CopyFrom(Item);
+
+            //Initialize Stat objects
+            ItemStatObj = Item as IStatsHolder;
+            ItemPreviewStatObj = ItemPreview as IStatsHolder;
+
+            //Fill dictionary with xp required per level
+            if (Item is Weapon)
+                for (int i = LevelData.WeaponXPTable.Keys.FirstOrDefault(); i < LevelData.WeaponXPTable.Keys.LastOrDefault(); i++)
+                    XpPerLevel.Add(i, LevelData.WeaponXPTable[i].Item1);
+            else if (Item is Armour)
+                for (int i = LevelData.ArmourXPTable.Keys.FirstOrDefault(); i < LevelData.ArmourXPTable.Keys.LastOrDefault(); i++)
+                    XpPerLevel.Add(i, LevelData.ArmourXPTable[i].Item1);
+            else if (Item is Amulet)
+                for (int i = LevelData.AmuletXPTable.Keys.FirstOrDefault(); i < LevelData.AmuletXPTable.Keys.LastOrDefault(); i++)
+                    XpPerLevel.Add(i, LevelData.AmuletXPTable[i].Item1);
 
             //Set item image
             ItemImage.Source = Item.ItemImage.Source;
+
+            //Item name
+            TxtName.Text = Item.Name;
 
             //Display Stats
             RefreshStats();
 
             //Add materials to MaterialsPanel
             LoadMaterials();
-        }
 
-        private void RefreshStats()
-        {
-            //Calculate Upgrade Stats
-            CalculateStatsAfterUpgrade();
+            //Check if upgrade is possible
+            IsUpgradePossible();
 
-            //Vars
-            IStatsHolder baseObj = Item as IStatsHolder;
-            IStatsHolder upgradeObj = UpgradePreview as IStatsHolder;
-
-            //Display Current Stats
-            TxtHpPreview.Text = baseObj.Stats.HP == upgradeObj.Stats.HP ? baseObj.Stats.HP.ToString() : baseObj.Stats.HP + " -> " + upgradeObj.Stats.HP;
-            TxtDefPreview.Text = baseObj.Stats.DEF == upgradeObj.Stats.DEF ? baseObj.Stats.DEF.ToString() : baseObj.Stats.DEF + " -> " + upgradeObj.Stats.DEF;
-            TxtDmgPreview.Text = baseObj.Stats.DMG == upgradeObj.Stats.DMG ? baseObj.Stats.DMG.ToString() : baseObj.Stats.DMG + " -> " + upgradeObj.Stats.DMG;
-            TxtSpdPreview.Text = baseObj.Stats.SPD == upgradeObj.Stats.SPD ? baseObj.Stats.SPD.ToString() : baseObj.Stats.SPD + " -> " + upgradeObj.Stats.SPD;
-            TxtStaPreview.Text = baseObj.Stats.STA == upgradeObj.Stats.STA ? baseObj.Stats.STA.ToString() : baseObj.Stats.STA + " -> " + upgradeObj.Stats.STA;
-            TxtStrPreview.Text = baseObj.Stats.STR == upgradeObj.Stats.STR ? baseObj.Stats.STR.ToString() : baseObj.Stats.STR + " -> " + upgradeObj.Stats.STR;
-            TxtCrcPreview.Text = baseObj.Stats.CRC == upgradeObj.Stats.CRC ? baseObj.Stats.CRC.ToString() : baseObj.Stats.CRC + " -> " + upgradeObj.Stats.CRC;
-            TxtCrdPreview.Text = baseObj.Stats.CRD == upgradeObj.Stats.CRD ? baseObj.Stats.CRD.ToString() : baseObj.Stats.CRD + " -> " + upgradeObj.Stats.CRD;
-
-            //Highlight changed stats by adding fontweight bold
-            TxtHpPreview.FontWeight = baseObj.Stats.HP == upgradeObj.Stats.HP ? FontWeights.Normal : FontWeights.Bold;
-            TxtDefPreview.FontWeight = baseObj.Stats.DEF == upgradeObj.Stats.DEF ? FontWeights.Normal : FontWeights.Bold;
-            TxtDmgPreview.FontWeight = baseObj.Stats.DMG == upgradeObj.Stats.DMG ? FontWeights.Normal : FontWeights.Bold;
-            TxtSpdPreview.FontWeight = baseObj.Stats.SPD == upgradeObj.Stats.SPD ? FontWeights.Normal : FontWeights.Bold;
-            TxtStaPreview.FontWeight = baseObj.Stats.STA == upgradeObj.Stats.STA ? FontWeights.Normal : FontWeights.Bold;
-            TxtStrPreview.FontWeight = baseObj.Stats.STR == upgradeObj.Stats.STR ? FontWeights.Normal : FontWeights.Bold;
-            TxtCrcPreview.FontWeight = baseObj.Stats.CRC == upgradeObj.Stats.CRC ? FontWeights.Normal : FontWeights.Bold;
-            TxtCrdPreview.FontWeight = baseObj.Stats.CRD == upgradeObj.Stats.CRD ? FontWeights.Normal : FontWeights.Bold;
-
-            //XP related
-            TxtCurrentXp.Text = upgradeObj.Stats.GetXP() + "xp";
-            XpBar.Value = int.Parse(upgradeObj.Stats.GetXP());
-
-            //Get max XP
-            int maxXp = 0;
-            if (Item is Weapon)
-                maxXp = LevelData.WeaponXPTable[Item.Level + 1].Item1;
-            else if (Item is Armour)
-                maxXp = LevelData.ArmourXPTable[Item.Level + 1].Item1;
-            else if (Item is Amulet)
-                maxXp = LevelData.AmuletXPTable[Item.Level + 1].Item1;
-
-            TxtMaxXp.Text = maxXp + "xp";
-            XpBar.Maximum = maxXp;
-
-            //Highlight xp if changed
-            TxtCurrentXp.FontWeight = baseObj.Stats.XP == upgradeObj.Stats.XP ? FontWeights.Normal : FontWeights.Bold;
-            TxtMaxXp.FontWeight = TxtCurrentXp.FontWeight;
-
-            //Display level
-            TxtLevelPreview.Text = Item.Level == UpgradePreview.Level ? Item.Level.ToString() : Item.Level + " -> " + UpgradePreview.Level;
-            TxtLevelPreview.FontWeight = Item.Level == UpgradePreview.Level ? FontWeights.Normal : FontWeights.Bold;
-
-            //Display value
-            TxtValuePreview.Text = Item.Value == UpgradePreview.Value ? Item.Value.ToString() : Item.Value + " -> " + UpgradePreview.Value;
-            TxtValuePreview.FontWeight = Item.Value == UpgradePreview.Value ? FontWeights.Normal : FontWeights.Bold;
-        }
-
-        private void CalculateStatsAfterUpgrade()
-        {
-            //Refresh upgrade object
-            //Copy item to upgrade preview
-            if (Item is Weapon)
-                UpgradePreview = new Weapon();
-            else if (Item is Armour)
-                UpgradePreview = new Armour();
-            else if (Item is Amulet)
-                UpgradePreview = new Amulet();
-
-            UpgradePreview.CopyFrom(Item);
-
-            //Vars
-            IStatsHolder baseObj = Item as IStatsHolder;
-            IStatsHolder upgradeObj = UpgradePreview as IStatsHolder;
-
-            //Get total xp from materials
-            int totalXp = 0;
-            foreach (var item in MaterialsToUse)
-            {
-                if (item.Value != 0)
-                {
-                    ClassLibrary.Items.Material mat = ItemData.ListMaterials.Find(x => x.ID == item.Key);
-                    totalXp += mat.Stats.XP * item.Value;
-                }
-            }
-
-            //Add xp to Stats
-            upgradeObj.Stats.XP += totalXp;
-
-            //Can item level up?
-            if (Item is Weapon)
-            {
-                //Check if item xp is enough to level up and if item is not max level
-                while (LevelData.WeaponXPTable.ContainsKey(Item.Level + 1) && upgradeObj.Stats.XP >= LevelData.WeaponXPTable[Item.Level + 1].Item1) //oui
-                {
-                    //Get level up stats
-                    Stats levelUpStats = LevelData.WeaponXPTable[Item.Level + 1].Item2;
-
-                    //Add level up stats
-                    upgradeObj.Stats.HP += levelUpStats.HP;
-                    upgradeObj.Stats.DEF += levelUpStats.DEF;
-                    upgradeObj.Stats.DMG += levelUpStats.DMG;
-                    upgradeObj.Stats.SPD += levelUpStats.SPD;
-                    upgradeObj.Stats.STA += levelUpStats.STA;
-                    upgradeObj.Stats.STR += levelUpStats.STR;
-                    upgradeObj.Stats.CRC += levelUpStats.CRC;
-                    upgradeObj.Stats.CRD += levelUpStats.CRD;
-
-                    //Deduct xp required for level up
-                    upgradeObj.Stats.XP -= LevelData.WeaponXPTable[Item.Level + 1].Item1;
-
-                    //Increase level
-                    UpgradePreview.Level++;
-
-                    //Increase value
-                    UpgradePreview.Value = ItemData.GetValue(UpgradePreview);
-                }
-            }
+            //Display essence mat
+            TxtBottles.Text = Inventory.Materials["M1"].ToString();
+            TxtOrbs.Text = Inventory.Materials["M2"].ToString();
         }
 
         private void LoadMaterials()
@@ -189,7 +94,7 @@ namespace JRPG_Project.Tabs
             //Itterate through every distinct material
             foreach (var item in Inventory.Materials)
             {
-                if (item.Value != 0)
+                if (item.Value != 0 && item.Key != "M1" && item.Key != "M2")
                 {
                     ClassLibrary.Items.Material mat = ItemData.ListMaterials.Find(x => x.ID == item.Key);
                     AddMaterialToContainer(mat);
@@ -205,7 +110,7 @@ namespace JRPG_Project.Tabs
             border.BorderThickness = new Thickness(1, 1, 2, 3);
             border.CornerRadius = new CornerRadius(2, 4, 4, 2);
             border.BorderBrush = Brushes.FloralWhite;
-            border.Padding = new Thickness (8, 6, 8, 6);
+            border.Padding = new Thickness(8, 6, 8, 6);
             border.Margin = new Thickness(0, 0, 0, 8);
             DockPanel.SetDock(border, Dock.Top);
 
@@ -236,62 +141,17 @@ namespace JRPG_Project.Tabs
             textBlock.Margin = new Thickness(5, 0, 0, 0);
             Grid.SetColumn(textBlock, 1);
 
-            //#Stackpanel for quantity adjustment
-            StackPanel stackPanel = new StackPanel();
-            stackPanel.Orientation = Orientation.Horizontal;
-            stackPanel.Margin = new Thickness(25, 0, 0, 0);
-            Grid.SetColumn(stackPanel, 2);
-
-            //#Quantity adjustment buttons (Decresing)
-            Button btnGreatlyDecrease = new Button();
-            btnGreatlyDecrease.Content = "<<";
-            btnGreatlyDecrease.Height = 24;
-            btnGreatlyDecrease.Width = 24;
-            btnGreatlyDecrease.Style = (Style)Application.Current.Resources["menu-button"];
-            btnGreatlyDecrease.Click += (s, e) => AdjustMaterialQuantity(mat.ID, -5);
-            stackPanel.Children.Add(btnGreatlyDecrease);
-
-            Button btnDecrease = new Button();
-            btnDecrease.Content = "<";
-            btnDecrease.Height = 24;
-            btnDecrease.Width = 24;
-            btnDecrease.Style = (Style)Application.Current.Resources["menu-button"];
-            btnDecrease.Click += (s, e) => AdjustMaterialQuantity(mat.ID, -1);
-            stackPanel.Children.Add(btnDecrease);
-
-            //#Total Quantity Textbox
-            TextBox quantityTextbox = new TextBox();
-            quantityTextbox.Text = "0";
-            quantityTextbox.Width = 40;
-            quantityTextbox.MaxLength = 3;
-            quantityTextbox.VerticalAlignment = VerticalAlignment.Center;
-            quantityTextbox.TextAlignment = TextAlignment.Center;
-            quantityTextbox.FontSize = 16;
-            quantityTextbox.FontWeight = FontWeights.Bold;
-            quantityTextbox.Padding = new Thickness(2);
-            quantityTextbox.Margin = new Thickness(10, 0, 10, 0);
-            quantityTextbox.Style = (Style)Application.Current.Resources["RoundedCornerTextBox"];
-            quantityTextbox.TextChanged += (s, e) => QuantityTextbox_TextChanged(s, e, mat.ID);
-            stackPanel.Children.Add(quantityTextbox);
-            //Add to dictionary
-            TextboxCorrelatedToMat.Add(mat.ID, quantityTextbox);
-
-            //#Quantity adjustment buttons (Increasing)
-            Button btnIncrease = new Button();
-            btnIncrease.Content = ">";
-            btnIncrease.Height = 24;
-            btnIncrease.Width = 24;
-            btnIncrease.Style = (Style)Application.Current.Resources["menu-button"];
-            btnIncrease.Click += (s, e) => AdjustMaterialQuantity(mat.ID, 1);
-            stackPanel.Children.Add(btnIncrease);
-
-            Button btnGreatlyIncrease = new Button();
-            btnGreatlyIncrease.Content = ">>";
-            btnGreatlyIncrease.Height = 24;
-            btnGreatlyIncrease.Width = 24;
-            btnGreatlyIncrease.Style = (Style)Application.Current.Resources["menu-button"];
-            btnGreatlyIncrease.Click += (s, e) => AdjustMaterialQuantity(mat.ID, 5);
-            stackPanel.Children.Add(btnGreatlyIncrease);
+            //#Apply Button
+            Button applyButton = new Button();
+            applyButton.Content = "Apply";
+            applyButton.FontSize = 13;
+            applyButton.Width = 80;
+            applyButton.VerticalAlignment = VerticalAlignment.Center;
+            applyButton.HorizontalAlignment = HorizontalAlignment.Right;
+            applyButton.Margin = new Thickness(5, 0, 5, 0);
+            applyButton.Click += (s, e) => ApplyScroll(mat);
+            applyButton.Style = (Style)FindResource("menu-button");
+            Grid.SetColumn(applyButton, 2);
 
             //#Total Quantity
             TextBlock quantityTextBlock = new TextBlock();
@@ -305,70 +165,199 @@ namespace JRPG_Project.Tabs
 
             grid.Children.Add(image);
             grid.Children.Add(textBlock);
-            grid.Children.Add(stackPanel);
+            grid.Children.Add(applyButton);
             grid.Children.Add(quantityTextBlock);
 
             border.Child = grid;
 
             // x|=> Add to container
             MaterialsContainer.Children.Add(border);
+
+            //Add to dictionaries
+            ScrollContainers.Add(mat.ID, border);
+            ScrollTextblocks.Add(mat.ID, quantityTextBlock);
         }
 
-        private void QuantityTextbox_TextChanged(object sender, TextChangedEventArgs e, string id)
-        {
-            //If char is not a number, remove it
-            TextBox textbox = (TextBox)sender;
+        #endregion
 
-            //Return if textbox is empty
-            if (string.IsNullOrWhiteSpace(textbox.Text))
+        #region Buttons
+        private void ApplyScroll(Material mat)
+        {
+            //Add all material stats to item
+            ItemStatObj.Stats.HP += mat.Stats.HP;
+            ItemStatObj.Stats.DEF += mat.Stats.DEF;
+            ItemStatObj.Stats.DMG += mat.Stats.DMG;
+            ItemStatObj.Stats.SPD += mat.Stats.SPD;
+            ItemStatObj.Stats.STA += mat.Stats.STA;
+            ItemStatObj.Stats.STR += mat.Stats.STR;
+            ItemStatObj.Stats.CRC += mat.Stats.CRC;
+            ItemStatObj.Stats.CRD += mat.Stats.CRD;
+
+            //Add XP
+            LevelData.AddXP(Item, mat.Stats.XP);
+
+            //Remove 1 scroll from inventory
+            Inventory.Materials[mat.ID]--;
+            ScrollTextblocks[mat.ID].Text = $"x{Inventory.Materials[mat.ID]} left";
+
+            //Remove container if no more scrolls left
+            if (Inventory.Materials[mat.ID] == 0)
             {
-                textbox.Text = "0";
-                return;
+                MaterialsContainer.Children.Remove(ScrollContainers[mat.ID]);
+                ScrollContainers.Remove(mat.ID);
+                ScrollTextblocks.Remove(mat.ID);
             }
 
-            //If textbox is not a number, revert to previous value
-            if (!int.TryParse(textbox.Text, out int result))
-            {
-                textbox.Text = MaterialsToUse[id].ToString();
-                return;
-            }
-
-            //If textbox value is too big, set it to max
-            if (int.Parse(textbox.Text) > Inventory.Materials[id])
-                textbox.Text = Inventory.Materials[id].ToString();
-
-            //If textbox value starts with a 0, remove it
-            while (textbox.Text.StartsWith("0") && textbox.Text.Length > 1)
-                textbox.Text = textbox.Text.Remove(0, 1);
-
-            //Set cursor to end
-            textbox.CaretIndex = textbox.Text.Length;
-
-            //Update dictionary
-            MaterialsToUse[id] = int.Parse(textbox.Text);
-        }
-
-        private void AdjustMaterialQuantity(string id, int quantity)
-        {
-            //Keep amount in range
-            if (MaterialsToUse[id] + quantity < 0)
-                quantity = -MaterialsToUse[id];
-            else if (MaterialsToUse[id] + quantity > Inventory.Materials[id])
-                quantity = Inventory.Materials[id] - MaterialsToUse[id];
-
-            //Adjust quantity
-            MaterialsToUse[id] += quantity;
-
-            //Update textbox
-            TextboxCorrelatedToMat[id].Text = MaterialsToUse[id].ToString();
+            //Recalculate value
+            ItemData.SetValue(Item);
 
             //Refresh stats
             RefreshStats();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void ReturnButton(object sender, RoutedEventArgs e)
         {
             Interaction.OpenTab("MainTab");
+        }
+
+        private void BtnUpgrade_Click(object sender, RoutedEventArgs e)
+        {
+            int requiredXp = GetRequiredXp();
+            int orbs = 0;
+            int bottles = 0;
+
+            while (requiredXp > ItemData.ListMaterials.FirstOrDefault(x => x.ID == "M2").Stats.XP &&
+                Inventory.Materials["M2"] > 0)
+            {
+                orbs++;
+                requiredXp -= ItemData.ListMaterials.FirstOrDefault(x => x.ID == "M2").Stats.XP;
+            }
+
+            while (requiredXp > ItemData.ListMaterials.FirstOrDefault(x => x.ID == "M1").Stats.XP &&
+                               Inventory.Materials["M1"] > 0)
+            {
+                bottles++;
+                requiredXp -= ItemData.ListMaterials.FirstOrDefault(x => x.ID == "M1").Stats.XP;
+            }
+
+            //Checkup
+            if (requiredXp > 0)
+            {
+                //Use an extra bottle else an orb
+                if (Inventory.Materials["M1"] > 0)
+                {
+                    bottles++;
+                }
+                else if (Inventory.Materials["M2"] > 0)
+                {
+                    orbs++;
+                }
+                else
+                {
+                    MessageBox.Show("XP requirements not met");
+                    return;
+                }
+            }
+
+            //Apply changes
+            int essenceXp = (orbs * ItemData.ListMaterials.FirstOrDefault(x => x.ID == "M2").Stats.XP) +
+                            (bottles * ItemData.ListMaterials.FirstOrDefault(x => x.ID == "M1").Stats.XP);
+            LevelData.AddXP(Item, essenceXp);
+
+            //Remove materials
+            Inventory.Materials["M2"] -= orbs;
+            Inventory.Materials["M1"] -= bottles;
+
+            //Recalculate value
+            ItemData.SetValue(Item);
+
+            //Update UI
+            RefreshStats();
+            IsUpgradePossible();
+            TxtBottles.Text = Inventory.Materials["M1"].ToString();
+            TxtOrbs.Text = Inventory.Materials["M2"].ToString();
+        }
+
+        #endregion
+
+        private void IsUpgradePossible()
+        {
+            //Check if we have enough essence for an upgrade
+            int totalEssence = (Inventory.Materials["M1"] * ItemData.ListMaterials.FirstOrDefault(x => x.ID == "M1").Stats.XP)
+                + (Inventory.Materials["M2"] * ItemData.ListMaterials.FirstOrDefault(x => x.ID == "M2").Stats.XP);
+
+            if (totalEssence > XpPerLevel[Item.Level + 1])
+            {
+                TxtUpgradeStatus.Text = "Upgrade Available";
+                TxtUpgradeStatus.Foreground = Brushes.LimeGreen;
+                BtnUpgrade.IsEnabled = true;
+                BtnUpgrade.Background = Brushes.GhostWhite;
+            }
+            else
+            {
+                TxtUpgradeStatus.Text = "Not enough essence";
+                TxtUpgradeStatus.Foreground = Brushes.Crimson;
+                BtnUpgrade.IsEnabled = false;
+                BtnUpgrade.Background = Brushes.Gray;
+            }
+        }
+
+        private void RefreshStats()
+        {
+            //Display Current Stats
+            TxtHpPreview.Text = ItemStatObj.Stats.HP.ToString();
+            TxtDefPreview.Text = ItemStatObj.Stats.DEF.ToString();
+            TxtDmgPreview.Text = ItemStatObj.Stats.DMG.ToString();
+            TxtSpdPreview.Text = ItemStatObj.Stats.SPD.ToString();
+            TxtStaPreview.Text = ItemStatObj.Stats.STA.ToString();
+            TxtStrPreview.Text = ItemStatObj.Stats.STR.ToString();
+            TxtCrcPreview.Text = ItemStatObj.Stats.CRC.ToString();
+            TxtCrdPreview.Text = ItemStatObj.Stats.CRD.ToString();
+
+            //Highlight changed stats by adding fontweight bold
+            TxtHpPreview.FontWeight = ItemStatObj.Stats.HP == ItemPreviewStatObj.Stats.HP ? FontWeights.Normal : FontWeights.Bold;
+            TxtDefPreview.FontWeight = ItemStatObj.Stats.DEF == ItemPreviewStatObj.Stats.DEF ? FontWeights.Normal : FontWeights.Bold;
+            TxtDmgPreview.FontWeight = ItemStatObj.Stats.DMG == ItemPreviewStatObj.Stats.DMG ? FontWeights.Normal : FontWeights.Bold;
+            TxtSpdPreview.FontWeight = ItemStatObj.Stats.SPD == ItemPreviewStatObj.Stats.SPD ? FontWeights.Normal : FontWeights.Bold;
+            TxtStaPreview.FontWeight = ItemStatObj.Stats.STA == ItemPreviewStatObj.Stats.STA ? FontWeights.Normal : FontWeights.Bold;
+            TxtStrPreview.FontWeight = ItemStatObj.Stats.STR == ItemPreviewStatObj.Stats.STR ? FontWeights.Normal : FontWeights.Bold;
+            TxtCrcPreview.FontWeight = ItemStatObj.Stats.CRC == ItemPreviewStatObj.Stats.CRC ? FontWeights.Normal : FontWeights.Bold;
+            TxtCrdPreview.FontWeight = ItemStatObj.Stats.CRD == ItemPreviewStatObj.Stats.CRD ? FontWeights.Normal : FontWeights.Bold;
+
+            //XP related (display max if level is max. Set progressbar to 100 both max value as current value)
+            TxtCurrentXp.Text = Item.Level == XpPerLevel.Keys.LastOrDefault() ? "max" : ItemStatObj.Stats.GetXP() + "xp";
+            XpBar.Value = Item.Level == XpPerLevel.Keys.LastOrDefault() ? 100 : int.Parse(ItemStatObj.Stats.GetXP());
+
+            //Get max XP
+            int maxXp = 0;
+            try
+            {
+                maxXp = XpPerLevel[Item.Level + 1];
+            }
+            catch (Exception e)
+            {
+                maxXp = 0;
+            }
+
+            TxtMaxXp.Text = maxXp == 0 ? "MAX" : maxXp + "xp";
+            XpBar.Maximum = maxXp == 0 ? 100 : maxXp;
+
+            //Highlight xp if changed
+            TxtCurrentXp.FontWeight = ItemStatObj.Stats.XP == ItemPreviewStatObj.Stats.XP ? FontWeights.Normal : FontWeights.Bold;
+            TxtMaxXp.FontWeight = TxtCurrentXp.FontWeight;
+
+            //Display level
+            TxtLevelPreview.Text = Item.Level.ToString();
+            TxtLevelPreview.FontWeight = Item.Level == ItemPreview.Level ? FontWeights.Normal : FontWeights.Bold;
+
+            //Display value
+            TxtValuePreview.Text = Item.Value.ToString();
+            TxtValuePreview.FontWeight = Item.Value == ItemPreview.Value ? FontWeights.Normal : FontWeights.Bold;
+        }
+
+        private int GetRequiredXp()
+        {
+            return XpPerLevel[Item.Level + 1] - ItemStatObj.Stats.XP;
         }
     }
 }

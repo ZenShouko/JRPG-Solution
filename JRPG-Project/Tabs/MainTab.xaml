@@ -45,7 +45,7 @@
                 <Button x:Name="BtnDispatch" Content="Dispatch" Style="{StaticResource menu-button}" Margin="5 10" Click="OpenTab"/>
                 <Button x:Name="BtnInventory" Content="Inventory" Style="{StaticResource menu-button}" Margin="5 10" Click="OpenTab"/>
                 <Button x:Name="BtnTeam" Content="Team" Style="{StaticResource menu-button}" Margin="5 10" Click="OpenTab"/>
-                <Button x:Name="BtnUpgrades" Content="Upgrades" Style="{StaticResource menu-button}" Margin="5 10" Click="OpenTab"/>
+                <Button x:Name="BtnBattle" Content="Battle Sim" Style="{StaticResource menu-button}" Margin="5 10" Click="OpenTab"/>
                 <Button x:Name="BtnMarket" Content="Market" Style="{StaticResource menu-button}" Margin="5 10" Click="OpenTab"/>
             </StackPanel>
         </Border>

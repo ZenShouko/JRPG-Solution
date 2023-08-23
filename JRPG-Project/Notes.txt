@@ -3,8 +3,11 @@
 
 #Known Issues
 >-------------
-- Inventory doesn't display collectable's stats. It's stuck on one 'random' stat.
+- Deducting XP doesn't work properly on the upgrades tab.
 (Need investigation --)
+
+- Inventory doesn't display collectable's stats. It's stuck on one 'random' stat.
+(Need investigation --Fixed)
 
 - Need a better way of identifying equipment. Trying to equip one will now randomly equip one of the same type.
 	>Need a more specific way of identifying equipment. 
@@ -29,15 +32,16 @@ Also, it favors collectables a bit too much.
 .
 #Upcoming Features
 >------------------
-[Pending] Being able to equip items to characters
-[Pending] Being able to "sell"/destroy items
+[Pending] Being able to upgrade items
+[Done] Being able to equip items to characters
+[Done] Being able to "sell"/destroy items
 [Done] Being able to view the team's characters and items
 .
 .
 .
 #Current Workflow
 >-----------------
-- TeamTab is in construction!
+- Upgrades tab
 
 
 ====================================================================================================

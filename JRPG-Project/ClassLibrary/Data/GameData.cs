@@ -16,10 +16,6 @@ namespace JRPG_Project.ClassLibrary.Data
     {
         public static void InitializeData()
         {
-            //TODO: CHANGE (Initialize Foe Table and add to database) // scraped
-            //FoeData.InitializeTable();
-            //DB_Game.Tables.Add(FoeData.FoeTable);
-
             //Initialize Tile Table and add to database
             TileData.InitializeList();
 
@@ -31,6 +27,9 @@ namespace JRPG_Project.ClassLibrary.Data
 
             //Initialize Character list
             CharacterData.InitializeList();
+
+            //Initialize Foe list
+            FoeData.InitializeList();
 
             //Initialize Lootbox list
             LootboxData.InitializeList();
@@ -63,15 +62,6 @@ namespace JRPG_Project.ClassLibrary.Data
             foreach (Material material in ItemData.ListMaterials)
             {
                 Inventory.Materials.Add(material.ID, 0);
-            }
-
-            //(Test) Enhance first weapon
-            LevelData.AddXP(Inventory.Weapons[0], 2000);
-            ItemData.SetValue(Inventory.Weapons[0]);
-
-            foreach (string key in Inventory.Materials.Keys.ToList())
-            {
-                Inventory.Materials[key] = 25;
             }
         }
 
