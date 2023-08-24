@@ -10,35 +10,40 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="60"/>
-            <RowDefinition Height="0.8*"/>
-            <RowDefinition Height="60"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="35"/>
+            <RowDefinition Height="50"/>
         </Grid.RowDefinitions>
         
         <!--Foe row-->
         <StackPanel x:Name="FoePanel" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
-            <!--<Border BorderBrush="MediumVioletRed" Background="#FAF1E4" BorderThickness="1 1 2 3" CornerRadius="2" Margin="8 0">
-                <StackPanel>
-                    <ProgressBar Width="85" Style="{StaticResource XpProgressBar}" Value="100" Foreground="RoyalBlue" Height="6" Margin="2"/>
-                    <Image Source="/Resources/Assets/Characters/maniani.png" Width="100" Height="100" Stretch="UniformToFill" Margin="0 4"/>
-                    <ProgressBar Style="{StaticResource XpProgressBar}" Value="80" Foreground="Crimson" Height="8" Margin="2"/>
-                </StackPanel>
-            </Border>-->
+            <!--<Canvas Height="100" Width="100">
+                <Border BorderBrush="MediumVioletRed" Background="#FAF1E4" BorderThickness="1 1 2 3" CornerRadius="2" Margin="8 0">
+                    <StackPanel>
+                        <ProgressBar Width="85" Style="{StaticResource XpProgressBar}" Value="100" Foreground="RoyalBlue" Height="6" Margin="2"/>
+                        <Image Source="/Resources/Assets/Characters/maniani.png" Width="100" Height="100" Stretch="UniformToFill" Margin="0 4"/>
+                        <ProgressBar Style="{StaticResource XpProgressBar}" Value="80" Foreground="Crimson" Height="8" Margin="2"/>
+                    </StackPanel>
+                </Border>
+            </Canvas>-->
         </StackPanel>
         
-        <!--Foe Anouncer-->
-        <TextBlock x:Name="TxtFoeAnouncer" Text="Sample Foe text" Grid.Row="1" Foreground="Crimson" Background="WhiteSmoke" Padding="4"
-                   VerticalAlignment="Center" HorizontalAlignment="Stretch" TextAlignment="Center" FontSize="18"/>
+        <!--Buttons-->
+        <StackPanel Orientation="Horizontal" Grid.Row="4" Margin="5" HorizontalAlignment="Left" VerticalAlignment="Center">
+            <Button x:Name="BtnLog" Content="Log" Style="{StaticResource menu-button}" Width="50" Margin="5 0"/>
+            <Button x:Name="BtnFinish" IsEnabled="False" Content="Finish" Style="{StaticResource menu-button}" Margin="5 0" Click="BtnFinish_Click"/>
+            <Button x:Name="BtnSpeedToggle" Content="Faster" Style="{StaticResource menu-button}" Margin="5 0" Click="BtnSpeedToggle_Click"/>
+        </StackPanel>
 
         <!--Global Anouncer-->
-        <TextBlock x:Name="TxtGlobalAnouncer" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextAlignment="Center"
+        <TextBlock x:Name="TxtGlobalAnouncer" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextAlignment="Center"
                    FontSize="34" Padding="4 6" Text="バトルがはじまるよ" Style="{StaticResource CoolFont}" FontWeight="Medium" Background="GhostWhite"/>
 
-        <!--Player Anouncer-->
-        <TextBlock x:Name="TxtPlayerAnouncer" Text="Sample Player text" Grid.Row="3" Foreground="RoyalBlue" Background="WhiteSmoke" Padding="4"
+        <!--Small Anouncer-->
+        <TextBlock x:Name="TxtSmallAnouncer" Text="Sample Small text" Grid.Row="3" Foreground="RoyalBlue" Background="WhiteSmoke" Padding="4"
                    VerticalAlignment="Center" HorizontalAlignment="Stretch" TextAlignment="Center" FontSize="18"/>
 
         <!--Player row-->
-        <StackPanel x:Name="PlayerPanel" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2" Grid.Row="4"/>
+        <StackPanel x:Name="PlayerPanel" Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2" />
     </Grid>
 </UserControl>

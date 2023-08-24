@@ -1,10 +1,14 @@
 ﻿Hi and welcome to the general App Notes!
-[Last updated: 25/07/2023]
+[Last updated: 24/08/2023]
 
 #Known Issues
 >-------------
+- When upgrading, it can use a bit too much essence materials, leaving you in the negatives. 
+	This tab is incredibly buggy.
+	(Need investigation --)
+
 - Deducting XP doesn't work properly on the upgrades tab.
-(Need investigation --)
+(Need investigation --Removed)
 
 - Inventory doesn't display collectable's stats. It's stuck on one 'random' stat.
 (Need investigation --Fixed)
@@ -32,7 +36,8 @@ Also, it favors collectables a bit too much.
 .
 #Upcoming Features
 >------------------
-[Pending] Being able to upgrade items
+[Pending] Battles!!
+[Delayed] Being able to upgrade items
 [Done] Being able to equip items to characters
 [Done] Being able to "sell"/destroy items
 [Done] Being able to view the team's characters and items
@@ -41,7 +46,8 @@ Also, it favors collectables a bit too much.
 .
 #Current Workflow
 >-----------------
-- Upgrades tab
+- Battle tab
+(- Upgrades tab)
 
 
 ====================================================================================================

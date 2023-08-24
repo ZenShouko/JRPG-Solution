@@ -29,6 +29,7 @@ namespace JRPG_Project.Tabs
         //Foe teams
         List<Character> FoeTeam = new List<Character>();
         Dictionary<Character, Border> CharacterBorder = new Dictionary<Character, Border>();
+        int speedToggle = 1; //Higher means faster
 
         #region Prep
         private void InitializeBattle()
@@ -130,8 +131,8 @@ namespace JRPG_Project.Tabs
         bool Battle = true; //True = battle is still going on, false = battle is over
         private async void SimulateBattle()
         {
-            //Wait 3 seconds
-            await Task.Delay(3000);
+            //Battoru hajimaruyo!
+            await Task.Delay(1400 / speedToggle);
 
             //Battle loop
             while (Battle)
@@ -148,11 +149,11 @@ namespace JRPG_Project.Tabs
                     //highlight character
                     HighlightCharacter(character);
 
-                    //Anounce turn
-                    GlobalAnouncer($"{character.Name}'s turn");
+                    //Clear global anouncer
+                    GlobalAnouncer($"");
 
                     //PAUSE
-                    await Task.Delay(750);
+                    await Task.Delay(500 / speedToggle);
 
                     //Pick a random target
                     Character targetCharacter = GetTarget(character);
@@ -161,12 +162,49 @@ namespace JRPG_Project.Tabs
                     //Attack target
                     Attack(character, targetCharacter);
 
+
+                    //Is target dead?
+                    if (CharHpDef[targetCharacter].Item1 <= 0)
+                    {
+                        //Remove target from grid
+                        if (FoeTeam.Contains(targetCharacter))
+                        {
+                            CharacterBorder[targetCharacter].Opacity = 0.4;
+                        }
+                        else
+                        {
+                            CharacterBorder[targetCharacter].Opacity = 0.4;
+                        }
+
+                        //PAUSE
+                        await Task.Delay(1000 / speedToggle);
+
+                        //Check if battle is over
+                        if (IsBattleOver())
+                        {
+                            //PAUSE
+                            await Task.Delay(2000 / speedToggle);
+
+                            Battle = false;
+                            BtnFinish.IsEnabled = true;
+                            break;
+                        }
+                    }
+
                     //PAUSE
-                    await Task.Delay(5000);
+                    await Task.Delay(1500 / speedToggle);
 
                     //Unhighlight
                     HighlightTarget(null);
                 }
+            }
+
+            //Battle is over
+            if (CharHpDef.Any(x => x.Key.ID.Contains("CH") && x.Value.Item1 > 0))
+            {
+                //player won, hand out rewards
+                (int xp, int coins) = CalculateXpCoinRewards();
+                SmallAnouncer($"You gained {xp} xp and {coins} coins!");
             }
         }
 
@@ -228,6 +266,19 @@ namespace JRPG_Project.Tabs
 
         private Character GetTarget(Character currentChar)
         {
+            //Return null if no targets available
+            if (currentChar.ID.Contains("CH"))
+            {
+                if (CharHpDef.All(x => x.Key.ID.Contains("F") && x.Value.Item1 <= 0))
+                    return null;
+            }
+            else
+            {
+                if (CharHpDef.All(x => x.Key.ID.Contains("CH") && x.Value.Item1 <= 0))
+                    return null;
+            }
+
+
             Character target = new Character();
 
             while (true)
@@ -254,11 +305,19 @@ namespace JRPG_Project.Tabs
         private void Attack(Character attacker, Character target)
         {
             //#Anouncer:
-            GlobalAnouncer($"{attacker.Name} attacks {target.Name}!");
+            GlobalAnouncer($"attacks {target.Name}");
             
+            //Animate Attack
+            AnimateAttack(attacker);
+
+            //Get damage
+            (int dmg, bool crit) = CalculateDmg(attacker);
+
+            //Display damage
+            DisplayNumbers(dmg, crit, target);
 
             //Lower defence first, then HP
-            CharHpDef[target] = (CharHpDef[target].Item1, CharHpDef[target].Item2 - attacker.GetAccumelatedStats().DMG);
+            CharHpDef[target] = (CharHpDef[target].Item1, CharHpDef[target].Item2 - dmg);
 
             //If target's defence is below 0, lower HP
             if (CharHpDef[target].Item2 <= 0)
@@ -266,19 +325,69 @@ namespace JRPG_Project.Tabs
                 CharHpDef[target] = (CharHpDef[target].Item1 - Math.Abs(CharHpDef[target].Item2), 0);
             }
 
+            //Animate hit
+            AnimateHit(target);
+
             //Update HP and DEF bar
             CharHpDefBar[target].Item1.Value = CharHpDef[target].Item1;
             CharHpDefBar[target].Item2.Value = CharHpDef[target].Item2;
+
+            //#Anounce remaining HP DEF
+            if (crit)
+                SmallAnouncer($"Critical! [{CharHpDef[target].Item1}HP | {CharHpDef[target].Item2}DEF]");
+            else
+                SmallAnouncer($"Ok! [{CharHpDef[target].Item1}HP | {CharHpDef[target].Item2}DEF]");
         }
 
-        private void FoeAnouncer(string text)
+        private (int, bool) CalculateDmg(Character attacker)
         {
-            TxtFoeAnouncer.Text = text;
+            //Base dmg
+            int DMG = attacker.GetAccumelatedStats().DMG;
+
+            //Do we have a crit hit?
+            if (Interaction.GetRandomNumber(0, 100) <= attacker.GetAccumelatedStats().CRC)
+            {
+                //Yes, crit hit
+                return (DMG * attacker.GetAccumelatedStats().CRD, true);
+            }
+
+            //No, crit hit
+            return (DMG, false);
         }
 
-        private void PlayerAnouncer(string text)
+        private (int, int) CalculateXpCoinRewards()
         {
-            TxtPlayerAnouncer.Text = text;
+            int xpReward = 0;
+            int coinsReward = 0;
+
+            // ???
+            //Profit
+
+            return (xpReward, coinsReward);
+        }
+
+        private bool IsBattleOver()
+        {
+            //True if either team is dead
+            if (!CharHpDef.Any(x => x.Key.ID.Contains("CH") && x.Value.Item1 > 0))
+            {
+                //Player lost
+                GlobalAnouncer("くそっ！負けちゃった");
+                return true;
+            }
+            else if (!CharHpDef.Any(x => x.Key.ID.Contains("F") && x.Value.Item1 > 0))
+            {
+                //Player won
+                GlobalAnouncer("勝ったぞ！");
+                return true;
+            }
+            else
+                return false;
+        }
+
+        private void SmallAnouncer(string text)
+        {
+            TxtSmallAnouncer.Text = text;
         }
 
         private void GlobalAnouncer(string text)
@@ -287,5 +396,123 @@ namespace JRPG_Project.Tabs
         }
 
         #endregion
+
+        #region Animations
+
+        private async void AnimateAttack(Character attacker)
+        {
+            //Vars
+            int margin = 0;
+            Border border = CharacterBorder[attacker];
+            bool attackerIsPlayer = attacker.ID.Contains("CH");
+
+            //Move 10 pixels up if attacker is player, else move down
+            while (Math.Abs(margin) < 10)
+            {
+                margin++;
+                border.Margin = attackerIsPlayer == true ? new Thickness(border.Margin.Left, -margin, border.Margin.Right, margin) 
+                    : new Thickness(border.Margin.Left, margin, border.Margin.Right, -margin);
+                await Task.Delay(1);
+            }
+
+            //Move 10 pixels down if attacker is player, else move up
+            while (Math.Abs(margin) > 0)
+            {
+                margin--;
+                border.Margin = attackerIsPlayer == true ? new Thickness(border.Margin.Left, -margin, border.Margin.Right, margin) 
+                    : new Thickness(border.Margin.Left, margin, border.Margin.Right, -margin);
+                await Task.Delay(1);
+            }
+        }
+
+        private async void AnimateHit(Character target)
+        {
+            //Vars
+            int margin = 0;
+            Border border = CharacterBorder[target];
+            bool targetIsPlayer = target.ID.Contains("CH");
+
+            //Move 4 pixels up if target is player, else move down
+            while (Math.Abs(margin) < 3)
+            {
+                margin++;
+                border.Margin = targetIsPlayer == false ? new Thickness(border.Margin.Left, -margin, border.Margin.Right, margin) 
+                    : new Thickness(border.Margin.Left, margin, border.Margin.Right, -margin);
+                await Task.Delay(100);
+            }
+
+            //Move 4 pixels down if target is player, else move up
+            while (Math.Abs(margin) > 0)
+            {
+                margin--;
+                border.Margin = targetIsPlayer == false ? new Thickness(border.Margin.Left, -margin, border.Margin.Right, margin) 
+                    : new Thickness(border.Margin.Left, margin, border.Margin.Right, -margin);
+                await Task.Delay(100);
+            }
+        }
+
+        private async void DisplayNumbers(int dmg, bool crit, Character target)
+        {
+            //Border we're working with
+            Border border = CharacterBorder[target];
+
+            //Get stackpanel from border
+            StackPanel stackPanel = (StackPanel)border.Child;
+
+            //Create a textblock to display the damage
+            TextBlock txt = new TextBlock();
+
+            txt.Text = crit ? dmg.ToString() + "!!" : dmg.ToString();
+            txt.FontSize = crit ? 24 : 22;
+            txt.FontWeight = FontWeights.Bold;
+            txt.Foreground = Brushes.MediumVioletRed;
+
+            // Create a Border to provide the semi-transparent background
+            Border backgroundBorder = new Border();
+            backgroundBorder.HorizontalAlignment = HorizontalAlignment.Left;
+            backgroundBorder.VerticalAlignment = VerticalAlignment.Bottom;
+            backgroundBorder.Background = new SolidColorBrush(Color.FromArgb(40, 0, 0, 0)); // Adjust the color and opacity as needed
+            backgroundBorder.Margin = new Thickness(0, 0, 0, -28);
+            backgroundBorder.CornerRadius = new CornerRadius(2);
+            backgroundBorder.Padding = new Thickness(4, 0, 4, 0);
+            backgroundBorder.Child = txt;
+
+            //Add textblock to stackpanel
+            stackPanel.Children.Add(backgroundBorder);
+
+            //Animate from left to right
+            while (backgroundBorder.Margin.Left < 14)
+            {
+                backgroundBorder.Margin = new Thickness(backgroundBorder.Margin.Left + 1, backgroundBorder.Margin.Top, backgroundBorder.Margin.Right - 1, backgroundBorder.Margin.Bottom);
+                await Task.Delay(10);
+            }
+
+            await Task.Delay(2000 / speedToggle);
+
+            //Fade out
+            while (backgroundBorder.Opacity > 0)
+            {
+                backgroundBorder.Opacity -= 0.1;
+                await Task.Delay(10);
+            }
+
+            //Remove element
+            stackPanel.Children.Remove(backgroundBorder);
+        }
+
+
+        #endregion
+
+        private void BtnFinish_Click(object sender, RoutedEventArgs e)
+        {
+            //Return to previous tab
+            Interaction.CloseBattleTab();
+        }
+
+        private void BtnSpeedToggle_Click(object sender, RoutedEventArgs e)
+        {
+            speedToggle = speedToggle == 1 ? 2 : 1;
+            BtnSpeedToggle.Content = speedToggle == 1 ? "Faster" : "Slower";
+        }
     }
 }

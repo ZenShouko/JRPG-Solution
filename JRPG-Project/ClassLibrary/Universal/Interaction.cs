@@ -17,6 +17,8 @@ namespace JRPG_ClassLibrary
     {
         public static Grid Grid { get; set; }
 
+        private static UserControl previousTab { get; set; }
+
         public static void OpenTab(string tab)
         {
             switch (tab.ToUpper())
@@ -64,6 +66,9 @@ namespace JRPG_ClassLibrary
                     }
                 case "BTNBATTLE":
                     {
+                        //Get current tab in Grid and save it
+                        previousTab = (UserControl)Grid.Children[0];
+
                         BattleTab battleTab = new BattleTab(FoeData.GetGenericFoeTeam());
                         Grid.Children.Clear();
                         Grid.Children.Add(battleTab);
@@ -91,6 +96,13 @@ namespace JRPG_ClassLibrary
             UpgradesTab upgradeTab = new UpgradesTab(Item);
             Grid.Children.Clear();
             Grid.Children.Add(upgradeTab);
+        }
+
+        public static void CloseBattleTab()
+        {
+            //Clear grid and add previous tab
+            Grid.Children.Clear();
+            Grid.Children.Add(previousTab);
         }
 
         /// <summary>
