@@ -30,20 +30,27 @@ namespace JRPG_Project.ClassLibrary.Data
             list.Add(GetCharacter("F1"));
             list.Add(GetCharacter("F1"));
             list.Add(GetCharacter("F1"));
+            list.Add(GetCharacter("F1"));
 
             //Modify second foe
-            list[1].Name += " きびしい　＞：（";
-            list[1].Stats.HP += 15;
-            list[1].Stats.DMG += 100;
-            list[1].Stats.DEF += 20;
+            list[1].Name += " きびしい";
+            list[1].Stats.HP += 500;
+            list[1].Stats.DMG = 2;
+            list[1].Stats.DEF += 100;
             list[1].Stats.SPD += 30;
-            list[1].Stats.STA += 20;
-            list[1].Stats.STR += 15;
+            list[1].Stats.STA = 10;
+            list[1].Stats.STR = 2;
             list[1].Stats.CRC += 25;
-            list[1].Stats.CRD += 10;
+            list[1].Stats.CRD = 2;
 
             list[0].Name += " ひだり";
+            list[0].Stats.DMG = 1;
             list[2].Name += " みぎ";
+            list[2].Stats.DMG = 1;
+
+            list[3].Name += " うんこ";
+            list[3].Stats.DMG = 1;
+            list[3].Stats.DEF += 200;
 
             return list;
         }

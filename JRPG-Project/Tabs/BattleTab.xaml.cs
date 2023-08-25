@@ -1,20 +1,12 @@
 ﻿using JRPG_ClassLibrary;
 using JRPG_Project.ClassLibrary.Entities;
-using JRPG_Project.ClassLibrary.Player;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace JRPG_Project.Tabs
 {
@@ -24,16 +16,32 @@ namespace JRPG_Project.Tabs
         {
             InitializeComponent();
             this.FoeTeam = foeTeam;
+            this.PlayerTeam = Stages.CurrentStage.Team;
             InitializeBattle();
         }
         //Foe teams
         List<Character> FoeTeam = new List<Character>();
+        List<Character> PlayerTeam = new List<Character>();
         Dictionary<Character, Border> CharacterBorder = new Dictionary<Character, Border>();
         int speedToggle = 1; //Higher means faster
+        List<string> BattleLog = new List<string>();
+        bool PauseBattle = false; //Allows pausing the battle
 
         #region Prep
         private void InitializeBattle()
         {
+            //Add all characters to the hp dictionary AND stamina dictionary
+            foreach (Character character in PlayerTeam)
+            {
+                CharHpDef.Add(character, (character.GetAccumelatedStats().HP, character.GetAccumelatedStats().DEF));
+                CharStaStrMax.Add(character, (character.GetAccumelatedStats().STA, character.GetAccumelatedStats().STR, character.GetAccumelatedStats().STA));
+            }
+            foreach (Character character in FoeTeam)
+            {
+                CharHpDef.Add(character, (character.GetAccumelatedStats().HP, character.GetAccumelatedStats().DEF));
+                CharStaStrMax.Add(character, (character.GetAccumelatedStats().STA, character.GetAccumelatedStats().STR, character.GetAccumelatedStats().STA));
+            }
+
             //Place foes on the grid
             for (int i = 0; i < FoeTeam.Count(); i++)
             {
@@ -45,25 +53,22 @@ namespace JRPG_Project.Tabs
             }
 
             //Place player team on the grid
-            for (int i= 0; i < Inventory.Team.Count(); i++)
+            for (int i = 0; i < PlayerTeam.Count(); i++)
             {
-                Border border = GetCharacterBorder(Inventory.Team[i]);
+                //Skip dead characters
+                if (PlayerTeam[i].GetAccumelatedStats().HP <= 0)
+                    continue;
+
+                //Create border
+                Border border = GetCharacterBorder(PlayerTeam[i]);
                 PlayerPanel.Children.Add(border);
 
                 //Add border to dictionary
-                CharacterBorder.Add(Inventory.Team[i], border);
+                CharacterBorder.Add(PlayerTeam[i], border);
             }
 
-            //Create character queue
-            Queue.AddRange(Inventory.Team);
-            Queue.AddRange(FoeTeam);
-            Queue = Queue.OrderByDescending(x => x.Stats.SPD).ToList();
-
-            //Add all characters to the hp dictionary
-            foreach (Character character in Queue)
-            {
-                CharHpDef.Add(character, (character.GetAccumelatedStats().HP, character.GetAccumelatedStats().DEF));
-            }
+            //Log
+            BattleLog.Add("Battle started!");
 
             //Simulate battle
             SimulateBattle();
@@ -71,6 +76,14 @@ namespace JRPG_Project.Tabs
 
         private Border GetCharacterBorder(Character character)
         {
+            //Tooltip
+            ToolTip tooltip = new ToolTip();
+            tooltip.Style = FindResource("CharacterTooltip") as Style;
+            tooltip.Content = $"{character.Name}\n" +
+                $"===============\n" +
+                $"DMG: {character.GetAccumelatedStats().DMG} || CRD: {character.GetAccumelatedStats().CRD} || CRC: {character.GetAccumelatedStats().CRC}\n" +
+                $"STA: {character.GetAccumelatedStats().STA} || STR: {character.GetAccumelatedStats().STR}";
+
             //Border
             Border border = new Border();
             border.BorderBrush = Brushes.Black;
@@ -79,6 +92,9 @@ namespace JRPG_Project.Tabs
             border.Width = 125;
             border.Margin = new Thickness(8, 0, 8, 0);
             border.Background = (Brush)new BrushConverter().ConvertFrom("#445069");
+            ToolTipService.SetInitialShowDelay(border, 100);
+            border.ToolTip = tooltip;
+            border.MouseEnter += (s, e) => DisplayDetails(character);
 
             //Stackpanel
             StackPanel stackPanel = new StackPanel();
@@ -117,22 +133,37 @@ namespace JRPG_Project.Tabs
             hpBar.Foreground = Brushes.Crimson;
             stackPanel.Children.Add(hpBar);
 
+            //Sta bar
+            ProgressBar staBar = new ProgressBar();
+            staBar.Height = 6;
+            staBar.Width = 85;
+            staBar.Margin = new Thickness(2);
+            staBar.Maximum = character.GetAccumelatedStats().STA;
+            staBar.Value = staBar.Maximum;
+            staBar.Style = (Style)FindResource("XpProgressBar");
+            staBar.Foreground = Brushes.BlanchedAlmond;
+            stackPanel.Children.Add(staBar);
+
             //Add hp and def bar to dictionary
-            CharHpDefBar.Add(character, (hpBar, defBar));
+            CharHpDefStaBar.Add(character, (hpBar, defBar, staBar));
 
             return border;
         }
+
         #endregion
 
         #region Battle
         List<Character> Queue = new List<Character>();
+        List<Character> Benched = new List<Character>(); //Characters that are skipping a round to rest
+        int Round = 0;
         Dictionary<Character, (int, int)> CharHpDef = new Dictionary<Character, (int, int)>();
-        Dictionary<Character, (ProgressBar, ProgressBar)> CharHpDefBar = new Dictionary<Character, (ProgressBar, ProgressBar)>();
+        Dictionary<Character, (int, int, int)> CharStaStrMax = new Dictionary<Character, (int, int, int)>(); //Current stamina, stamina regeneration and max stamina
+        Dictionary<Character, (ProgressBar, ProgressBar, ProgressBar)> CharHpDefStaBar = new Dictionary<Character, (ProgressBar, ProgressBar, ProgressBar)>();
         bool Battle = true; //True = battle is still going on, false = battle is over
         private async void SimulateBattle()
         {
             //Battoru hajimaruyo!
-            await Task.Delay(1400 / speedToggle);
+            await Task.Delay(1200 / speedToggle);
 
             //Battle loop
             while (Battle)
@@ -140,11 +171,15 @@ namespace JRPG_Project.Tabs
                 //Loop through queue
                 foreach (Character character in Queue)
                 {
-                    //Check if character is dead
-                    if (CharHpDef[character].Item1 <= 0)
+                    //Do we need to pause?
+                    while (PauseBattle)
                     {
-                        continue;
+                        await Task.Delay(100);
                     }
+
+                    //Is character dead?
+                    if (CharHpDef[character].Item1 <= 0)
+                        continue;
 
                     //highlight character
                     HighlightCharacter(character);
@@ -162,31 +197,25 @@ namespace JRPG_Project.Tabs
                     //Attack target
                     Attack(character, targetCharacter);
 
-
                     //Is target dead?
                     if (CharHpDef[targetCharacter].Item1 <= 0)
                     {
-                        //Remove target from grid
-                        if (FoeTeam.Contains(targetCharacter))
-                        {
-                            CharacterBorder[targetCharacter].Opacity = 0.4;
-                        }
-                        else
-                        {
-                            CharacterBorder[targetCharacter].Opacity = 0.4;
-                        }
+                        AnimateDeath(targetCharacter);
+                        BattleLog.Add($"💀{targetCharacter.Name} fell.");
 
                         //PAUSE
-                        await Task.Delay(1000 / speedToggle);
+                        await Task.Delay(200 / speedToggle);
 
                         //Check if battle is over
                         if (IsBattleOver())
                         {
                             //PAUSE
-                            await Task.Delay(2000 / speedToggle);
+                            await Task.Delay(1000 / speedToggle);
 
                             Battle = false;
-                            BtnFinish.IsEnabled = true;
+                            BtnFinish.Visibility = Visibility.Visible;
+                            BtnSpeedToggle.Visibility = Visibility.Collapsed;
+                            BtnPause.Visibility = Visibility.Collapsed;
                             break;
                         }
                     }
@@ -197,6 +226,21 @@ namespace JRPG_Project.Tabs
                     //Unhighlight
                     HighlightTarget(null);
                 }
+
+                //Break if battle is over
+                if (!Battle)
+                    break;
+
+                //Create character queue
+                CreateQueue();
+
+                //Regenerate stamina
+                RegenerateStamina();
+                RegenerateArmour();
+                UpdateAllBars();
+
+                //PAUSE
+                await Task.Delay(1200 / speedToggle);
             }
 
             //Battle is over
@@ -204,18 +248,126 @@ namespace JRPG_Project.Tabs
             {
                 //player won, hand out rewards
                 (int xp, int coins) = CalculateXpCoinRewards();
-                SmallAnouncer($"You gained {xp} xp and {coins} coins!");
             }
+        }
+
+        private void CreateQueue()
+        {
+            //Update round
+            Round++;
+            GlobalAnouncer($"Stepping into round{Round}");
+            TxtRound.Text = $"Round {Round}";
+            BattleLog.Add($">Round{Round}");
+
+            //Create queue
+            Dictionary<Character, int> speedDictionary = new Dictionary<Character, int>();
+            List<Character> characterList = new List<Character>();
+            //Add both teams to characterList
+            characterList.AddRange(PlayerTeam);
+            characterList.AddRange(FoeTeam);
+
+            //Add characters to dictionary and calculate speed
+            foreach (Character character in characterList)
+            {
+                //Skip if dead
+                if (CharHpDef[character].Item1 <= 0)
+                {
+                    continue;
+                }
+
+                //If character is benched, rest
+                if (Benched.Contains(character))
+                {
+                    RestCharacter(character); //Rest character (regen stamina)
+                    Benched.Remove(character); //Remove from benched list
+                }
+
+                //Calculate speed based on stamina
+                double staRatio = (double)CharStaStrMax[character].Item1 / (double)CharStaStrMax[character].Item3;
+                double speed = (double)character.GetAccumelatedStats().SPD;
+
+                //If ratio is below default sta consumtion, skip | ratio < 50%, speed -= 25% | else speed = speed
+                if (CharStaStrMax[character].Item1 < GetStaminaConsumtion(character))
+                {
+                    //Add to rest list (bench)
+                    Benched.Add(character);
+                    BattleLog.Add($"💤{character.Name} skips turn to rest.");
+                    continue;
+                }
+                else if (staRatio < 0.5)
+                {
+                    speed *= 0.25;
+                }
+
+                //Add to dictionary
+                speedDictionary.Add(character, Convert.ToInt16(speed));
+            }
+
+            //Sort dictionary by speed
+            speedDictionary = speedDictionary.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
+
+            //Add characters to queue
+            Queue.Clear();
+            foreach (Character c in speedDictionary.Keys)
+            {
+                Queue.Add(c);
+            }
+        }
+
+        private void RestCharacter(Character c)
+        {
+            //Regen 80% stamina
+            double stamina = CharStaStrMax[c].Item3 * 0.8;
+
+            //If stamina is above max, set to max else add stamina
+            if (stamina > CharStaStrMax[c].Item3)
+                CharStaStrMax[c] = (CharStaStrMax[c].Item3, CharStaStrMax[c].Item2, CharStaStrMax[c].Item3);
+            else
+                CharStaStrMax[c] = (Convert.ToInt16(stamina) + CharStaStrMax[c].Item1, CharStaStrMax[c].Item2, CharStaStrMax[c].Item3);
+        }
+
+        private void UpdateBars(Character c)
+        {
+            CharHpDefStaBar[c].Item1.Value = CharHpDef[c].Item1;
+            CharHpDefStaBar[c].Item2.Value = CharHpDef[c].Item2;
+            CharHpDefStaBar[c].Item3.Value = CharStaStrMax[c].Item1;
+        }
+
+        private void UpdateAllBars()
+        {
+            //Update all bars
+            foreach (Character c in CharHpDef.Keys)
+            {
+                //skip if dead
+                if (CharHpDef[c].Item1 <= 0)
+                    continue;
+
+                //Update bars
+                IncreaseBar(CharHpDefStaBar[c].Item1, CharHpDef[c].Item1);
+                IncreaseBar(CharHpDefStaBar[c].Item2, CharHpDef[c].Item2);
+                IncreaseBar(CharHpDefStaBar[c].Item3, CharStaStrMax[c].Item1);
+            }
+        }
+
+        private async void IncreaseBar(ProgressBar bar, int limit)
+        {
+            while (bar.Value < limit)
+            {
+                bar.Value += 2;
+                await Task.Delay(12 / speedToggle);
+            }
+
+            bar.Value = limit;
         }
 
         private void HighlightCharacter(Character character)
         {
-            foreach(var pair in CharacterBorder)
+            foreach (var pair in CharacterBorder)
             {
                 if (pair.Key == character)
                 {
                     //Highlight
-                    pair.Value.BorderBrush = Brushes.Azure;
+                    pair.Value.BorderBrush = Brushes.SeaGreen;
                     pair.Value.BorderThickness = new Thickness(2, 1, 2, 3);
                 }
                 else
@@ -244,7 +396,7 @@ namespace JRPG_Project.Tabs
                 return;
             }
 
-            foreach(var pair in CharacterBorder)
+            foreach (var pair in CharacterBorder)
             {
                 if (!pair.Key.ID.Contains(character.ID.Substring(0, 1)))
                     continue;
@@ -286,7 +438,7 @@ namespace JRPG_Project.Tabs
                 if (currentChar.ID.Contains("F")) //Current character is a foe
                 {
                     //Pick a random target from the player's team
-                    target = Inventory.Team[Interaction.GetRandomNumber(0, Inventory.Team.Count() - 1)];
+                    target = PlayerTeam[Interaction.GetRandomNumber(0, PlayerTeam.Count() - 1)];
                 }
                 else
                 {
@@ -306,53 +458,164 @@ namespace JRPG_Project.Tabs
         {
             //#Anouncer:
             GlobalAnouncer($"attacks {target.Name}");
-            
+
             //Animate Attack
             AnimateAttack(attacker);
 
             //Get damage
             (int dmg, bool crit) = CalculateDmg(attacker);
 
+            //Consume Stamina
+            ConsumeStamina(attacker, dmg);
+
             //Display damage
             DisplayNumbers(dmg, crit, target);
 
-            //Lower defence first, then HP
-            CharHpDef[target] = (CharHpDef[target].Item1, CharHpDef[target].Item2 - dmg);
-
-            //If target's defence is below 0, lower HP
+            //Does target have defence?
+            bool brokeDef = false;
             if (CharHpDef[target].Item2 <= 0)
             {
-                CharHpDef[target] = (CharHpDef[target].Item1 - Math.Abs(CharHpDef[target].Item2), 0);
+                //No defence, lower HP
+                CharHpDef[target] = (CharHpDef[target].Item1 - dmg, 0);
+            }
+            else
+            {
+                //Lower defence first, then HP
+                CharHpDef[target] = (CharHpDef[target].Item1, CharHpDef[target].Item2 - dmg);
+
+                //If target's defence is below 0, lower HP
+                if (CharHpDef[target].Item2 <= 0)
+                {
+                    brokeDef = true;
+                    CharHpDef[target] = (CharHpDef[target].Item1 - Math.Abs(CharHpDef[target].Item2), 0);
+                }
             }
 
             //Animate hit
             AnimateHit(target);
 
             //Update HP and DEF bar
-            CharHpDefBar[target].Item1.Value = CharHpDef[target].Item1;
-            CharHpDefBar[target].Item2.Value = CharHpDef[target].Item2;
+            UpdateBars(attacker);
+            UpdateBars(target);
 
-            //#Anounce remaining HP DEF
-            if (crit)
-                SmallAnouncer($"Critical! [{CharHpDef[target].Item1}HP | {CharHpDef[target].Item2}DEF]");
+            //log
+            if (crit && brokeDef)
+                BattleLog.Add($"🗡️🔥🦾{attacker.Name} attacked {target.Name} for {dmg} damage! Critical hit! Broke defense!");
+            else if (crit)
+                BattleLog.Add($"🗡️🔥{attacker.Name} attacked {target.Name} for {dmg} damage! Critical hit!");
+            else if (brokeDef)
+                BattleLog.Add($"🗡️🦾{attacker.Name} attacked {target.Name} for {dmg} damage! Broke defense!");
             else
-                SmallAnouncer($"Ok! [{CharHpDef[target].Item1}HP | {CharHpDef[target].Item2}DEF]");
+                BattleLog.Add($"🗡️{attacker.Name} attacked {target.Name} for {dmg} damage!");
         }
 
         private (int, bool) CalculateDmg(Character attacker)
         {
             //Base dmg
-            int DMG = attacker.GetAccumelatedStats().DMG;
+            double DMG = attacker.GetAccumelatedStats().DMG;
+            bool crit = false;
 
             //Do we have a crit hit?
             if (Interaction.GetRandomNumber(0, 100) <= attacker.GetAccumelatedStats().CRC)
             {
                 //Yes, crit hit
-                return (DMG * attacker.GetAccumelatedStats().CRD, true);
+                DMG *= attacker.GetAccumelatedStats().CRD;
+                crit = true;
             }
 
             //No, crit hit
-            return (DMG, false);
+            //Get stamina balance (%)
+            double staBalance = CharStaStrMax[attacker].Item1 / (double)CharStaStrMax[attacker].Item3;
+
+            //If stamina > 60%, no effect. | If stamina < 15%, 50% less damage | else -15% damage
+            if (staBalance < 0.15)
+                DMG *= 0.5;
+            else if (staBalance < 0.6)
+                DMG *= 0.85;
+
+            //Return damage
+            return ((int)DMG, crit);
+        }
+
+        private void ConsumeStamina(Character c, int dmg)
+        {
+            //Get stamina to damage ratio
+            double staToDmgRatio = (double)CharStaStrMax[c].Item3 / dmg;
+            double staToConsume = 0;
+
+            //If ratio is < 25%, consume 80% stamina | If ratio is < 50%, consume 45% stamina | else consume 25% stamina
+            if (staToDmgRatio < 0.25)
+                staToConsume = CharStaStrMax[c].Item3 * 0.80;
+            else if (staToDmgRatio < 0.5)
+                staToConsume = CharStaStrMax[c].Item3 * 0.45;
+            else
+                staToConsume = CharStaStrMax[c].Item3 * 0.25;
+
+            //Round up
+            staToConsume = Math.Ceiling(staToConsume);
+
+            //Consume stamina
+            CharStaStrMax[c] = (CharStaStrMax[c].Item1 - (int)staToConsume, CharStaStrMax[c].Item2, CharStaStrMax[c].Item3);
+        }
+
+        private int GetStaminaConsumtion(Character c)
+        {
+            ///Gives an idea of how much stamina will be consumed. This number is affected by crit stats, hence why it's not accurate.
+            //Get stamina to damage ratio
+            double staToDmgRatio = (double)CharStaStrMax[c].Item3 / c.GetAccumelatedStats().DMG;
+            double staToConsume = 0;
+
+            //If ratio is < 25%, consume 80% stamina | If ratio is < 50%, consume 45% stamina | else consume 25% stamina
+            if (staToDmgRatio < 0.25)
+                staToConsume = CharStaStrMax[c].Item3 * 0.80;
+            else if (staToDmgRatio < 0.5)
+                staToConsume = CharStaStrMax[c].Item3 * 0.45;
+            else
+                staToConsume = CharStaStrMax[c].Item3 * 0.25;
+
+            //Round up
+            staToConsume = Math.Ceiling(staToConsume);
+
+            return (int)staToConsume;
+        }
+
+        private void RegenerateStamina()
+        {
+            //Regenerate stamina foreach character in queue
+            foreach (Character c in Queue)
+            {
+                //calculate stamina
+                double sta = CharStaStrMax[c].Item1 + (CharStaStrMax[c].Item2 / 2);
+                sta = Math.Ceiling(sta);
+
+                //If stamina is above max, set to max
+                if (sta > CharStaStrMax[c].Item3)
+                    sta = CharStaStrMax[c].Item3;
+
+                //Regenerate stamina
+                CharStaStrMax[c] = ((int)sta, CharStaStrMax[c].Item2, CharStaStrMax[c].Item3);
+            }
+        }
+
+        private void RegenerateArmour()
+        {
+            foreach (Character c in Queue)
+            {
+                //If armour is 0, skip
+                if (CharHpDef[c].Item2 == 0)
+                    continue;
+
+                //calculate armour
+                double armour = CharStaStrMax[c].Item2 / 2;
+                armour = Math.Ceiling(armour);
+
+                //Regenerate armour
+                CharHpDef[c] = (CharHpDef[c].Item1, CharHpDef[c].Item2 + (int)armour);
+
+                //Balance armour if above max
+                if (CharHpDef[c].Item2 > c.GetAccumelatedStats().DEF)
+                    CharHpDef[c] = (CharHpDef[c].Item1, c.GetAccumelatedStats().DEF);
+            }
         }
 
         private (int, int) CalculateXpCoinRewards()
@@ -385,9 +648,9 @@ namespace JRPG_Project.Tabs
                 return false;
         }
 
-        private void SmallAnouncer(string text)
+        private void DisplayDetails(Character c)
         {
-            TxtSmallAnouncer.Text = text;
+            TxtDetails.Text = $"{c.Name}: [{CharHpDef[c].Item1} HP]  [{CharHpDef[c].Item2} DEF]  [{CharStaStrMax[c].Item1} STA]";
         }
 
         private void GlobalAnouncer(string text)
@@ -410,7 +673,7 @@ namespace JRPG_Project.Tabs
             while (Math.Abs(margin) < 10)
             {
                 margin++;
-                border.Margin = attackerIsPlayer == true ? new Thickness(border.Margin.Left, -margin, border.Margin.Right, margin) 
+                border.Margin = attackerIsPlayer == true ? new Thickness(border.Margin.Left, -margin, border.Margin.Right, margin)
                     : new Thickness(border.Margin.Left, margin, border.Margin.Right, -margin);
                 await Task.Delay(1);
             }
@@ -419,7 +682,7 @@ namespace JRPG_Project.Tabs
             while (Math.Abs(margin) > 0)
             {
                 margin--;
-                border.Margin = attackerIsPlayer == true ? new Thickness(border.Margin.Left, -margin, border.Margin.Right, margin) 
+                border.Margin = attackerIsPlayer == true ? new Thickness(border.Margin.Left, -margin, border.Margin.Right, margin)
                     : new Thickness(border.Margin.Left, margin, border.Margin.Right, -margin);
                 await Task.Delay(1);
             }
@@ -436,7 +699,7 @@ namespace JRPG_Project.Tabs
             while (Math.Abs(margin) < 3)
             {
                 margin++;
-                border.Margin = targetIsPlayer == false ? new Thickness(border.Margin.Left, -margin, border.Margin.Right, margin) 
+                border.Margin = targetIsPlayer == false ? new Thickness(border.Margin.Left, -margin, border.Margin.Right, margin)
                     : new Thickness(border.Margin.Left, margin, border.Margin.Right, -margin);
                 await Task.Delay(100);
             }
@@ -445,7 +708,7 @@ namespace JRPG_Project.Tabs
             while (Math.Abs(margin) > 0)
             {
                 margin--;
-                border.Margin = targetIsPlayer == false ? new Thickness(border.Margin.Left, -margin, border.Margin.Right, margin) 
+                border.Margin = targetIsPlayer == false ? new Thickness(border.Margin.Left, -margin, border.Margin.Right, margin)
                     : new Thickness(border.Margin.Left, margin, border.Margin.Right, -margin);
                 await Task.Delay(100);
             }
@@ -462,7 +725,7 @@ namespace JRPG_Project.Tabs
             //Create a textblock to display the damage
             TextBlock txt = new TextBlock();
 
-            txt.Text = crit ? dmg.ToString() + "!!" : dmg.ToString();
+            txt.Text = crit ? $"🔥{dmg}" + "!!" : $"🔥{dmg}";
             txt.FontSize = crit ? 24 : 22;
             txt.FontWeight = FontWeights.Bold;
             txt.Foreground = Brushes.MediumVioletRed;
@@ -471,8 +734,8 @@ namespace JRPG_Project.Tabs
             Border backgroundBorder = new Border();
             backgroundBorder.HorizontalAlignment = HorizontalAlignment.Left;
             backgroundBorder.VerticalAlignment = VerticalAlignment.Bottom;
-            backgroundBorder.Background = new SolidColorBrush(Color.FromArgb(40, 0, 0, 0)); // Adjust the color and opacity as needed
-            backgroundBorder.Margin = new Thickness(0, 0, 0, -28);
+            backgroundBorder.Background = new SolidColorBrush(Color.FromArgb(104, 0, 0, 0)); // Adjust the color and opacity as needed
+            backgroundBorder.Margin = new Thickness(0, 0, 0, -34);
             backgroundBorder.CornerRadius = new CornerRadius(2);
             backgroundBorder.Padding = new Thickness(4, 0, 4, 0);
             backgroundBorder.Child = txt;
@@ -500,6 +763,18 @@ namespace JRPG_Project.Tabs
             stackPanel.Children.Remove(backgroundBorder);
         }
 
+        private async void AnimateDeath(Character victim)
+        {
+            Border border = CharacterBorder[victim];
+
+            //Lower opacity to 0.4
+            while (border.Opacity > 0.64)
+            {
+                border.Opacity -= 0.04;
+                await Task.Delay(20 / speedToggle);
+            }
+        }
+
 
         #endregion
 
@@ -513,6 +788,29 @@ namespace JRPG_Project.Tabs
         {
             speedToggle = speedToggle == 1 ? 2 : 1;
             BtnSpeedToggle.Content = speedToggle == 1 ? "Faster" : "Slower";
+        }
+
+        private void BtnPause_Click(object sender, RoutedEventArgs e)
+        {
+            //Do we need to pause or resume?
+            if (PauseBattle)
+            {
+                //Resume
+                BtnPause.Content = "Pause";
+                PauseBattle = false;
+            }
+            else
+            {
+                //Pause
+                BtnPause.Content = "Resume";
+                PauseBattle = true;
+            }
+        }
+
+        private void BtnLog_Click(object sender, RoutedEventArgs e)
+        {
+            LogWindow window = new LogWindow(BattleLog);
+            window.ShowDialog();
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using JRPG_ClassLibrary.Entities;
 using JRPG_Project.ClassLibrary.Entities;
+using JRPG_Project.ClassLibrary.Player;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Data;
@@ -52,8 +53,11 @@ namespace JRPG_ClassLibrary
             //[5.5]Update visible platform
             UpdateVisiblePlatform();
 
-            //[3]Place player
+            //[6]Place player
             PlacePlayer();
+
+            //[7]Place team
+            LoadTeam();
         }
 
 
@@ -241,6 +245,14 @@ namespace JRPG_ClassLibrary
             Grid.SetColumn(tileElement, x);
             Grid.SetRow(tileElement, y);
             CurrentStage.VisiblePlatform.Children.Add(tileElement);
+        }
+
+        private static void LoadTeam()
+        {
+            foreach (Character character in Inventory.Team)
+            {
+                CurrentStage.Team.Add(character);
+            }
         }
     }
 }

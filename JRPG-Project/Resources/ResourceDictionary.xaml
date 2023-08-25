@@ -115,7 +115,9 @@
             </Setter.Value>
         </Setter>
     </Style>
-    
+
+
+
     <!--Button menu-->
     <Style x:Key="menu-button" TargetType="Button">
         <Setter Property="Background" Value="#f8f7ff"/>
@@ -189,6 +191,17 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+    </Style>
+    
+    <!--Tooltip Character Details-->
+    <Style x:Key="CharacterTooltip" TargetType="ToolTip">
+        <Setter Property="Background">
+            <Setter.Value>
+                <SolidColorBrush Color="Black" Opacity="0.85"/>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Foreground" Value="Violet"/>
+        <Setter Property="FontSize" Value="14"/>
     </Style>
 
 </ResourceDictionary>

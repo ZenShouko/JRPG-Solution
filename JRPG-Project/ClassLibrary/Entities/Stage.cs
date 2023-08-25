@@ -23,6 +23,8 @@ namespace JRPG_ClassLibrary.Entities
 
         public MapPlayer Player { get; set; } = new MapPlayer();
 
+        public List<Character> Team { get; set; } = new List<Character>();
+
         public Stage()
         {
 

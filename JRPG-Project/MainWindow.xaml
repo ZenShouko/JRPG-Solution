@@ -6,5 +6,5 @@
         xmlns:local="clr-namespace:JRPG_Project"
         mc:Ignorable="d" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize"
         Title="Jiggly(Real)Puff's Game" Height="auto" Width="auto">
-    <Grid Height="600" Width="800" x:Name="grid"/>
+    <Grid Height="600" Width="800" x:Name="grid" Background="Black"/>
 </Window>

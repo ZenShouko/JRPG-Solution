@@ -10,6 +10,7 @@ using JRPG_Project.ClassLibrary.Player;
 using JRPG_Project.ClassLibrary;
 using System.Collections.Generic;
 using JRPG_Project.ClassLibrary.Entities;
+using JRPG_ClassLibrary.Entities;
 
 namespace JRPG_ClassLibrary
 {
@@ -68,6 +69,13 @@ namespace JRPG_ClassLibrary
                     {
                         //Get current tab in Grid and save it
                         previousTab = (UserControl)Grid.Children[0];
+
+                        //Add team to currentstage (for test's sake)
+                        Stages.CurrentStage = new Stage();
+                        foreach (Character c in Inventory.Team)
+                        {
+                            Stages.CurrentStage.Team.Add(c);
+                        }
 
                         BattleTab battleTab = new BattleTab(FoeData.GetGenericFoeTeam());
                         Grid.Children.Clear();
