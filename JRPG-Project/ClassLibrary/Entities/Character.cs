@@ -1,4 +1,5 @@
-﻿using JRPG_Project.ClassLibrary.Items;
+﻿using JRPG_Project.ClassLibrary.Data;
+using JRPG_Project.ClassLibrary.Items;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -86,6 +87,31 @@ namespace JRPG_Project.ClassLibrary.Entities
             }
 
             return accStats;
+        }
+
+        public void LevelUp()
+        {
+            //Apply the level up
+            Level++;
+
+            //Substract the required XP
+            Stats.XP -= LevelData.CharacterXPTable[Level].Item1;
+
+            //Add the stats to the item
+            Stats.HP += LevelData.CharacterXPTable[Level].Item2.HP;
+            Stats.DEF += LevelData.CharacterXPTable[Level].Item2.DEF;
+            Stats.DMG += LevelData.CharacterXPTable[Level].Item2.DMG;
+            Stats.SPD += LevelData.CharacterXPTable[Level].Item2.SPD;
+            Stats.STA += LevelData.CharacterXPTable[Level].Item2.STA;
+            Stats.STR += LevelData.CharacterXPTable[Level].Item2.STR;
+            Stats.CRC += LevelData.CharacterXPTable[Level].Item2.CRC;
+            Stats.CRD += LevelData.CharacterXPTable[Level].Item2.CRD;
+
+            //Reset xp to max if level is max
+            if (Level == LevelData.CharacterXPTable.Keys.LastOrDefault())
+            {
+                Stats.XP = LevelData.CharacterXPTable[Level].Item1;
+            }
         }
     }
 }

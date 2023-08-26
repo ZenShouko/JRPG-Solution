@@ -24,33 +24,19 @@ namespace JRPG_Project.ClassLibrary.Data
             }
         }
 
+        /// <summary>
+        /// Consists of 2 maniani and 1 pumpkin head.
+        /// </summary>
+        /// <returns></returns>
         public static List<Character> GetGenericFoeTeam()
         {
             List<Character> list = new List<Character>();
             list.Add(GetCharacter("F1"));
-            list.Add(GetCharacter("F1"));
-            list.Add(GetCharacter("F1"));
+            list.Add(GetCharacter("F2"));
             list.Add(GetCharacter("F1"));
 
             //Modify second foe
-            list[1].Name += " きびしい";
-            list[1].Stats.HP += 500;
-            list[1].Stats.DMG = 2;
-            list[1].Stats.DEF += 100;
-            list[1].Stats.SPD += 30;
-            list[1].Stats.STA = 10;
-            list[1].Stats.STR = 2;
-            list[1].Stats.CRC += 25;
-            list[1].Stats.CRD = 2;
-
-            list[0].Name += " ひだり";
-            list[0].Stats.DMG = 1;
-            list[2].Name += " みぎ";
-            list[2].Stats.DMG = 1;
-
-            list[3].Name += " うんこ";
-            list[3].Stats.DMG = 1;
-            list[3].Stats.DEF += 200;
+            list[2].Name += " きびしい";
 
             return list;
         }

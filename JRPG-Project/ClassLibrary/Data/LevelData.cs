@@ -116,7 +116,15 @@ namespace JRPG_Project.ClassLibrary.Data
         #region Add XP
         public static void AddXP(Character character, int xp)
         {
+            if (character.Level == CharacterXPTable.Keys.LastOrDefault())
+                return;
 
+            character.Stats.XP += xp;
+
+            while (character.Level < CharacterXPTable.Keys.LastOrDefault() && character.Stats.XP > CharacterXPTable[character.Level + 1].Item1)
+            {
+                character.LevelUp();
+            }
         }
 
         public static void AddXP(BaseItem item, int xp)

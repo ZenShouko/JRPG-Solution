@@ -85,29 +85,46 @@ namespace JRPG_Project.ClassLibrary.Data
         {
             UnequipItem(item);
 
-            //Equip item
-            if (item.UniqueID.Contains("weapon"))
+            if (item is Weapon wpn)
             {
-                //Cast item to weapon
-                Weapon wpn = item as Weapon;
-
-                //Equip weapon
                 Inventory.Team[charIndex].Weapon = wpn;
             }
-            else if (item.UniqueID.Contains("armour"))
+            else if (item is Armour arm)
             {
-                Armour arm = item as Armour;
                 Inventory.Team[charIndex].Armour = arm;
             }
-            else if (item.UniqueID.Contains("amulet"))
+            else if (item is Amulet amu)
             {
-                Amulet amu = item as Amulet;
                 Inventory.Team[charIndex].Amulet = amu;
             }
             else
             {
                 throw new Exception("Item type not recognized.");
             }
+
+            //Equip item
+            //if (item.UniqueID.Contains("weapon"))
+            //{
+            //    //Cast item to weapon
+            //    Weapon wpn = item as Weapon;
+
+            //    //Equip weapon
+            //    Inventory.Team[charIndex].Weapon = wpn;
+            //}
+            //else if (item.UniqueID.Contains("armour"))
+            //{
+            //    Armour arm = item as Armour;
+            //    Inventory.Team[charIndex].Armour = arm;
+            //}
+            //else if (item.UniqueID.Contains("amulet"))
+            //{
+            //    Amulet amu = item as Amulet;
+            //    Inventory.Team[charIndex].Amulet = amu;
+            //}
+            //else
+            //{
+            //    throw new Exception("Item type not recognized.");
+            //}
         }
 
         public static void ClearEquipment(int charIndex, string type)
@@ -125,6 +142,18 @@ namespace JRPG_Project.ClassLibrary.Data
             {
                 Inventory.Team[charIndex].Amulet = null;
             }
+        }
+
+        public static int GetValue(Character c)
+        {
+            //Incorporate stats
+            double statValue = (c.Stats.HP * 1.2) + (c.Stats.DEF * 1.5) + (c.Stats.DMG * 1.3) + (c.Stats.SPD * 1.1) + (c.Stats.STA * 1.3) + 
+                (c.Stats.STR * 1.4) + (c.Stats.CRC * 2) + (c.Stats.CRD * 1.8);
+            statValue /= 6 - c.Level;
+
+            statValue = Math.Ceiling(statValue);
+
+            return (int)statValue;
         }
     }
 }

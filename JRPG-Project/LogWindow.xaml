@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:JRPG_Project"
         mc:Ignorable="d" WindowStartupLocation="CenterScreen" WindowStyle="ToolWindow" SizeToContent="WidthAndHeight" ResizeMode="NoResize"
         Title="Log" Height="auto" Width="auto">
-    <Grid Height="450" Width="600" Background="#fefefe">
+    <Grid Height="450" Width="600" Background="#2b2d42">
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>
             <RowDefinition Height="*"/>
@@ -14,7 +14,7 @@
         </Grid.RowDefinitions>
         
         <!--Title-->
-        <TextBlock Text="Battle Log" FontSize="24" VerticalAlignment="Center" Margin="10 0"/>
+        <TextBlock Text="Battle Log" FontSize="24" VerticalAlignment="Center" Margin="10 0" Foreground="GhostWhite"/>
         
         <!--Log-->
         <ListBox x:Name="ListLog" Grid.Row="1" Margin="6" Style="{StaticResource IListbox}" Foreground="Lime" FontSize="13">

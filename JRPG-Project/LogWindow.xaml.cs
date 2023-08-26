@@ -31,6 +31,9 @@ namespace JRPG_Project
             {
                 ListLog.Items.Add(line);
             }
+
+            //Scroll to the bottom
+            ListLog.ScrollIntoView(ListLog.Items[ListLog.Items.Count - 1]);
         }
 
         private void ButtonClose_Click(object sender, RoutedEventArgs e)

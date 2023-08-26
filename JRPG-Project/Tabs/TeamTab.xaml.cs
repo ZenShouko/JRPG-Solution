@@ -4,6 +4,8 @@ using JRPG_Project.ClassLibrary.Data;
 using JRPG_Project.ClassLibrary.Items;
 using JRPG_Project.ClassLibrary.Player;
 using System;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -90,6 +92,32 @@ namespace JRPG_Project.Tabs
                 TxtAmuletLevel.Text = "";
                 CharacterAmuletImage.Source = new BitmapImage(new Uri(@"/Resources/Assets/GUI/empty.png", UriKind.Relative));
             }
+
+            //Display XP
+            if (Inventory.Team[CharacterIndex].Level < LevelData.CharacterXPTable.Keys.LastOrDefault())
+            {
+                AnimateXpBar(Inventory.Team[CharacterIndex].Stats.XP, LevelData.CharacterXPTable[Inventory.Team[CharacterIndex].Level + 1].Item1);
+            }
+            else
+            {
+                AnimateXpBar(100, 100);
+            }
+        }
+
+        private async void AnimateXpBar(int xp, int max)
+        {
+            //Reset everything
+            XpBar.Value = 0;
+            XpBar.Maximum = max;
+            TxtXp.Text = $"0/{max} XP";
+
+            //Animate
+            while (XpBar.Value < xp)
+            {
+                XpBar.Value++;
+                TxtXp.Text = $"{XpBar.Value}/{max} XP";
+                await Task.Delay(1);
+            }
         }
 
         private void HighlightItemBorder(string item)
@@ -162,6 +190,16 @@ namespace JRPG_Project.Tabs
                 //Highlight item border
                 HighlightItemBorder("WEAPON");
                 CurrentShownStat = "WEAPON";
+
+                //Display XP
+                if (Inventory.Team[CharacterIndex].Weapon.Level < LevelData.WeaponXPTable.Keys.LastOrDefault())
+                {
+                    AnimateXpBar(Inventory.Team[CharacterIndex].Weapon.Stats.XP, LevelData.WeaponXPTable[Inventory.Team[CharacterIndex].Weapon.Level + 1].Item1);
+                }
+                else
+                {
+                    AnimateXpBar(100, 100);
+                }
             }
             else if (item.ToUpper() == "ARMOUR")
             {
@@ -184,6 +222,16 @@ namespace JRPG_Project.Tabs
 
                 HighlightItemBorder("ARMOUR");
                 CurrentShownStat = "ARMOUR";
+
+                //Display XP
+                if (Inventory.Team[CharacterIndex].Armour.Level < LevelData.ArmourXPTable.Keys.LastOrDefault())
+                {
+                    AnimateXpBar(Inventory.Team[CharacterIndex].Armour.Stats.XP, LevelData.ArmourXPTable[Inventory.Team[CharacterIndex].Armour.Level + 1].Item1);
+                }
+                else
+                {
+                    AnimateXpBar(100, 100);
+                }
             }
             else if (item.ToUpper() == "AMULET")
             {
@@ -206,6 +254,16 @@ namespace JRPG_Project.Tabs
 
                 HighlightItemBorder("AMULET");
                 CurrentShownStat = "AMULET";
+
+                //Display XP
+                if (Inventory.Team[CharacterIndex].Amulet.Level < LevelData.AmuletXPTable.Keys.LastOrDefault())
+                {
+                    AnimateXpBar(Inventory.Team[CharacterIndex].Amulet.Stats.XP, LevelData.WeaponXPTable[Inventory.Team[CharacterIndex].Amulet.Level + 1].Item1);
+                }
+                else
+                {
+                    AnimateXpBar(100, 100);
+                }
             }
             else if (item.ToUpper() == "NONE")
             {
@@ -222,6 +280,9 @@ namespace JRPG_Project.Tabs
                 //Reset border
                 HighlightItemBorder("NONE");
                 CurrentShownStat = "NONE";
+
+                //Reset XP
+                AnimateXpBar(0, 0);
             }
         }
 

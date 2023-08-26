@@ -5,7 +5,10 @@
 >-------------
 - When upgrading, it can use a bit too much essence materials, leaving you in the negatives. 
 	This tab is incredibly buggy.
-	(Need investigation --)
+(Need investigation --)
+
+- Upgrading items to max level causes the game to crash.
+(Need investigation --)
 
 - Deducting XP doesn't work properly on the upgrades tab.
 (Need investigation --Removed)
@@ -36,8 +39,8 @@ Also, it favors collectables a bit too much.
 .
 #Upcoming Features
 >------------------
-[Pending] Battles!!
-[Delayed] Being able to upgrade items
+[Done] Battles!!
+[Fixing] Being able to upgrade items
 [Done] Being able to equip items to characters
 [Done] Being able to "sell"/destroy items
 [Done] Being able to view the team's characters and items
@@ -53,6 +56,12 @@ Also, it favors collectables a bit too much.
 ====================================================================================================
 #Changelog
 >---------
+[26/08/2023]
+- Changed the way of items are equipped.
+	>Items weren't a direct reference to the item in the inventory.
+	>Now, items are a direct reference to the item in the inventory.
+	This caused that if an item got modified, it wouldn't modify the equipped item.
+
 [27/07/2023]
 - Fixed all the known issues.
 	>Lootbox RNG is now more random.

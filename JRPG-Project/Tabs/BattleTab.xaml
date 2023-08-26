@@ -8,7 +8,7 @@
              d:DesignHeight="600" d:DesignWidth="800">
     <Grid x:Name="MainGrid">
         <Grid.Background>
-            <ImageBrush ImageSource="/Resources/Assets/GUI/battle-bg.jpeg" Stretch="UniformToFill" Opacity="0.6"/>
+            <ImageBrush ImageSource="/Resources/Assets/GUI/pixel-rain1.jpg" Stretch="UniformToFill" Opacity="0.8"/>
         </Grid.Background>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>

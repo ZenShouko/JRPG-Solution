@@ -1,5 +1,7 @@
 ﻿using JRPG_ClassLibrary;
+using JRPG_Project.ClassLibrary.Data;
 using JRPG_Project.ClassLibrary.Entities;
+using JRPG_Project.ClassLibrary.Player;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace JRPG_Project.Tabs
 {
@@ -15,6 +18,7 @@ namespace JRPG_Project.Tabs
         public BattleTab(List<Character> foeTeam)
         {
             InitializeComponent();
+            SetRandomBackground();
             this.FoeTeam = foeTeam;
             this.PlayerTeam = Stages.CurrentStage.Team;
             InitializeBattle();
@@ -22,12 +26,19 @@ namespace JRPG_Project.Tabs
         //Foe teams
         List<Character> FoeTeam = new List<Character>();
         List<Character> PlayerTeam = new List<Character>();
-        Dictionary<Character, Border> CharacterBorder = new Dictionary<Character, Border>();
+        //Dictionary<Character, Border> CharacterBorder = new Dictionary<Character, Border>();
+        Dictionary<Character, Canvas> CharacterCanvas = new Dictionary<Character, Canvas>();
         int speedToggle = 1; //Higher means faster
         List<string> BattleLog = new List<string>();
         bool PauseBattle = false; //Allows pausing the battle
 
         #region Prep
+        private void SetRandomBackground()
+        {
+            //There are a total of 6 backgrounds named "pixel-rain1.jpg" to "pixel-rain6.jpg"
+            int numb = Interaction.GetRandomNumber(1, 6);
+            MainGrid.Background = new ImageBrush(new BitmapImage(new Uri($"pack://application:,,,/Resources/Assets/GUI/pixel-rain{numb}.jpg", UriKind.RelativeOrAbsolute)));
+        }
         private void InitializeBattle()
         {
             //Add all characters to the hp dictionary AND stamina dictionary
@@ -45,11 +56,13 @@ namespace JRPG_Project.Tabs
             //Place foes on the grid
             for (int i = 0; i < FoeTeam.Count(); i++)
             {
-                Border border = GetCharacterBorder(FoeTeam[i]);
-                FoePanel.Children.Add(border);
+                //Border border = GetCharacterBorder(FoeTeam[i]);
+                Canvas canvas = GetCharacterBorder(FoeTeam[i]);
+                FoePanel.Children.Add(canvas);
 
                 //Add border to dictionary
-                CharacterBorder.Add(FoeTeam[i], border);
+                //CharacterBorder.Add(FoeTeam[i], border);
+                CharacterCanvas.Add(FoeTeam[i], canvas);
             }
 
             //Place player team on the grid
@@ -60,11 +73,13 @@ namespace JRPG_Project.Tabs
                     continue;
 
                 //Create border
-                Border border = GetCharacterBorder(PlayerTeam[i]);
-                PlayerPanel.Children.Add(border);
+                //Border border = GetCharacterBorder(PlayerTeam[i]);
+                Canvas canvas = GetCharacterBorder(PlayerTeam[i]);
+                PlayerPanel.Children.Add(canvas);
 
                 //Add border to dictionary
-                CharacterBorder.Add(PlayerTeam[i], border);
+                //CharacterBorder.Add(PlayerTeam[i], border);
+                CharacterCanvas.Add(PlayerTeam[i], canvas);
             }
 
             //Log
@@ -74,15 +89,24 @@ namespace JRPG_Project.Tabs
             SimulateBattle();
         }
 
-        private Border GetCharacterBorder(Character character)
+        private Canvas GetCharacterBorder(Character character)
         {
             //Tooltip
             ToolTip tooltip = new ToolTip();
             tooltip.Style = FindResource("CharacterTooltip") as Style;
             tooltip.Content = $"{character.Name}\n" +
                 $"===============\n" +
-                $"DMG: {character.GetAccumelatedStats().DMG} || CRD: {character.GetAccumelatedStats().CRD} || CRC: {character.GetAccumelatedStats().CRC}\n" +
-                $"STA: {character.GetAccumelatedStats().STA} || STR: {character.GetAccumelatedStats().STR}";
+                $"HP: {character.GetAccumelatedStats().HP} | DEF: {character.GetAccumelatedStats().DEF} | SPD: {character.GetAccumelatedStats().SPD}\n" +
+                $"DMG: {character.GetAccumelatedStats().DMG} | CRD: {character.GetAccumelatedStats().CRD} | CRC: {character.GetAccumelatedStats().CRC}\n" +
+                $"STA: {character.GetAccumelatedStats().STA} | STR: {character.GetAccumelatedStats().STR}";
+
+            //Canvas (parent)
+            Canvas canvas = new Canvas();
+            canvas.Width = 125;
+            canvas.Height = 125;
+            canvas.HorizontalAlignment = HorizontalAlignment.Center;
+            canvas.VerticalAlignment = VerticalAlignment.Center;
+            canvas.Margin = new Thickness(8, 0, 8, 0);
 
             //Border
             Border border = new Border();
@@ -90,11 +114,12 @@ namespace JRPG_Project.Tabs
             border.BorderThickness = new Thickness(1, 1, 2, 2);
             border.CornerRadius = new CornerRadius(2);
             border.Width = 125;
-            border.Margin = new Thickness(8, 0, 8, 0);
-            border.Background = (Brush)new BrushConverter().ConvertFrom("#445069");
+            //border.Margin = new Thickness(8, 0, 8, 0);
+            border.Background = (Brush)new BrushConverter().ConvertFrom("#272829");
             ToolTipService.SetInitialShowDelay(border, 100);
             border.ToolTip = tooltip;
             border.MouseEnter += (s, e) => DisplayDetails(character);
+            canvas.Children.Add(border);
 
             //Stackpanel
             StackPanel stackPanel = new StackPanel();
@@ -102,13 +127,13 @@ namespace JRPG_Project.Tabs
 
             //Def bar
             ProgressBar defBar = new ProgressBar();
-            defBar.Height = 6;
-            defBar.Width = 85;
+            defBar.Height = 10;
+            defBar.Width = 116;
             defBar.Margin = new Thickness(2);
             defBar.Maximum = character.GetAccumelatedStats().DEF;
             defBar.Value = defBar.Maximum;
             defBar.Style = (Style)FindResource("XpProgressBar");
-            defBar.Foreground = Brushes.RoyalBlue;
+            defBar.Foreground = (Brush)new BrushConverter().ConvertFrom("#525FE1");
             stackPanel.Children.Add(defBar);
 
             //Image
@@ -124,30 +149,48 @@ namespace JRPG_Project.Tabs
 
             //Hp bar
             ProgressBar hpBar = new ProgressBar();
-            hpBar.Height = 8;
-            hpBar.Width = 90;
+            hpBar.Height = 10;
+            hpBar.Width = 116;
             hpBar.Margin = new Thickness(2);
             hpBar.Maximum = character.GetAccumelatedStats().HP;
             hpBar.Value = hpBar.Maximum;
             hpBar.Style = (Style)FindResource("XpProgressBar");
-            hpBar.Foreground = Brushes.Crimson;
+            hpBar.Foreground = (Brush)new BrushConverter().ConvertFrom("#F31559");
             stackPanel.Children.Add(hpBar);
 
             //Sta bar
             ProgressBar staBar = new ProgressBar();
-            staBar.Height = 6;
-            staBar.Width = 85;
+            staBar.Height = 8;
+            staBar.Width = 110;
             staBar.Margin = new Thickness(2);
             staBar.Maximum = character.GetAccumelatedStats().STA;
             staBar.Value = staBar.Maximum;
             staBar.Style = (Style)FindResource("XpProgressBar");
-            staBar.Foreground = Brushes.BlanchedAlmond;
+            staBar.Foreground = (Brush)new BrushConverter().ConvertFrom("#F4D160");
             stackPanel.Children.Add(staBar);
 
             //Add hp and def bar to dictionary
             CharHpDefStaBar.Add(character, (hpBar, defBar, staBar));
 
-            return border;
+            return canvas;
+        }
+
+        private void FinishBattle(int xp, int coins)
+        {
+            //Give every character xp
+            foreach (Character c in Inventory.Team)
+            {
+                LevelData.AddXP(c, xp);
+            }
+
+            //Give coins
+            Inventory.Coins += coins;
+
+            //Anmimate reward
+            AnimateRewards(xp, coins);
+
+            //Log
+            BattleLog.Add($"Battle finished! {xp} XP and {coins} coins earned!");
         }
 
         #endregion
@@ -248,6 +291,7 @@ namespace JRPG_Project.Tabs
             {
                 //player won, hand out rewards
                 (int xp, int coins) = CalculateXpCoinRewards();
+                FinishBattle(xp, coins);
             }
         }
 
@@ -255,8 +299,9 @@ namespace JRPG_Project.Tabs
         {
             //Update round
             Round++;
-            GlobalAnouncer($"Stepping into round{Round}");
+            GlobalAnouncer($"--> round {Round}");
             TxtRound.Text = $"Round {Round}";
+            AnimateRoundText();
             BattleLog.Add($">Round{Round}");
 
             //Create queue
@@ -362,19 +407,21 @@ namespace JRPG_Project.Tabs
 
         private void HighlightCharacter(Character character)
         {
-            foreach (var pair in CharacterBorder)
+            foreach (var pair in CharacterCanvas)
             {
+                //Get border element from canvas
+                Border border = pair.Value.Children.OfType<Border>().FirstOrDefault();
                 if (pair.Key == character)
                 {
                     //Highlight
-                    pair.Value.BorderBrush = Brushes.SeaGreen;
-                    pair.Value.BorderThickness = new Thickness(2, 1, 2, 3);
+                    border.BorderBrush = Brushes.SeaGreen;
+                    border.BorderThickness = new Thickness(2, 1, 2, 3);
                 }
                 else
                 {
                     //Unhighlight
-                    pair.Value.BorderBrush = Brushes.Black;
-                    pair.Value.BorderThickness = new Thickness(2, 1, 2, 2);
+                    border.BorderBrush = Brushes.Black;
+                    border.BorderThickness = new Thickness(2, 1, 2, 2);
                 }
             }
         }
@@ -384,34 +431,40 @@ namespace JRPG_Project.Tabs
             if (character is null)
             {
                 //Unhighlight target border
-                foreach (var pair in CharacterBorder)
+                foreach (var pair in CharacterCanvas)
                 {
-                    if (pair.Value.BorderBrush == Brushes.MediumVioletRed)
+                    //Get border element from canvas
+                    Border border = pair.Value.Children.OfType<Border>().FirstOrDefault();
+
+                    if (border.BorderBrush == Brushes.MediumVioletRed)
                     {
-                        pair.Value.BorderBrush = Brushes.Black;
-                        pair.Value.BorderThickness = new Thickness(2, 1, 2, 2);
+                        border.BorderBrush = Brushes.Black;
+                        border.BorderThickness = new Thickness(2, 1, 2, 2);
                     }
                 }
 
                 return;
             }
 
-            foreach (var pair in CharacterBorder)
+            foreach (var pair in CharacterCanvas)
             {
                 if (!pair.Key.ID.Contains(character.ID.Substring(0, 1)))
                     continue;
 
+                //Get border element from canvas
+                Border border = pair.Value.Children.OfType<Border>().FirstOrDefault();
+
                 if (pair.Key == character)
                 {
                     //Highlight
-                    pair.Value.BorderBrush = Brushes.MediumVioletRed;
-                    pair.Value.BorderThickness = new Thickness(2, 1, 2, 3);
+                    border.BorderBrush = Brushes.MediumVioletRed;
+                    border.BorderThickness = new Thickness(2, 1, 2, 3);
                 }
                 else
                 {
                     //Unhighlight
-                    pair.Value.BorderBrush = Brushes.Black;
-                    pair.Value.BorderThickness = new Thickness(2, 1, 2, 2);
+                    border.BorderBrush = Brushes.Black;
+                    border.BorderThickness = new Thickness(2, 1, 2, 2);
                 }
             }
         }
@@ -500,13 +553,13 @@ namespace JRPG_Project.Tabs
 
             //log
             if (crit && brokeDef)
-                BattleLog.Add($"🗡️🔥🦾{attacker.Name} attacked {target.Name} for {dmg} damage! Critical hit! Broke defense!");
+                BattleLog.Add($"💥🦾{attacker.Name} attacked {target.Name} for {dmg} damage! Critical hit! Broke defense!");
             else if (crit)
-                BattleLog.Add($"🗡️🔥{attacker.Name} attacked {target.Name} for {dmg} damage! Critical hit!");
+                BattleLog.Add($"💥{attacker.Name} attacked {target.Name} for {dmg} damage! Critical hit!");
             else if (brokeDef)
-                BattleLog.Add($"🗡️🦾{attacker.Name} attacked {target.Name} for {dmg} damage! Broke defense!");
+                BattleLog.Add($"🔥🦾{attacker.Name} attacked {target.Name} for {dmg} damage! Broke defense!");
             else
-                BattleLog.Add($"🗡️{attacker.Name} attacked {target.Name} for {dmg} damage!");
+                BattleLog.Add($"🔥{attacker.Name} attacked {target.Name} for {dmg} damage!");
         }
 
         private (int, bool) CalculateDmg(Character attacker)
@@ -623,8 +676,27 @@ namespace JRPG_Project.Tabs
             int xpReward = 0;
             int coinsReward = 0;
 
-            // ???
-            //Profit
+            //Calculate XP reward
+            int value = 0;
+            foreach (Character c in FoeTeam)
+            {
+                value += CharacterData.GetValue(c);
+            }
+
+            xpReward = (int)Math.Ceiling(value * (0.64 - (Round/32)));
+
+            //Calculate coins reward
+            coinsReward = (int)Math.Ceiling(value * 0.32);
+
+            if (Round < 2)
+            {
+                coinsReward *= 2;
+            }
+            else
+            {
+                int roundPunishment = coinsReward % 10;
+                coinsReward -= roundPunishment * Round;
+            }
 
             return (xpReward, coinsReward);
         }
@@ -666,7 +738,9 @@ namespace JRPG_Project.Tabs
         {
             //Vars
             int margin = 0;
-            Border border = CharacterBorder[attacker];
+            //get border from CharacterCanvas 
+            Canvas canvas = CharacterCanvas[attacker];
+            Border border = canvas.Children.OfType<Border>().FirstOrDefault();
             bool attackerIsPlayer = attacker.ID.Contains("CH");
 
             //Move 10 pixels up if attacker is player, else move down
@@ -692,7 +766,8 @@ namespace JRPG_Project.Tabs
         {
             //Vars
             int margin = 0;
-            Border border = CharacterBorder[target];
+            Canvas canvas = CharacterCanvas[target];
+            Border border = (Border)canvas.Children[0];
             bool targetIsPlayer = target.ID.Contains("CH");
 
             //Move 4 pixels up if target is player, else move down
@@ -717,36 +792,44 @@ namespace JRPG_Project.Tabs
         private async void DisplayNumbers(int dmg, bool crit, Character target)
         {
             //Border we're working with
-            Border border = CharacterBorder[target];
-
-            //Get stackpanel from border
-            StackPanel stackPanel = (StackPanel)border.Child;
+            Canvas canvas = CharacterCanvas[target];
 
             //Create a textblock to display the damage
             TextBlock txt = new TextBlock();
 
-            txt.Text = crit ? $"🔥{dmg}" + "!!" : $"🔥{dmg}";
+            txt.Text = crit ? $"💥{dmg}!" : $"🔥{dmg}";
             txt.FontSize = crit ? 24 : 22;
             txt.FontWeight = FontWeights.Bold;
-            txt.Foreground = Brushes.MediumVioletRed;
+            txt.Foreground = target.ID.Contains("CH") == true ? (Brush)new BrushConverter().ConvertFrom("#d11149") /*Red*/ : (Brush)new BrushConverter().ConvertFrom("#0affc2") /*green*/;
+            txt.TextTrimming = TextTrimming.None;
+            txt.TextWrapping = TextWrapping.WrapWithOverflow;
+            txt.HorizontalAlignment = HorizontalAlignment.Stretch;
 
             // Create a Border to provide the semi-transparent background
             Border backgroundBorder = new Border();
             backgroundBorder.HorizontalAlignment = HorizontalAlignment.Left;
             backgroundBorder.VerticalAlignment = VerticalAlignment.Bottom;
-            backgroundBorder.Background = new SolidColorBrush(Color.FromArgb(104, 0, 0, 0)); // Adjust the color and opacity as needed
-            backgroundBorder.Margin = new Thickness(0, 0, 0, -34);
+            Brush backColor = new SolidColorBrush(Colors.Black);
+            backColor.Opacity = 0.8;
+            backgroundBorder.Background = backColor;
+            backgroundBorder.Margin = target.ID.Contains("CH") ? new Thickness(-10, -28, 0, 28) : new Thickness(-10, 0, 0, -182);
             backgroundBorder.CornerRadius = new CornerRadius(2);
             backgroundBorder.Padding = new Thickness(4, 0, 4, 0);
             backgroundBorder.Child = txt;
+            backgroundBorder.Opacity = 0.1;
 
             //Add textblock to stackpanel
-            stackPanel.Children.Add(backgroundBorder);
+            canvas.Children.Add(backgroundBorder);
 
             //Animate from left to right
-            while (backgroundBorder.Margin.Left < 14)
+            while (backgroundBorder.Margin.Left < 10)
             {
                 backgroundBorder.Margin = new Thickness(backgroundBorder.Margin.Left + 1, backgroundBorder.Margin.Top, backgroundBorder.Margin.Right - 1, backgroundBorder.Margin.Bottom);
+
+                //Fade in
+                if (backgroundBorder.Opacity < 1)
+                    backgroundBorder.Opacity += 0.05;
+
                 await Task.Delay(10);
             }
 
@@ -760,12 +843,14 @@ namespace JRPG_Project.Tabs
             }
 
             //Remove element
-            stackPanel.Children.Remove(backgroundBorder);
+            canvas.Children.Remove(backgroundBorder);
         }
 
         private async void AnimateDeath(Character victim)
         {
-            Border border = CharacterBorder[victim];
+            //Get border from CharacterCanvas
+            Canvas canvas = CharacterCanvas[victim];
+            Border border = canvas.Children.OfType<Border>().FirstOrDefault();
 
             //Lower opacity to 0.4
             while (border.Opacity > 0.64)
@@ -775,9 +860,100 @@ namespace JRPG_Project.Tabs
             }
         }
 
+        private async void AnimateRoundText()
+        {
+            int margin = 0;
+
+            //Bounce down
+            while (margin > -10)
+            {
+                margin--;
+                TxtRound.Margin = new Thickness(TxtRound.Margin.Left, -margin, TxtRound.Margin.Right, margin);
+                await Task.Delay(8 / speedToggle);
+            }
+
+            //Move back up
+            while (margin < 0)
+            {
+                margin++;
+                TxtRound.Margin = new Thickness(TxtRound.Margin.Left, -margin, TxtRound.Margin.Right, margin);
+                await Task.Delay(8 / speedToggle);
+            }
+        }
+
+        private async void AnimateRewards(int xp, int coins)
+        {
+            Border border = new Border();
+            border.Width = 200;
+            border.Height = 100;
+            border.CornerRadius = new CornerRadius(2, 4, 4, 2);
+            Brush backBrush = new SolidColorBrush(Colors.Black);
+            backBrush.Opacity = 0.8;
+            border.Background = backBrush;
+            border.BorderBrush = Brushes.Black;
+            border.BorderThickness = new Thickness(1, 1, 2, 2);
+            Grid.SetColumnSpan(border, 1);
+            Grid.SetRowSpan(border, MainGrid.RowDefinitions.Count);
+            border.HorizontalAlignment = HorizontalAlignment.Center;
+            border.VerticalAlignment = VerticalAlignment.Center;
+            border.Margin = new Thickness(0, 10, 0, -10);
+
+            //Create a stackpanel to hold the textblocks
+            StackPanel stack = new StackPanel();
+            stack.Orientation = Orientation.Vertical;
+            stack.HorizontalAlignment = HorizontalAlignment.Center;
+            stack.VerticalAlignment = VerticalAlignment.Center;
+            border.Child = stack;
+
+            //Create textblocks
+            TextBlock txtXP = new TextBlock();
+            txtXP.Text = $"+{xp} XP";
+            txtXP.FontSize = 24;
+            txtXP.FontWeight = FontWeights.Bold;
+            txtXP.Foreground = (Brush)new BrushConverter().ConvertFrom("#0affc2");
+            txtXP.TextTrimming = TextTrimming.None;
+            txtXP.TextWrapping = TextWrapping.WrapWithOverflow;
+            txtXP.HorizontalAlignment = HorizontalAlignment.Center;
+
+            TextBlock txtCoins = new TextBlock();
+            txtCoins.Text = $"+{coins} Coins";
+            txtCoins.FontSize = 24;
+            txtCoins.FontWeight = FontWeights.Bold;
+            txtCoins.Foreground = Brushes.Goldenrod;
+            txtCoins.TextTrimming = TextTrimming.None;
+            txtCoins.TextWrapping = TextWrapping.WrapWithOverflow;
+            txtCoins.HorizontalAlignment = HorizontalAlignment.Center;
+
+            //Add textblocks to stackpanel
+            stack.Children.Add(txtXP);
+            stack.Children.Add(txtCoins);
+
+            //Add border to grid
+            MainGrid.Children.Add(border);
+
+            //Animate from bottom to top
+            while (border.Margin.Bottom < 20)
+            {
+                border.Margin = new Thickness(border.Margin.Left, border.Margin.Top - 1, border.Margin.Right, border.Margin.Bottom + 1);
+                await Task.Delay(32);
+            }
+
+            await Task.Delay(4000 / (speedToggle / 2));
+
+            //Fade out
+            while (border.Opacity > 0)
+            {
+                border.Opacity -= 0.05;
+                await Task.Delay(10);
+            }
+
+            //Remove element
+            MainGrid.Children.Remove(border);
+        }
 
         #endregion
 
+        #region Button Events
         private void BtnFinish_Click(object sender, RoutedEventArgs e)
         {
             //Return to previous tab
@@ -812,5 +988,7 @@ namespace JRPG_Project.Tabs
             LogWindow window = new LogWindow(BattleLog);
             window.ShowDialog();
         }
+
+        #endregion
     }
 }
