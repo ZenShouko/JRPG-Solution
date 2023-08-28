@@ -200,7 +200,7 @@
                 <SolidColorBrush Color="Black" Opacity="0.85"/>
             </Setter.Value>
         </Setter>
-        <Setter Property="Foreground" Value="Violet"/>
+        <Setter Property="Foreground" Value="YellowGreen"/>
         <Setter Property="FontSize" Value="14"/>
     </Style>
 

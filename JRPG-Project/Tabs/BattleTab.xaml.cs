@@ -1,4 +1,5 @@
 ﻿using JRPG_ClassLibrary;
+using JRPG_Project.ClassLibrary;
 using JRPG_Project.ClassLibrary.Data;
 using JRPG_Project.ClassLibrary.Entities;
 using JRPG_Project.ClassLibrary.Player;
@@ -39,6 +40,7 @@ namespace JRPG_Project.Tabs
             int numb = Interaction.GetRandomNumber(1, 6);
             MainGrid.Background = new ImageBrush(new BitmapImage(new Uri($"pack://application:,,,/Resources/Assets/GUI/pixel-rain{numb}.jpg", UriKind.RelativeOrAbsolute)));
         }
+
         private void InitializeBattle()
         {
             //Add all characters to the hp dictionary AND stamina dictionary
@@ -81,6 +83,20 @@ namespace JRPG_Project.Tabs
                 //CharacterBorder.Add(PlayerTeam[i], border);
                 CharacterCanvas.Add(PlayerTeam[i], canvas);
             }
+
+            //TEST, make player really strongk
+            //PlayerTeam[0].Stats.DMG = 100;
+            //PlayerTeam[0].Stats.CRD = 100;
+            //PlayerTeam[0].Stats.CRC = 100;
+            //PlayerTeam[0].Stats.SPD = 100;
+            //PlayerTeam[1].Stats.DMG = 100;
+            //PlayerTeam[1].Stats.CRD = 100;
+            //PlayerTeam[1].Stats.CRC = 100;
+            //PlayerTeam[1].Stats.SPD = 100;
+            //PlayerTeam[2].Stats.DMG = 100;
+            //PlayerTeam[2].Stats.CRD = 100;
+            //PlayerTeam[2].Stats.CRC = 100;
+            //PlayerTeam[2].Stats.SPD = 100;
 
             //Log
             BattleLog.Add("Battle started!");
@@ -137,7 +153,7 @@ namespace JRPG_Project.Tabs
             stackPanel.Children.Add(defBar);
 
             //Image
-            Image img = new Image();
+            System.Windows.Controls.Image img = new System.Windows.Controls.Image();
             img.Source = character.CharImage.Source;
             img.Stretch = Stretch.UniformToFill;
             img.Height = 100;
@@ -471,40 +487,126 @@ namespace JRPG_Project.Tabs
 
         private Character GetTarget(Character currentChar)
         {
-            //Return null if no targets available
-            if (currentChar.ID.Contains("CH"))
-            {
-                if (CharHpDef.All(x => x.Key.ID.Contains("F") && x.Value.Item1 <= 0))
-                    return null;
-            }
-            else
-            {
-                if (CharHpDef.All(x => x.Key.ID.Contains("CH") && x.Value.Item1 <= 0))
-                    return null;
-            }
-
-
+            //Vars
             Character target = new Character();
+            string targetDistinguisher = currentChar.ID.Contains("F") ? "CH" : "F";
+            string allyDistinguisher = currentChar.ID.Contains("F") ? "F" : "CH";
+
+            //Calculate team damage with remaining people in queue
+            int teamDamage = Queue
+                .SkipWhile(x => x != currentChar)
+                .Where(x => x.ID.Contains(allyDistinguisher))
+                .Sum(x => x.GetAccumelatedStats().DMG);
+
+            //Target list
+            List<Character> targets = CharHpDef.Keys.Where(x => x.ID.Contains(targetDistinguisher)).ToList();
+            //Remove all targets that are dead
+            targets.RemoveAll(x => CharHpDef[x].Item1 <= 0);
 
             while (true)
             {
-                if (currentChar.ID.Contains("F")) //Current character is a foe
-                {
-                    //Pick a random target from the player's team
-                    target = PlayerTeam[Interaction.GetRandomNumber(0, PlayerTeam.Count() - 1)];
-                }
-                else
-                {
-                    //Pick a random target from the foe's team
-                    target = FoeTeam[Interaction.GetRandomNumber(0, FoeTeam.Count() - 1)];
-                }
+                //[1] Get lowest health target with no defence
+                target = targets.OrderBy(x => CharHpDef[x].Item1).Where(x => CharHpDef[x].Item2 <= 0).FirstOrDefault();
 
-                //Check if target is dead, else return target
-                if (CharHpDef[target].Item1 <= 0)
-                    continue;
-                else
-                    return target;
+                //-> Can we finish off the target?
+                if (target != null && CharHpDef[target].Item1 <= teamDamage)
+                    break;
+
+                //[2] Get lowest defence target
+                target = targets.OrderBy(x => CharHpDef[x].Item2).Where(x => CharHpDef[x].Item2 > 0).FirstOrDefault();
+
+                //-> Can we break his shield?
+                if (target != null && CharHpDef[target].Item2 <= teamDamage)
+                    break;
+
+                //[3] Get target with 20% or less health or less HP than remaining team damage AND no defence
+                target = targets.Where(x => CharHpDef[x].Item1 <= CharHpDefStaBar[x].Item1.Maximum * 0.2 && CharHpDef[x].Item2 <= 0 ||
+                x.Stats.HP < teamDamage && CharHpDef[x].Item2 <= 0).FirstOrDefault();
+
+                //-> Check if team damage is enough to kill target
+                if (target != null && CharHpDef[target].Item1 <= teamDamage)
+                    break;
+
+                //[4] Get target with 20% or less defence or less defence than remaining team damage
+                target = targets
+                    .OrderBy(x => CharHpDef[x].Item2)
+                    .Where(x => CharHpDef[x].Item2 <= CharHpDefStaBar[x].Item2.Maximum * 0.2 || CharHpDef[x].Item2 < teamDamage)
+                    .Where(x => CharHpDef[x].Item2 > 0) //filter out defenceless targets
+                    .FirstOrDefault();
+
+                //-> Can the team combined break the target's shield?
+                if (target != null)
+                    break;
+
+                //[5] Get target with highest threat score
+                target = targets.OrderByDescending(x => GetThreatScore(x)).FirstOrDefault();
+
+                //-> Can we kill target within 3 turns?
+                int teamDamage3Turns = (Queue.Where(x => x.ID.Contains(allyDistinguisher)).Sum(x => x.GetAccumelatedStats().DMG) * 2) + teamDamage;
+                if (CharHpDef[target].Item1 + CharHpDef[target].Item2 <= teamDamage3Turns)
+                    break;
+
+                //[Default] Else, Pick a random target from the player's team
+                target = targets[Interaction.GetRandomNumber(0, targets.Count() - 1)];
+                break;
             }
+
+            return target;
+        }
+
+        private int GetThreatScore(Character c)
+        {
+            Stats stats = c.GetAccumelatedStats();
+            //Get threat score
+            double threatScore = 0;
+
+            // Calculate effective damage based on stamina and stamina scaling
+            double staminaRatio = stats.STA / stats.DMG;
+            double effectiveDamage = stats.DMG;
+
+            if (staminaRatio < 0.25)
+            {
+                effectiveDamage *= 0.8;
+            }
+            else if (staminaRatio < 0.5)
+            {
+                effectiveDamage *= 0.45;
+            }
+            else
+            {
+                effectiveDamage *= 0.25;
+            }
+
+            // Apply stamina damage scaling
+            if (stats.STA < 0.15)
+            {
+                effectiveDamage *= 0.5;
+            }
+            else if (stats.STA > 0.6)
+            {
+                effectiveDamage *= 1; // No effect
+            }
+            else
+            {
+                effectiveDamage *= 0.85;
+            }
+
+            // Apply defense regeneration
+            double defenseRegen = stats.STR * 0.5;
+
+            // Apply speed factor
+            threatScore *= stats.SPD;
+
+            // Apply health factor (max hp divided by avarage team hp)
+            double hpFactor = stats.HP / PlayerTeam.Average(x => x.GetAccumelatedStats().HP);
+
+            // Calculate threat score
+            threatScore = effectiveDamage * (1 + stats.CRC * 1.2) * (1 + stats.CRD * 1.5) - stats.DEF + defenseRegen + hpFactor;
+
+            // Round threat score
+            threatScore = Math.Round(threatScore);
+
+            return (int)threatScore;
         }
 
         private void Attack(Character attacker, Character target)
@@ -572,7 +674,7 @@ namespace JRPG_Project.Tabs
             if (Interaction.GetRandomNumber(0, 100) <= attacker.GetAccumelatedStats().CRC)
             {
                 //Yes, crit hit
-                DMG *= attacker.GetAccumelatedStats().CRD;
+                DMG += (DMG / 100) * attacker.GetAccumelatedStats().CRD;
                 crit = true;
             }
 
@@ -585,6 +687,9 @@ namespace JRPG_Project.Tabs
                 DMG *= 0.5;
             else if (staBalance < 0.6)
                 DMG *= 0.85;
+
+            //Round up
+            DMG = Math.Ceiling(DMG);
 
             //Return damage
             return ((int)DMG, crit);
@@ -683,7 +788,7 @@ namespace JRPG_Project.Tabs
                 value += CharacterData.GetValue(c);
             }
 
-            xpReward = (int)Math.Ceiling(value * (0.64 - (Round/32)));
+            xpReward = (int)Math.Ceiling(value * (0.64 - (Round / 32)));
 
             //Calculate coins reward
             coinsReward = (int)Math.Ceiling(value * 0.32);
@@ -817,6 +922,7 @@ namespace JRPG_Project.Tabs
             backgroundBorder.Padding = new Thickness(4, 0, 4, 0);
             backgroundBorder.Child = txt;
             backgroundBorder.Opacity = 0.1;
+            Canvas.SetZIndex(backgroundBorder, 100);
 
             //Add textblock to stackpanel
             canvas.Children.Add(backgroundBorder);
@@ -852,12 +958,63 @@ namespace JRPG_Project.Tabs
             Canvas canvas = CharacterCanvas[victim];
             Border border = canvas.Children.OfType<Border>().FirstOrDefault();
 
+            //Animate death symbol
+            AnimateDeathSymbol(victim);
+
             //Lower opacity to 0.4
             while (border.Opacity > 0.64)
             {
                 border.Opacity -= 0.04;
                 await Task.Delay(20 / speedToggle);
             }
+        }
+
+        private async void AnimateDeathSymbol(Character victim)
+        {
+            //Get border from CharacterCanvas
+            Canvas canvas = CharacterCanvas[victim];
+            Border border = canvas.Children.OfType<Border>().FirstOrDefault();
+
+            //Create a textblock to display the skull symbol
+            TextBlock skull = new TextBlock();
+            Brush backColor = new SolidColorBrush(Colors.Black);
+            backColor.Opacity = 0.05;
+            skull.Background = backColor;
+            skull.Padding = new Thickness(4, 2, 4, 2);
+            skull.Text = "💀";
+            skull.FontSize = 32;
+            skull.Foreground = Brushes.White;
+            skull.TextTrimming = TextTrimming.None;
+            skull.Margin = new Thickness(35, 50, 0, 0);
+            skull.Opacity = 0;
+
+            // Add textblock to stackpanel
+            canvas.Children.Add(skull);
+
+            //Animate to up
+            while (skull.Margin.Top > -40)
+            {
+                skull.Margin = new Thickness(skull.Margin.Left, skull.Margin.Top - 1, skull.Margin.Right, skull.Margin.Bottom);
+
+                //Fade in
+                if (skull.Opacity < 1)
+                    skull.Opacity += 0.5;
+
+                await Task.Delay(13 / speedToggle);
+            }
+
+            //Wait 2
+            await Task.Delay(2400 / speedToggle);
+
+            //Fade out
+            while (skull.Opacity > 0)
+            {
+                skull.Opacity -= 0.1;
+                await Task.Delay(15 / speedToggle);
+            }
+
+            //Remove element
+            canvas.Children.Remove(skull);
         }
 
         private async void AnimateRoundText()
@@ -938,7 +1095,7 @@ namespace JRPG_Project.Tabs
                 await Task.Delay(32);
             }
 
-            await Task.Delay(4000 / (speedToggle / 2));
+            await Task.Delay(4000 / speedToggle);
 
             //Fade out
             while (border.Opacity > 0)
