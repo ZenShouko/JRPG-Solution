@@ -1,23 +1,12 @@
 [
     {
-        "ID": "M1",
-        "Name": "Bottle of Essence",
-        "Description": "Essence caught in a bottle. Default resource for upgrades.",
-        "Rarity": "COMMON",
-        "ImageName": "essence-bottle.png",
-        "Stats": {
-            "XP": "40"
-        },
-        "IsSellable": "False"
-    },
-    {
         "ID": "M2",
         "Name": "Orb of Essence",
         "Description": "A whole essence orb. Stronger than a basic bottle.",
         "Rarity": "SPECIAL",
         "ImageName": "essence-orb.png",
         "Stats": {
-            "XP": "250"
+            "XP": "50"
         },
         "IsSellable": "False"
     },

@@ -596,6 +596,9 @@ namespace JRPG_Project.ClassLibrary.Universal
             SwitchMultipleSelection(BulkExtract);
             DisplayBlank();
             CboxSort.IsEnabled = !BulkExtract;
+
+            if (BulkExtract)
+                TxtItemDescription.Text += "(Tip: double click headers to quick bulk select based on rarity.)";
         }
 
         private void UnselectedEverything()
@@ -645,6 +648,175 @@ namespace JRPG_Project.ClassLibrary.Universal
 
             //Open upgrade tab
             Interaction.OpenUpgradeTab(item);
+        }
+
+        private void Collectables_MouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (!BulkExtract)
+                return;
+
+            //Ask to select all common items
+            if (MessageBox.Show("Select all common items?", "Select all?", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            {
+                foreach (ListBoxItem item in LstCollectables.Items)
+                {
+                    Collectable col = Inventory.Collectables.FirstOrDefault(i => i.UniqueID == (string)item.Tag);
+                    if (col.Rarity == "COMMON")
+                    {
+                        item.IsSelected = true;
+                    }
+                }
+            }
+            else { return; }
+
+            //Ask to select all special items
+            if (MessageBox.Show("Select all special items?", "Select all?", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            {
+                foreach (ListBoxItem item in LstCollectables.Items)
+                {
+                    Collectable col = Inventory.Collectables.FirstOrDefault(i => i.UniqueID == (string)item.Tag);
+                    if (col.Rarity == "SPECIAL")
+                    {
+                        item.IsSelected = true;
+                    }
+                }
+            }
+            else { return; }
+
+            //Ask to select all cursed items
+            if (MessageBox.Show("Select all cursed items?", "Select all?", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            {
+                foreach (ListBoxItem item in LstCollectables.Items)
+                {
+                    Collectable col = Inventory.Collectables.FirstOrDefault(i => i.UniqueID == (string)item.Tag);
+                    if (col.Rarity == "CURSED")
+                    {
+                        item.IsSelected = true;
+                    }
+                }
+            }
+            else { return; }
+
+            //Ask to select all legendary items
+            if (MessageBox.Show("Select all legendary items?", "Select all?", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            {
+                foreach (ListBoxItem item in LstCollectables.Items)
+                {
+                    Collectable col = Inventory.Collectables.FirstOrDefault(i => i.UniqueID == (string)item.Tag);
+                    if (col.Rarity == "LEGENDARY")
+                    {
+                        item.IsSelected = true;
+                    }
+                }
+            }
+            else { return; }
+        }
+
+        Dictionary<string, (bool, bool, bool, bool, bool)> BulkPreference = new Dictionary<string, (bool, bool, bool, bool, bool)>() 
+        {
+            {"LstCollectables", (false, false, false, false, false) },
+            {"LstWeapons", (false, false, false, false, false) },
+            {"LstArmours", (false, false, false, false, false) },
+            {"LstAmulets", (false, false, false, false, false) }
+        };
+        private void QuickItemSelector(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            //Return if bulk extract is not enabled
+            if (!BulkExtract)
+                return;
+
+            //Vars
+            TabItem currentTab = (TabItem)sender;
+
+            //Get listbox from tab
+            ListBox currentListbox = (ListBox)currentTab.Content;
+
+            bool common = BulkPreference[currentListbox.Name].Item1;
+            bool special = BulkPreference[currentListbox.Name].Item2;
+            bool cursed = BulkPreference[currentListbox.Name].Item3;
+            bool legendary = BulkPreference[currentListbox.Name].Item4;
+            bool enhancedItems = BulkPreference[currentListbox.Name].Item5;
+
+            //Open rarity selector window
+            RaritySelectorWindow window = new RaritySelectorWindow(BulkPreference[currentListbox.Name].Item1, BulkPreference[currentListbox.Name].Item2, 
+                BulkPreference[currentListbox.Name].Item3, BulkPreference[currentListbox.Name].Item4, BulkPreference[currentListbox.Name].Item5);
+            if (window.ShowDialog() == true)
+            {
+                common = window.Common;
+                special = window.Special;
+                cursed = window.Cursed;
+                legendary = window.Legendary;
+                enhancedItems = window.EnhancedItems;
+
+                //Save preferences
+                BulkPreference[currentListbox.Name] = (common, special, cursed, legendary, enhancedItems);
+            }
+
+            //Select items
+            foreach (ListBoxItem listItem in currentListbox.Items)
+            {
+                //Get item
+                BaseItem obj;
+
+                if (currentListbox.Name.Contains("Collectables"))
+                    obj = Inventory.Collectables.FirstOrDefault(i => i.UniqueID == (string)listItem.Tag);
+                else if (currentListbox.Name.Contains("Weapons"))
+                    obj = Inventory.Weapons.FirstOrDefault(i => i.UniqueID == (string)listItem.Tag);
+                else if (currentListbox.Name.Contains("Armours"))
+                    obj = Inventory.Armours.FirstOrDefault(i => i.UniqueID == (string)listItem.Tag);
+                else if (currentListbox.Name.Contains("Amulets"))
+                    obj = Inventory.Amulets.FirstOrDefault(i => i.UniqueID == (string)listItem.Tag);
+                else
+                    return;
+
+                //Unselect if rarities don't match
+                if (!common && obj.Rarity == "COMMON")
+                {
+                    listItem.IsSelected = false;
+                    continue;
+                }
+                else if (!special && obj.Rarity == "SPECIAL")
+                {
+                    listItem.IsSelected = false;
+                    continue;
+                }
+                else if (!cursed && obj.Rarity == "CURSED")
+                {
+                    listItem.IsSelected = false;
+                    continue;
+                }
+                else if (!legendary && obj.Rarity == "LEGENDARY")
+                {
+                    listItem.IsSelected = false;
+                    continue;
+                }
+
+                //Unselect if enhanced items don't match
+                if (!enhancedItems && IsItemEnhanced(obj))
+                {
+                    listItem.IsSelected = false;
+                    continue;
+                }
+
+                //Select item
+                listItem.IsSelected = true;
+            }
+        }
+
+        private bool IsItemEnhanced(BaseItem item)
+        {
+            //Collectables are always false
+            if (item is Collectable)
+                return false;
+
+            //Get stats holder
+            IStatsHolder statObj = item as IStatsHolder;
+
+            //Check if item is above level 1 and has more than 1 xp.
+            if (item.Level > 1 && statObj.Stats.XP > 0)
+                return true;
+            else
+                return false;
         }
     }
 }

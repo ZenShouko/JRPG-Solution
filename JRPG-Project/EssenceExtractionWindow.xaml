@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:JRPG_Project"
-        mc:Ignorable="d" WindowStartupLocation="CenterScreen" WindowStyle="ToolWindow" SizeToContent="WidthAndHeight"
+        mc:Ignorable="d" WindowStartupLocation="CenterScreen" WindowStyle="ToolWindow" SizeToContent="WidthAndHeight" ResizeMode="NoResize"
         Title="Extracting Essence" Height="auto" Width="auto">
     <Grid Height="320" Width="400">
         <Grid.Background>
@@ -50,17 +50,17 @@
                 </Border>
                 <TextBlock x:Name="ConvertionSymbol" Text=">" FontSize="44" VerticalAlignment="Center" Margin="10 0" Foreground="GhostWhite"/>
                 <!--Bottle Container-->
-                <DockPanel x:Name="BottleContainer" VerticalAlignment="Center">
+                <!--<DockPanel x:Name="BottleContainer" VerticalAlignment="Center">
                     <TextBlock DockPanel.Dock="Bottom" x:Name="TxtBottleCount" Text="x100" FontSize="18" TextAlignment="Center" Foreground="#eaf4f4"/>
                     <Image DockPanel.Dock="Top" Source="Resources/Assets/Collectables/essence-bottle.png" Height="64" Margin="0 5"
                            ToolTip="Bottle of Essence (+40xp)" MouseUp="MaterialMouseUp" Cursor="Hand"/>
-                </DockPanel>
-                <TextBlock x:Name="FirstPlusSymbol" Text="+" FontSize="32" FontWeight="Bold" Margin="5 0" VerticalAlignment="Center" Foreground="GhostWhite"/>
+                </DockPanel>-->
+                <!--<TextBlock x:Name="FirstPlusSymbol" Text="+" FontSize="32" FontWeight="Bold" Margin="5 0" VerticalAlignment="Center" Foreground="GhostWhite"/>-->
                 <!--Orb Container-->
                 <DockPanel x:Name="OrbContainer" VerticalAlignment="Center">
                     <TextBlock DockPanel.Dock="Bottom" x:Name="TxtOrbCount" Text="x20" FontSize="18" TextAlignment="Center" Foreground="#eaf4f4"/>
                     <Image DockPanel.Dock="Top" Source="\Resources\Assets\Collectables\essence-orb.png" Height="64" Margin="0 5"
-                           ToolTip="Orb of Essence (+250xp)" MouseUp="MaterialMouseUp" Cursor="Hand"/>
+                           ToolTip="Orb of Essence (+50xp)" MouseUp="MaterialMouseUp" Cursor="Hand"/>
                 </DockPanel>
                 <!--Scroll container-->
                 <TextBlock x:Name="FinalPlusSymbol" Visibility="Collapsed" Text="+" FontSize="32" FontWeight="Bold" Margin="5 0" VerticalAlignment="Center" Foreground="GhostWhite"/>

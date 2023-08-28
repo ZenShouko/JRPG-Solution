@@ -1,7 +1,6 @@
 ﻿using JRPG_ClassLibrary;
 using JRPG_Project.ClassLibrary;
 using JRPG_Project.ClassLibrary.Data;
-using JRPG_Project.ClassLibrary.Entities;
 using JRPG_Project.ClassLibrary.Items;
 using JRPG_Project.ClassLibrary.Player;
 using System;
@@ -54,9 +53,7 @@ namespace JRPG_Project
                 ImgItem.Source = Item.ItemImage.Source;
                 TxtName.Text = Item.Name;
                 TxtValue.Text = Item.Value.ToString();
-                (int bottles, int orbs) = CalculateEssenceGain();
-
-                TxtBottleCount.Text = bottles.ToString();
+                int orbs = CalculateEssenceGain();
                 TxtOrbCount.Text = orbs.ToString();
             }
             else
@@ -64,18 +61,15 @@ namespace JRPG_Project
                 ImgItem.Source = new BitmapImage(new Uri("pack://application:,,,/Resources/Assets/GUI/alligator.png", UriKind.RelativeOrAbsolute));
                 TxtName.Text = $"Bulk Extract {Items.Count} items";
                 TxtValue.Text = Items.Sum(x => x.Value).ToString();
-                (int bottles, int orbs) = CalculateEssenceGain();
-
-                TxtBottleCount.Text = bottles.ToString();
+                int orbs = CalculateEssenceGain();
                 TxtOrbCount.Text = orbs.ToString();
             }
         }
 
-        private (int bottles, int orbs) CalculateEssenceGain()
+        private int CalculateEssenceGain()
         {
             //Vars
-            int bottleValue = ItemData.ListMaterials[0].Stats.XP;
-            int orbValue = ItemData.ListMaterials[1].Stats.XP;
+            int orbValue = ItemData.ListMaterials.Find(orb => orb.Name.Contains("Orb")).Stats.XP;
             double essenceGain = 0;
 
             //Calculate total essence gain
@@ -89,11 +83,7 @@ namespace JRPG_Project
             //Calculate orbs
             int orbs = (int)essenceGain / orbValue;
 
-            //Calculate bottles with remainder essence
-            essenceGain -= orbs * orbValue;
-            int bottles = (int)essenceGain / bottleValue;
-
-            return (bottles, orbs);
+            return orbs;
         }
 
         private Material GetScroll(string rarity)
@@ -145,15 +135,9 @@ namespace JRPG_Project
             //Get sender
             Image img = (Image)sender;
 
-            if (img.Source.ToString().Contains("bottle"))
+            if (img.Source.ToString().Contains("orb"))
             {
-                Material mat = ItemData.ListMaterials[0];
-                StatsWindow window = new StatsWindow(mat);
-                window.ShowDialog();
-            }
-            else if (img.Source.ToString().Contains("orb"))
-            {
-                Material mat = ItemData.ListMaterials[1];
+                Material mat = ItemData.ListMaterials.Find(x => x.Name.Contains("Orb"));
                 StatsWindow window = new StatsWindow(mat);
                 window.ShowDialog();
             }
@@ -202,8 +186,7 @@ namespace JRPG_Project
             RemoveItem();
 
             //Give essence
-            (int bottles, int orbs) = CalculateEssenceGain();
-            Inventory.Materials["M1"] += bottles;
+            int orbs = CalculateEssenceGain();
             Inventory.Materials["M2"] += orbs;
 
             //Buttons
@@ -233,8 +216,8 @@ namespace JRPG_Project
                 await PlayExtractAnimation(scroll != null);
 
                 //#Idle animation
-                IdleAnimation(BottleContainer);
-                await Task.Delay(300);
+                //IdleAnimation(BottleContainer);
+                //await Task.Delay(300);
                 IdleAnimation(OrbContainer);
 
                 if (scroll is null)
@@ -272,8 +255,8 @@ namespace JRPG_Project
                 await PlayExtractAnimation(scrolls.Count > 0);
 
                 //#Idle animation
-                IdleAnimation(BottleContainer);
-                await Task.Delay(300);
+                //IdleAnimation(BottleContainer);
+                //await Task.Delay(300);
                 IdleAnimation(OrbContainer);
 
                 if (scrolls.Count == 0)
@@ -303,8 +286,8 @@ namespace JRPG_Project
             {
                 await Task.Delay(20);
                 margin += 4;
-                BottleContainer.Margin = new Thickness(-margin, 0, margin, 0);
-                FirstPlusSymbol.Margin = new Thickness(-margin + 8, 0, margin + 8, 0);
+                //BottleContainer.Margin = new Thickness(-margin, 0, margin, 0);
+                //FirstPlusSymbol.Margin = new Thickness(-margin + 8, 0, margin + 8, 0);
                 OrbContainer.Margin = new Thickness(-margin, 0, margin, 0);
             }
 
@@ -314,8 +297,8 @@ namespace JRPG_Project
             //Collapse & reset
             BorderValue.Visibility = Visibility.Collapsed;
             ConvertionSymbol.Visibility = Visibility.Collapsed;
-            BottleContainer.Margin = new Thickness(0, 0, 0, 0);
-            FirstPlusSymbol.Margin = new Thickness(8, 0, 8, 0);
+            //BottleContainer.Margin = new Thickness(0, 0, 0, 0);
+            //FirstPlusSymbol.Margin = new Thickness(8, 0, 8, 0);
             OrbContainer.Margin = new Thickness(0, 0, 0, 0);
 
             if (withScroll)

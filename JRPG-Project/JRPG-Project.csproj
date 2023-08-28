@@ -137,6 +137,9 @@
     <Compile Include="ClassLibrary\Player\PlayerControls.cs" />
     <Compile Include="ClassLibrary\Tiles.cs" />
     <Compile Include="ClassLibrary\Items\Weapon.cs" />
+    <Compile Include="RaritySelectorWindow.xaml.cs">
+      <DependentUpon>RaritySelectorWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SaveWindow.xaml.cs">
       <DependentUpon>SaveWindow.xaml</DependentUpon>
     </Compile>
@@ -183,6 +186,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="LootboxWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="RaritySelectorWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

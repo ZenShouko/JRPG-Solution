@@ -31,16 +31,16 @@
             
             <!--Left side (Inventory Overview)-->
             <TabControl x:Name="tabControl" Margin="5" Style="{StaticResource ITabControl}">
-                <TabItem Header="Collectables" Name="Collectables" Style="{StaticResource ITabItem}">
+                <TabItem Header="Collectables" Name="Collectables" Style="{StaticResource ITabItem}" MouseDoubleClick="QuickItemSelector">
                     <ListBox x:Name="LstCollectables" ItemContainerStyle="{StaticResource IListboxItem}" Style="{StaticResource IListbox}" SelectionChanged="DisplayItemDetails"/>
                 </TabItem>
-                <TabItem Header="Weapons" Name="Weapons" Style="{StaticResource ITabItem}">
+                <TabItem Header="Weapons" Name="Weapons" Style="{StaticResource ITabItem}" MouseDoubleClick="QuickItemSelector">
                     <ListBox x:Name="LstWeapons" ItemContainerStyle="{StaticResource IListboxItem}" Style="{StaticResource IListbox}" SelectionChanged="DisplayItemDetails"/>
                 </TabItem>
-                <TabItem Header="Armours" Name="Armours" Style="{StaticResource ITabItem}">
+                <TabItem Header="Armours" Name="Armours" Style="{StaticResource ITabItem}" MouseDoubleClick="QuickItemSelector">
                     <ListBox x:Name="LstArmours" ItemContainerStyle="{StaticResource IListboxItem}" Style="{StaticResource IListbox}" SelectionChanged="DisplayItemDetails"/>
                 </TabItem>
-                <TabItem Header="Amulets" Name="Amulets" Style="{StaticResource ITabItem}">
+                <TabItem Header="Amulets" Name="Amulets" Style="{StaticResource ITabItem}" MouseDoubleClick="QuickItemSelector">
                     <ListBox x:Name="LstAmulets" ItemContainerStyle="{StaticResource IListboxItem}" Style="{StaticResource IListbox}" SelectionChanged="DisplayItemDetails"/>
                 </TabItem>
                 <TabItem Header="Materials" Name="Materials" Style="{StaticResource ITabItem}">
