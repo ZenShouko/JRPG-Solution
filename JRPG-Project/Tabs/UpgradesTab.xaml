@@ -93,11 +93,11 @@
         </Grid>
         
         <!--Upgrade availability-->
-        <TextBlock Grid.Row="1" x:Name="TxtUpgradeStatus" FontSize="14" Text="Upgrade Available!" HorizontalAlignment="Center" VerticalAlignment="Center"
+        <TextBlock Grid.Row="1" x:Name="TxtUpgradeStatus" FontSize="14" Text="Can Upgrade for 10 orbs!" HorizontalAlignment="Center" VerticalAlignment="Center"
                    Foreground="White" FontWeight="Bold" Margin="4"/>
         <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Right" Margin="5 0">
-            <Image x:Name="ImgGold" Source="/Resources/Assets/Collectables/essence-bottle.png" Height="22" Margin="0 0 5 0"/>
-            <TextBlock x:Name="TxtBottles" Text="10" FontSize="16" Foreground="WhiteSmoke" VerticalAlignment="Center" Margin="0 0 5 0"/>
+            <!--<Image x:Name="ImgGold" Source="/Resources/Assets/Collectables/essence-bottle.png" Height="22" Margin="0 0 5 0"/>
+            <TextBlock x:Name="TxtBottles" Text="10" FontSize="16" Foreground="WhiteSmoke" VerticalAlignment="Center" Margin="0 0 5 0"/>-->
             <Image Source="/Resources/Assets/Collectables/essence-orb.png" Height="22" Margin="10 0 5 0"/>
             <TextBlock x:Name="TxtOrbs" Text="10" FontSize="16" Foreground="WhiteSmoke" VerticalAlignment="Center" Margin="0 0 5 0"/>
         </StackPanel>

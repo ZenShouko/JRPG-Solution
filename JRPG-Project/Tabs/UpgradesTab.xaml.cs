@@ -19,6 +19,8 @@ namespace JRPG_Project.Tabs
     {
         public UpgradesTab(BaseItem item)
         {
+            //TEST
+            Inventory.Materials["M2"] += 100;
             InitializeComponent();
             Item = item;
             PrepareGuiForUpgrade();
@@ -60,13 +62,13 @@ namespace JRPG_Project.Tabs
 
             //Fill dictionary with xp required per level
             if (Item is Weapon)
-                for (int i = LevelData.WeaponXPTable.Keys.FirstOrDefault(); i < LevelData.WeaponXPTable.Keys.LastOrDefault(); i++)
+                for (int i = LevelData.WeaponXPTable.Keys.FirstOrDefault(); i <= LevelData.WeaponXPTable.Keys.LastOrDefault(); i++)
                     XpPerLevel.Add(i, LevelData.WeaponXPTable[i].Item1);
             else if (Item is Armour)
-                for (int i = LevelData.ArmourXPTable.Keys.FirstOrDefault(); i < LevelData.ArmourXPTable.Keys.LastOrDefault(); i++)
+                for (int i = LevelData.ArmourXPTable.Keys.FirstOrDefault(); i <= LevelData.ArmourXPTable.Keys.LastOrDefault(); i++)
                     XpPerLevel.Add(i, LevelData.ArmourXPTable[i].Item1);
             else if (Item is Amulet)
-                for (int i = LevelData.AmuletXPTable.Keys.FirstOrDefault(); i < LevelData.AmuletXPTable.Keys.LastOrDefault(); i++)
+                for (int i = LevelData.AmuletXPTable.Keys.FirstOrDefault(); i <= LevelData.AmuletXPTable.Keys.LastOrDefault(); i++)
                     XpPerLevel.Add(i, LevelData.AmuletXPTable[i].Item1);
 
             //Set item image
@@ -85,7 +87,6 @@ namespace JRPG_Project.Tabs
             IsUpgradePossible();
 
             //Display essence mat
-            TxtBottles.Text = Inventory.Materials["M1"].ToString();
             TxtOrbs.Text = Inventory.Materials["M2"].ToString();
         }
 
@@ -222,51 +223,17 @@ namespace JRPG_Project.Tabs
 
         private void BtnUpgrade_Click(object sender, RoutedEventArgs e)
         {
-            int requiredXp = GetRequiredXp();
-            int orbs = 0;
-            int bottles = 0;
+            int requiredOrbs = GetRequiredOrbs(GetRequiredXp());
 
-            while (requiredXp > ItemData.ListMaterials.FirstOrDefault(x => x.ID == "M2").Stats.XP &&
-                Inventory.Materials["M2"] > 0)
-            {
-                orbs++;
-                requiredXp -= ItemData.ListMaterials.FirstOrDefault(x => x.ID == "M2").Stats.XP;
-            }
-
-            while (requiredXp > ItemData.ListMaterials.FirstOrDefault(x => x.ID == "M1").Stats.XP &&
-                               Inventory.Materials["M1"] > 0)
-            {
-                bottles++;
-                requiredXp -= ItemData.ListMaterials.FirstOrDefault(x => x.ID == "M1").Stats.XP;
-            }
-
-            //Checkup
-            if (requiredXp > 0)
-            {
-                //Use an extra bottle else an orb
-                if (Inventory.Materials["M1"] > 0)
-                {
-                    bottles++;
-                }
-                else if (Inventory.Materials["M2"] > 0)
-                {
-                    orbs++;
-                }
-                else
-                {
-                    MessageBox.Show("XP requirements not met");
-                    return;
-                }
-            }
+            if (Inventory.Materials["M2"] < requiredOrbs)
+                return;
 
             //Apply changes
-            int essenceXp = (orbs * ItemData.ListMaterials.FirstOrDefault(x => x.ID == "M2").Stats.XP) +
-                            (bottles * ItemData.ListMaterials.FirstOrDefault(x => x.ID == "M1").Stats.XP);
+            int essenceXp = requiredOrbs * ItemData.ListMaterials.FirstOrDefault(x => x.ID == "M2").Stats.XP;
             LevelData.AddXP(Item, essenceXp);
 
             //Remove materials
-            Inventory.Materials["M2"] -= orbs;
-            Inventory.Materials["M1"] -= bottles;
+            Inventory.Materials["M2"] -= requiredOrbs;
 
             //Recalculate value
             ItemData.SetValue(Item);
@@ -274,7 +241,6 @@ namespace JRPG_Project.Tabs
             //Update UI
             RefreshStats();
             IsUpgradePossible();
-            TxtBottles.Text = Inventory.Materials["M1"].ToString();
             TxtOrbs.Text = Inventory.Materials["M2"].ToString();
         }
 
@@ -282,24 +248,39 @@ namespace JRPG_Project.Tabs
 
         private void IsUpgradePossible()
         {
-            //Check if we have enough essence for an upgrade
-            int totalEssence = (Inventory.Materials["M1"] * ItemData.ListMaterials.FirstOrDefault(x => x.ID == "M1").Stats.XP)
-                + (Inventory.Materials["M2"] * ItemData.ListMaterials.FirstOrDefault(x => x.ID == "M2").Stats.XP);
-
-            if (totalEssence > XpPerLevel[Item.Level + 1])
+            //Is item max level?
+            if (IsMaxLevel())
             {
-                TxtUpgradeStatus.Text = "Upgrade Available";
+                TxtUpgradeStatus.Text = "Max level reached";
+                TxtUpgradeStatus.Foreground = Brushes.FloralWhite;
+                BtnUpgrade.IsEnabled = false;
+                BtnUpgrade.Background = Brushes.Gray;
+                return;
+            }
+
+            //Check if we have enough essence for an upgrade
+            int requiredOrbs = GetRequiredOrbs(GetRequiredXp());
+
+            if (requiredOrbs < Inventory.Materials["M2"])
+            {
+                TxtUpgradeStatus.Text = $"Upgrade Available for {GetRequiredOrbs(GetRequiredXp())} orbs!";
                 TxtUpgradeStatus.Foreground = Brushes.LimeGreen;
                 BtnUpgrade.IsEnabled = true;
                 BtnUpgrade.Background = Brushes.GhostWhite;
             }
             else
             {
-                TxtUpgradeStatus.Text = "Not enough essence";
+                TxtUpgradeStatus.Text = $"Need {GetRequiredOrbs(GetRequiredXp())} orbs to upgrade.";
                 TxtUpgradeStatus.Foreground = Brushes.Crimson;
                 BtnUpgrade.IsEnabled = false;
                 BtnUpgrade.Background = Brushes.Gray;
             }
+        }
+
+        private bool IsMaxLevel()
+        {
+            //Check if item is max level
+            return Item.Level == XpPerLevel.Keys.LastOrDefault();
         }
 
         private void RefreshStats()
@@ -357,7 +338,23 @@ namespace JRPG_Project.Tabs
 
         private int GetRequiredXp()
         {
+            //Check if key exists
+            if (!XpPerLevel.ContainsKey(Item.Level + 1))
+                return 0;
+
             return XpPerLevel[Item.Level + 1] - ItemStatObj.Stats.XP;
+        }
+
+        private int GetRequiredOrbs(int xp)
+        {
+            //Put xp into double to allow decimals in the calculation
+            double orbXp = ItemData.ListMaterials.FirstOrDefault(x => x.Name.Contains("Orb")).Stats.XP;
+            double requiredXp = xp;
+
+            //Calculate required orbs
+            double orbs = requiredXp / orbXp;
+            orbs = Math.Ceiling(orbs);
+            return (int)orbs;
         }
     }
 }
