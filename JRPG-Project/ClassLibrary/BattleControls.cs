@@ -11,27 +11,6 @@ namespace JRPG_Project.ClassLibrary
 {
     public static class BattleControls
     {
-        public static void StartBattle()
-        {
-            //Create battle
-            Battle battle = new Battle();
-
-            //MessageBox.Show("Battle started.");
-        }
-
-        public static void InitiateBattle(bool byPlayer, MapFoe foe)
-        {
-            //Did player initiate battle?
-            if (byPlayer)
-            {
-                //Yes, player initiated battle
-            }
-            else
-            {
-                //No, foe initiated battle
-            }
-
-            StartBattle();
-        }
+        
     }
 }

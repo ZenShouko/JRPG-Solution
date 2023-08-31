@@ -25,6 +25,12 @@ namespace JRPG_ClassLibrary.Entities
 
         public List<Character> Team { get; set; } = new List<Character>();
 
+        public List<MapFoe> FoeList { get; set; } = new List<MapFoe>();
+
+        public bool IsBattle { get; set; } = false; //Is there a battle going on?
+
+        public MapFoe BattlingWith { get; set; } //Which foe are we battling with?
+
         public Stage()
         {
 

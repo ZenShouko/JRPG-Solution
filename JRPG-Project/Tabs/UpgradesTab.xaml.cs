@@ -6,6 +6,7 @@ using JRPG_Project.ClassLibrary.Player;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -41,10 +42,15 @@ namespace JRPG_Project.Tabs
         Dictionary<string, Border> ScrollContainers = new Dictionary<string, Border>();
         Dictionary<string, TextBlock> ScrollTextblocks = new Dictionary<string, TextBlock>();
 
+        List<TextBlock> AniListTextblocks = new List<TextBlock>();
+
 
         #region Prep
         private void PrepareGuiForUpgrade()
         {
+            //Add all animated elements to a list
+            AddAllElementsToAniList();
+
             //Initialize ItemPreview
             if (Item is Weapon)
                 ItemPreview = new Weapon();
@@ -74,14 +80,15 @@ namespace JRPG_Project.Tabs
             //Set item image
             ItemImage.Source = Item.ItemImage.Source;
 
-            //Item name
+            //Item name and rarity
             TxtName.Text = Item.Name;
+            TxtRarity.Text = Item.Rarity.ToString();
 
             //Display Stats
             RefreshStats();
 
-            //Add materials to MaterialsPanel
-            LoadMaterials();
+            //Add scrolls to MaterialsPanel
+            LoadScrolls();
 
             //Check if upgrade is possible
             IsUpgradePossible();
@@ -90,20 +97,23 @@ namespace JRPG_Project.Tabs
             TxtOrbs.Text = Inventory.Materials["M2"].ToString();
         }
 
-        private void LoadMaterials()
+        private void LoadScrolls()
         {
             //Itterate through every distinct material
             foreach (var item in Inventory.Materials)
             {
                 if (item.Value != 0 && item.Key != "M1" && item.Key != "M2")
                 {
-                    ClassLibrary.Items.Material mat = ItemData.ListMaterials.Find(x => x.ID == item.Key);
-                    AddMaterialToContainer(mat);
+                    ClassLibrary.Items.Material scroll = ItemData.ListMaterials.Find(x => x.ID == item.Key);
+                    AddScrollsToContainer(scroll);
                 }
             }
+
+            //If empty, display message
+            HandleEmptyScrollContainer();
         }
 
-        private void AddMaterialToContainer(ClassLibrary.Items.Material mat)
+        private void AddScrollsToContainer(ClassLibrary.Items.Material scroll)
         {
             //#Border element
             Border border = new Border();
@@ -127,7 +137,7 @@ namespace JRPG_Project.Tabs
 
             //#Image element
             Image image = new Image();
-            image.Source = mat.ItemImage.Source;
+            image.Source = scroll.ItemImage.Source;
             image.Stretch = Stretch.Uniform;
             image.Height = 32;
             image.Width = 32;
@@ -135,7 +145,7 @@ namespace JRPG_Project.Tabs
 
             //#Name element
             TextBlock textBlock = new TextBlock();
-            textBlock.Text = mat.Name;
+            textBlock.Text = scroll.Name;
             textBlock.FontSize = 16;
             textBlock.Foreground = Brushes.GhostWhite;
             textBlock.VerticalAlignment = VerticalAlignment.Center;
@@ -150,13 +160,13 @@ namespace JRPG_Project.Tabs
             applyButton.VerticalAlignment = VerticalAlignment.Center;
             applyButton.HorizontalAlignment = HorizontalAlignment.Right;
             applyButton.Margin = new Thickness(5, 0, 5, 0);
-            applyButton.Click += (s, e) => ApplyScroll(mat);
+            applyButton.Click += (s, e) => ApplyScroll(scroll);
             applyButton.Style = (Style)FindResource("menu-button");
             Grid.SetColumn(applyButton, 2);
 
             //#Total Quantity
             TextBlock quantityTextBlock = new TextBlock();
-            quantityTextBlock.Text = $"x{Inventory.Materials[mat.ID]} left";
+            quantityTextBlock.Text = $"x{Inventory.Materials[scroll.ID]} left";
             quantityTextBlock.FontSize = 14;
             quantityTextBlock.Foreground = Brushes.WhiteSmoke;
             quantityTextBlock.VerticalAlignment = VerticalAlignment.Center;
@@ -175,8 +185,25 @@ namespace JRPG_Project.Tabs
             MaterialsContainer.Children.Add(border);
 
             //Add to dictionaries
-            ScrollContainers.Add(mat.ID, border);
-            ScrollTextblocks.Add(mat.ID, quantityTextBlock);
+            ScrollContainers.Add(scroll.ID, border);
+            ScrollTextblocks.Add(scroll.ID, quantityTextBlock);
+        }
+
+        private void AddAllElementsToAniList()
+        {
+            AniListTextblocks.Add(TxtHpPreview);
+            AniListTextblocks.Add(TxtDefPreview);
+            AniListTextblocks.Add(TxtDmgPreview);
+            AniListTextblocks.Add(TxtSpdPreview);
+            AniListTextblocks.Add(TxtStaPreview);
+            AniListTextblocks.Add(TxtStrPreview);
+            AniListTextblocks.Add(TxtCrcPreview);
+            AniListTextblocks.Add(TxtCrdPreview);
+            AniListTextblocks.Add(TxtLevelPreview);
+            AniListTextblocks.Add(TxtValuePreview);
+            AniListTextblocks.Add(TxtCurrentXp);
+            AniListTextblocks.Add(TxtMaxXp);
+            AniListTextblocks.Add(TxtOrbs);
         }
 
         #endregion
@@ -218,13 +245,18 @@ namespace JRPG_Project.Tabs
 
         private void ReturnButton(object sender, RoutedEventArgs e)
         {
-            Interaction.OpenTab("MainTab");
+            Interaction.ReturnToPreviousTab();
         }
 
         private void BtnUpgrade_Click(object sender, RoutedEventArgs e)
         {
+            //Animate upgrade
+            AnimateTexts();
+
+            //Get required orbs
             int requiredOrbs = GetRequiredOrbs(GetRequiredXp());
 
+            //[!] Check if we have enough orbs
             if (Inventory.Materials["M2"] < requiredOrbs)
                 return;
 
@@ -242,6 +274,24 @@ namespace JRPG_Project.Tabs
             RefreshStats();
             IsUpgradePossible();
             TxtOrbs.Text = Inventory.Materials["M2"].ToString();
+
+            //Is scroll container empty?
+            HandleEmptyScrollContainer();
+        }
+
+        private void HandleEmptyScrollContainer()
+        {
+            //If there are no scrolls, add a message
+            if (MaterialsContainer.Children.Count < 2)
+            {
+                TextBlock textBlock = new TextBlock();
+                textBlock.Text = "You don't have any scrolls 😵‍💫";
+                textBlock.FontSize = 16;
+                textBlock.Foreground = Brushes.GhostWhite;
+                textBlock.HorizontalAlignment = HorizontalAlignment.Center;
+
+                MaterialsContainer.Children.Add(textBlock);
+            }
         }
 
         #endregion
@@ -263,14 +313,16 @@ namespace JRPG_Project.Tabs
 
             if (requiredOrbs < Inventory.Materials["M2"])
             {
-                TxtUpgradeStatus.Text = $"Upgrade Available for {GetRequiredOrbs(GetRequiredXp())} orbs!";
+                TxtUpgradeStatus.Text = requiredOrbs > 1 ? $"Upgrade Available for {GetRequiredOrbs(GetRequiredXp())} orbs!" :
+                    $"Upgrade Available for {GetRequiredOrbs(GetRequiredXp())} orb!";
                 TxtUpgradeStatus.Foreground = Brushes.LimeGreen;
                 BtnUpgrade.IsEnabled = true;
                 BtnUpgrade.Background = Brushes.GhostWhite;
             }
             else
             {
-                TxtUpgradeStatus.Text = $"Need {GetRequiredOrbs(GetRequiredXp())} orbs to upgrade.";
+                TxtUpgradeStatus.Text = requiredOrbs > 1 ? $"Need {GetRequiredOrbs(GetRequiredXp())} orbs to upgrade." :
+                    $"Need {GetRequiredOrbs(GetRequiredXp())} orb to upgrade.";
                 TxtUpgradeStatus.Foreground = Brushes.Crimson;
                 BtnUpgrade.IsEnabled = false;
                 BtnUpgrade.Background = Brushes.Gray;
@@ -355,6 +407,43 @@ namespace JRPG_Project.Tabs
             double orbs = requiredXp / orbXp;
             orbs = Math.Ceiling(orbs);
             return (int)orbs;
+        }
+
+        private async void AnimateTexts()
+        {
+            //#Make a popping effect for all textblocks
+
+            //[1] Make all textblocks bigger
+            int ticks = 0;
+
+            while (ticks < 2)
+            {
+                foreach (TextBlock element in AniListTextblocks)
+                {
+                    element.FontSize += 2;
+                }
+
+                ItemImage.Height += 8;
+
+                ticks++;
+                await Task.Delay(10);
+            }
+
+            //[2] Make all textblocks smaller
+            ticks = 0;
+
+            while (ticks < 8)
+            {
+                foreach (TextBlock element in AniListTextblocks)
+                {
+                    element.FontSize -= 0.5;
+                }
+
+                ItemImage.Height -= 2;
+
+                ticks++;
+                await Task.Delay(20);
+            }
         }
     }
 }

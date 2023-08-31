@@ -149,6 +149,9 @@
     <Compile Include="Tabs\BattleTab.xaml.cs">
       <DependentUpon>BattleTab.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Tabs\BattleTransitionTab.xaml.cs">
+      <DependentUpon>BattleTransitionTab.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Tabs\InventoryTab.xaml.cs">
       <DependentUpon>InventoryTab.xaml</DependentUpon>
     </Compile>
@@ -202,6 +205,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Tabs\BattleTab.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Tabs\BattleTransitionTab.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

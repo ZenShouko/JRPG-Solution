@@ -20,6 +20,7 @@ namespace JRPG_Project.Tabs
     /// </summary>
     public partial class DispatchTab : UserControl
     {
+        bool AddedKeydownEvent = false;
         int loadTimeMS = 0;
         public DispatchTab(string stageName)
         {
@@ -50,11 +51,21 @@ namespace JRPG_Project.Tabs
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            Window.GetWindow(this).KeyDown += DispatchTab_KeyDown;
+            if (!AddedKeydownEvent)
+            {
+                Window.GetWindow(this).KeyDown += DispatchTab_KeyDown;
+                AddedKeydownEvent = true;
+            }
         }
 
         private void DispatchTab_KeyDown(object sender, KeyEventArgs e)
         {
+            //Return if battle is active
+            if (Stages.CurrentStage.IsBattle)
+            {
+                return;
+            }
+
             //Open main menu?
             if (e.Key == Key.Escape)
             {

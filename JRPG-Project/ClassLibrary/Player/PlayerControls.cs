@@ -46,34 +46,11 @@ namespace JRPG_ClassLibrary
             await StartPlayerMovementAsync(e.ToString().ToUpper());
         }
 
-        public static MapPlayer GetPlayer()
-        {
-            ////Check if there is a player element
-            //if (Stages.CurrentStage.MobList.Contains(Stages.CurrentStage.MobList.Find(mob => mob.Name == "PLAYER")))
-            //{
-            //    return Stages.CurrentStage.MobList.Find(mob => mob.Name == "PLAYER");
-            //}
-            //else
-            //{
-            //    return null;
-            //}
-            throw new NotImplementedException();
-        }
-
         public static async Task StartPlayerMovementAsync(string direction)
         {
             RotatePlayer(direction);
             ////Is player already moving? Or is it the foe turn?
             if (isPlayerMoving /*|| FoeControls.FoeTurn*/) { return; }
-
-            ////Get player element and image
-            //MapPlayer player = GetPlayer();
-
-            ////Cancel if player is not available
-            //if (player is null) { return; }
-
-            ////Rotate player
-            //RotatePlayer(direction, player.Icon);
 
             ////Calculate the target tile
             Stages.CurrentStage.Player.Position.DirectionX = 0;
@@ -124,7 +101,7 @@ namespace JRPG_ClassLibrary
             }
 
             ////(Start foe turn)
-            //FoeControls.MoveFoes();
+            FoeControls.MoveFoes();
         }
 
         private static void RotatePlayer(string direction)
@@ -232,6 +209,8 @@ namespace JRPG_ClassLibrary
             //Grid.SetRow(Player.Icon, tile.Position.Y);
             Player.Position.Y = tile.Position.Y;
 
+            //Battle?
+            Stages.BattleTrigger();
             ////Is there a foe on the tile?
             //MapFoe foe = Stages.CurrentStage.FoeList.Find(f => f.X == tile.X && f.Y == tile.Y);
             //if (foe != null)

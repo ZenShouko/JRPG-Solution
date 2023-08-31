@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:JRPG_Project.Tabs"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="800">
-    <Grid x:Name="MainGrid">
+    <Grid x:Name="MainGrid" Opacity="0.1">
         <Grid.Background>
             <ImageBrush ImageSource="/Resources/Assets/GUI/pixel-rain1.jpg" Stretch="UniformToFill" Opacity="0.8"/>
         </Grid.Background>

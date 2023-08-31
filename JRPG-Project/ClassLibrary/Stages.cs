@@ -1,7 +1,9 @@
 ﻿using JRPG_ClassLibrary.Entities;
+using JRPG_Project.ClassLibrary.Data;
 using JRPG_Project.ClassLibrary.Entities;
 using JRPG_Project.ClassLibrary.Player;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
@@ -9,6 +11,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace JRPG_ClassLibrary
 {
@@ -39,10 +42,8 @@ namespace JRPG_ClassLibrary
                 tile.TileElement.CornerRadius = new CornerRadius(2);
             }
 
-            //InitializeStageProperties(json);
-
-            //[2]Build stage
-            //BuildStage();
+            //Add foes to foelist
+            InitializeFoes();
 
             //[4]Place lootboxes
             PlaceLootboxes();
@@ -227,6 +228,22 @@ namespace JRPG_ClassLibrary
                         Grid.SetRow(lootbox.Icon, y);
                         CurrentStage.VisiblePlatform.Children.Add(lootbox.Icon);
                     }
+
+                    //Copy foe to visible platform
+                    if (tile.Foe != null)
+                    {
+                        //Create foe
+                        MapFoe foe = tile.Foe;
+
+                        //Create a new instance of icon
+                        Image icon = new Image();
+                        icon.Source = foe.Icon.Source;
+
+                        //Place foe on tile
+                        Grid.SetColumn(icon, x);
+                        Grid.SetRow(icon, y);
+                        CurrentStage.VisiblePlatform.Children.Add(icon);
+                    }
                 }
             }
 
@@ -247,11 +264,45 @@ namespace JRPG_ClassLibrary
             CurrentStage.VisiblePlatform.Children.Add(tileElement);
         }
 
+        private static void InitializeFoes()
+        {
+            foreach (Tile tile in CurrentStage.TileList)
+            {
+                if (tile.Foe != null)
+                {
+                    InitializeFoeImages(tile.Foe); //Images are not saved in stagedata
+                    CurrentStage.FoeList.Add(tile.Foe);
+                }
+            }
+        }
+
+        private static void InitializeFoeImages(MapFoe mf)
+        {
+            foreach (Character foe in mf.FoeTeam)
+            {
+                foe.CharImage = new Image();
+                foe.CharImage.Source = FoeData.FoeList.FirstOrDefault(x => x.ID == foe.ID).CharImage.Source;
+            }
+        }
+
         private static void LoadTeam()
         {
             foreach (Character character in Inventory.Team)
             {
                 CurrentStage.Team.Add(character);
+            }
+        }
+
+        public static void BattleTrigger()
+        {
+            //Check if player is on a tile with foe
+            Tile playerTile = CurrentStage.TileList.Find(t => t.Player != null);
+            if (playerTile.Foe != null)
+            {
+                //Start battle
+                CurrentStage.IsBattle = true;
+                CurrentStage.BattlingWith = playerTile.Foe;
+                Interaction.OpenBattletab(playerTile.Foe);
             }
         }
     }

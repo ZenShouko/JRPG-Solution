@@ -23,6 +23,9 @@ namespace JRPG_Project.ClassLibrary.Universal
             InitializeComponent();
             PrepareGUI();
             DisplayBlank();
+
+            //[?] Items get loaded when sort combobox' selection changes. Hence why we don't need to call LoadItems() here.
+
             //LoadItems(SortOptions[CboxSort.SelectedIndex]);
             //Load all items
             //LoadAllitems();
@@ -276,7 +279,12 @@ namespace JRPG_Project.ClassLibrary.Universal
             }
         }
 
-        private void DisplayItemDetails(object sender, SelectionChangedEventArgs e)
+        private void Listbox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            SelectItem(sender);
+        }
+
+        private void SelectItem(object sender)
         {
             //get sender
             ListBox listbox = (ListBox)sender;
@@ -471,7 +479,7 @@ namespace JRPG_Project.ClassLibrary.Universal
                 matCount += count;
             }
 
-            //Get selected item as amulet
+            //Get selected item as amulet //What did I mean by this??
             TxtItemName.Text = "My Inventory";
             TxtItemDescription.Text = $"You've got: {Inventory.Weapons.Count} weapons, {Inventory.Armours.Count} armours, {Inventory.Amulets.Count} amulets, {Inventory.Collectables.Count} collectables and {matCount} materials.";
             Txtlevel.Text = "1";
@@ -650,67 +658,6 @@ namespace JRPG_Project.ClassLibrary.Universal
             Interaction.OpenUpgradeTab(item);
         }
 
-        private void Collectables_MouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            if (!BulkExtract)
-                return;
-
-            //Ask to select all common items
-            if (MessageBox.Show("Select all common items?", "Select all?", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-            {
-                foreach (ListBoxItem item in LstCollectables.Items)
-                {
-                    Collectable col = Inventory.Collectables.FirstOrDefault(i => i.UniqueID == (string)item.Tag);
-                    if (col.Rarity == "COMMON")
-                    {
-                        item.IsSelected = true;
-                    }
-                }
-            }
-            else { return; }
-
-            //Ask to select all special items
-            if (MessageBox.Show("Select all special items?", "Select all?", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-            {
-                foreach (ListBoxItem item in LstCollectables.Items)
-                {
-                    Collectable col = Inventory.Collectables.FirstOrDefault(i => i.UniqueID == (string)item.Tag);
-                    if (col.Rarity == "SPECIAL")
-                    {
-                        item.IsSelected = true;
-                    }
-                }
-            }
-            else { return; }
-
-            //Ask to select all cursed items
-            if (MessageBox.Show("Select all cursed items?", "Select all?", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-            {
-                foreach (ListBoxItem item in LstCollectables.Items)
-                {
-                    Collectable col = Inventory.Collectables.FirstOrDefault(i => i.UniqueID == (string)item.Tag);
-                    if (col.Rarity == "CURSED")
-                    {
-                        item.IsSelected = true;
-                    }
-                }
-            }
-            else { return; }
-
-            //Ask to select all legendary items
-            if (MessageBox.Show("Select all legendary items?", "Select all?", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-            {
-                foreach (ListBoxItem item in LstCollectables.Items)
-                {
-                    Collectable col = Inventory.Collectables.FirstOrDefault(i => i.UniqueID == (string)item.Tag);
-                    if (col.Rarity == "LEGENDARY")
-                    {
-                        item.IsSelected = true;
-                    }
-                }
-            }
-            else { return; }
-        }
 
         Dictionary<string, (bool, bool, bool, bool, bool)> BulkPreference = new Dictionary<string, (bool, bool, bool, bool, bool)>() 
         {
@@ -817,6 +764,56 @@ namespace JRPG_Project.ClassLibrary.Universal
                 return true;
             else
                 return false;
+        }
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            //Did we come back from upgrade tab?
+            if (string.IsNullOrEmpty(SelectedItemUniqueID))
+                return;
+
+            //Refresh listboxes
+            LoadItems(SortOptions[CboxSort.SelectedIndex]);
+            LoadMaterials();
+
+            //Select item
+            TabItem targetTab = new TabItem();
+            if (SelectedItemUniqueID.Contains("weapon"))
+            {
+                //open weapons tab
+                targetTab = tabControl.Items.Cast<TabItem>().FirstOrDefault(i => i.Name == "Weapons");
+                tabControl.SelectedItem = targetTab;
+            }
+            else if (SelectedItemUniqueID.Contains("armour"))
+            {
+                targetTab = tabControl.Items.Cast<TabItem>().FirstOrDefault(i => i.Name == "Armours");
+                tabControl.SelectedItem = targetTab;
+            }
+            else if (SelectedItemUniqueID.Contains("amulet"))
+            {
+                targetTab = tabControl.Items.Cast<TabItem>().FirstOrDefault(i => i.Name == "Amulets");
+                tabControl.SelectedItem = targetTab;
+            }
+            else
+            {
+                return;
+            }
+
+            //Get listbox from target tab
+            ListBox targetListbox = (ListBox)targetTab.Content;
+
+            //Select item, listboxitem.tag == item.uniqueid
+            foreach (ListBoxItem item in targetListbox.Items)
+            {
+                if ((string)item.Tag == SelectedItemUniqueID)
+                {
+                    item.IsSelected = true;
+                    break;
+                }
+            }
+
+            //Display item details
+            SelectItem(targetListbox);
         }
     }
 }

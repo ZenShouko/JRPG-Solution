@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:JRPG_Project.ClassLibrary.Universal"
-             mc:Ignorable="d" 
+             mc:Ignorable="d" Loaded="UserControl_Loaded"
              d:DesignHeight="600" d:DesignWidth="800">
     <Grid Background="#3d405b">
         <Grid.RowDefinitions>
@@ -32,19 +32,19 @@
             <!--Left side (Inventory Overview)-->
             <TabControl x:Name="tabControl" Margin="5" Style="{StaticResource ITabControl}">
                 <TabItem Header="Collectables" Name="Collectables" Style="{StaticResource ITabItem}" MouseDoubleClick="QuickItemSelector">
-                    <ListBox x:Name="LstCollectables" ItemContainerStyle="{StaticResource IListboxItem}" Style="{StaticResource IListbox}" SelectionChanged="DisplayItemDetails"/>
+                    <ListBox x:Name="LstCollectables" ItemContainerStyle="{StaticResource IListboxItem}" Style="{StaticResource IListbox}" SelectionChanged="Listbox_SelectionChanged"/>
                 </TabItem>
                 <TabItem Header="Weapons" Name="Weapons" Style="{StaticResource ITabItem}" MouseDoubleClick="QuickItemSelector">
-                    <ListBox x:Name="LstWeapons" ItemContainerStyle="{StaticResource IListboxItem}" Style="{StaticResource IListbox}" SelectionChanged="DisplayItemDetails"/>
+                    <ListBox x:Name="LstWeapons" ItemContainerStyle="{StaticResource IListboxItem}" Style="{StaticResource IListbox}" SelectionChanged="Listbox_SelectionChanged"/>
                 </TabItem>
                 <TabItem Header="Armours" Name="Armours" Style="{StaticResource ITabItem}" MouseDoubleClick="QuickItemSelector">
-                    <ListBox x:Name="LstArmours" ItemContainerStyle="{StaticResource IListboxItem}" Style="{StaticResource IListbox}" SelectionChanged="DisplayItemDetails"/>
+                    <ListBox x:Name="LstArmours" ItemContainerStyle="{StaticResource IListboxItem}" Style="{StaticResource IListbox}" SelectionChanged="Listbox_SelectionChanged"/>
                 </TabItem>
                 <TabItem Header="Amulets" Name="Amulets" Style="{StaticResource ITabItem}" MouseDoubleClick="QuickItemSelector">
-                    <ListBox x:Name="LstAmulets" ItemContainerStyle="{StaticResource IListboxItem}" Style="{StaticResource IListbox}" SelectionChanged="DisplayItemDetails"/>
+                    <ListBox x:Name="LstAmulets" ItemContainerStyle="{StaticResource IListboxItem}" Style="{StaticResource IListbox}" SelectionChanged="Listbox_SelectionChanged"/>
                 </TabItem>
                 <TabItem Header="Materials" Name="Materials" Style="{StaticResource ITabItem}">
-                    <ListBox x:Name="LstMaterials" ItemContainerStyle="{StaticResource IListboxItem}" Style="{StaticResource IListbox}" SelectionChanged="DisplayItemDetails"/>
+                    <ListBox x:Name="LstMaterials" ItemContainerStyle="{StaticResource IListboxItem}" Style="{StaticResource IListbox}" SelectionChanged="Listbox_SelectionChanged"/>
                 </TabItem>
             </TabControl>
             

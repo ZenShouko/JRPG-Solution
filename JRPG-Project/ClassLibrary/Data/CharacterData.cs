@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 
@@ -32,6 +33,21 @@ namespace JRPG_Project.ClassLibrary.Data
         {
             Image img = new Image();
             img.Source = new BitmapImage(new Uri(@"../../Resources/Assets/Characters/" + imageName, UriKind.Relative));
+            return img;
+        }
+
+        public static Image GetCharacterImage(Character c)
+        {
+            Image img = new Image();
+            if (c.ID.Contains("F")) //Foe
+            {
+                img.Source = FoeData.FoeList.FirstOrDefault(x => x.ID == c.ID).CharImage.Source;
+            }
+            else
+            {
+                img.Source = CharacterData.CharacterList.FirstOrDefault(x => x.ID == c.ID).CharImage.Source;
+            }
+
             return img;
         }
 

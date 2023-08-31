@@ -25,13 +25,14 @@ namespace JRPG_Project.Tabs
             InitializeBattle();
         }
         //Foe teams
-        List<Character> FoeTeam = new List<Character>();
+        public List<Character> FoeTeam = new List<Character>();
         List<Character> PlayerTeam = new List<Character>();
         //Dictionary<Character, Border> CharacterBorder = new Dictionary<Character, Border>();
         Dictionary<Character, Canvas> CharacterCanvas = new Dictionary<Character, Canvas>();
         int speedToggle = 1; //Higher means faster
         List<string> BattleLog = new List<string>();
         bool PauseBattle = false; //Allows pausing the battle
+        bool playerWin = false; //Determines if the player won the battle
 
         #region Prep
         private void SetRandomBackground()
@@ -83,6 +84,9 @@ namespace JRPG_Project.Tabs
                 //CharacterBorder.Add(PlayerTeam[i], border);
                 CharacterCanvas.Add(PlayerTeam[i], canvas);
             }
+
+            //Fade Main Grid in
+            FadeMainGridIn();
 
             //TEST, make player really strongk
             //PlayerTeam[0].Stats.DMG = 100;
@@ -191,22 +195,44 @@ namespace JRPG_Project.Tabs
             return canvas;
         }
 
-        private void FinishBattle(int xp, int coins)
+        private void FinishBattle()
         {
-            //Give every character xp
-            foreach (Character c in Inventory.Team)
+            if (playerWin)
             {
-                LevelData.AddXP(c, xp);
+                //Get Xp and coins
+                (int xp, int coins) = CalculateXpCoinRewards();
+
+                //Give every character xp
+                foreach (Character c in Inventory.Team)
+                {
+                    LevelData.AddXP(c, xp);
+                }
+
+                //Give coins
+                Inventory.Coins += coins;
+
+                //Anmimate reward
+                AnimateRewards(xp, coins);
+
+                //Log
+                BattleLog.Add($"Battle finished! {xp} XP and {coins} coins earned!");
             }
+            else
+            {
+                //Lose (10% + 10) of coins
+                int coinsLost = (int)Math.Ceiling((Inventory.Coins + 10) * 0.1);
+                Inventory.Coins -= coinsLost;
 
-            //Give coins
-            Inventory.Coins += coins;
+                //Safety check
+                if (Inventory.Coins < 0)
+                    Inventory.Coins = 0;
 
-            //Anmimate reward
-            AnimateRewards(xp, coins);
+                //Animate loss
+                AnimateRewards(0, -coinsLost);
 
-            //Log
-            BattleLog.Add($"Battle finished! {xp} XP and {coins} coins earned!");
+                //Log
+                BattleLog.Add($"Battle finished! You lost {coinsLost} coins!");
+            }
         }
 
         #endregion
@@ -303,12 +329,11 @@ namespace JRPG_Project.Tabs
             }
 
             //Battle is over
+            //Check if player won
             if (CharHpDef.Any(x => x.Key.ID.Contains("CH") && x.Value.Item1 > 0))
-            {
-                //player won, hand out rewards
-                (int xp, int coins) = CalculateXpCoinRewards();
-                FinishBattle(xp, coins);
-            }
+                playerWin = true;
+
+            FinishBattle();
         }
 
         private void CreateQueue()
@@ -839,6 +864,16 @@ namespace JRPG_Project.Tabs
 
         #region Animations
 
+        private async void FadeMainGridIn()
+        {
+            //Fade in main grid
+            while (MainGrid.Opacity < 1)
+            {
+                MainGrid.Opacity += 0.01;
+                await Task.Delay(12);
+            }
+        }
+
         private async void AnimateAttack(Character attacker)
         {
             //Vars
@@ -1114,7 +1149,7 @@ namespace JRPG_Project.Tabs
         private void BtnFinish_Click(object sender, RoutedEventArgs e)
         {
             //Return to previous tab
-            Interaction.CloseBattleTab();
+            Interaction.CloseBattleTab(playerWin);
         }
 
         private void BtnSpeedToggle_Click(object sender, RoutedEventArgs e)

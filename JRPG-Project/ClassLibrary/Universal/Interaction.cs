@@ -11,6 +11,8 @@ using JRPG_Project.ClassLibrary;
 using System.Collections.Generic;
 using JRPG_Project.ClassLibrary.Entities;
 using JRPG_ClassLibrary.Entities;
+using System.Threading.Tasks;
+using System.Linq;
 
 namespace JRPG_ClassLibrary
 {
@@ -101,16 +103,66 @@ namespace JRPG_ClassLibrary
 
         public static void OpenUpgradeTab(BaseItem Item)
         {
+            //Save current tab
+            previousTab = (UserControl)Grid.Children[0];
+
             UpgradesTab upgradeTab = new UpgradesTab(Item);
             Grid.Children.Clear();
             Grid.Children.Add(upgradeTab);
         }
 
-        public static void CloseBattleTab()
+        public static void ReturnToPreviousTab()
         {
-            //Clear grid and add previous tab
             Grid.Children.Clear();
             Grid.Children.Add(previousTab);
+            previousTab = null;
+        }
+
+        public async static void OpenBattletab(MapFoe mapFoe)
+        {
+            BattleTransitionTab battleTransitionTab = new BattleTransitionTab();
+            Grid.Children.Add(battleTransitionTab);
+
+            await Task.Delay(3000);
+
+            //remove transition tab
+            Grid.Children.Remove(battleTransitionTab);
+            
+            //Get current tab in Grid and save it
+            previousTab = (UserControl)Grid.Children[0];
+
+            BattleTab battleTab = new BattleTab(mapFoe.FoeTeam);
+            Grid.Children.Clear();
+            Grid.Children.Add(battleTab);
+        }
+
+        public static void CloseBattleTab(bool win)
+        {
+            Grid.Children.Clear();
+
+            if (win)
+            {
+                //Remove mapfoe from tile
+                Stages.CurrentStage.TileList.Find(x => x.Foe == Stages.CurrentStage.BattlingWith).Foe = null;
+
+                //Remove mapfoe from platform
+                Stages.CurrentStage.FoeList.Remove(Stages.CurrentStage.BattlingWith);
+
+                //Refresh platform
+                Stages.UpdateVisiblePlatform();
+
+                //Let dispatchtab know that the battle is over
+                Stages.CurrentStage.IsBattle = false;
+                Stages.CurrentStage.BattlingWith = null;
+
+                //Add previous tab
+                Grid.Children.Add(previousTab);
+            }
+            else
+            {
+                //Return back to main tab
+                OpenTab("MainTab");
+            }
         }
 
         /// <summary>

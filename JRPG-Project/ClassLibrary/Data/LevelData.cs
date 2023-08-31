@@ -114,6 +114,7 @@ namespace JRPG_Project.ClassLibrary.Data
 
 
         #region Add XP
+
         public static void AddXP(Character character, int xp)
         {
             if (character.Level == CharacterXPTable.Keys.LastOrDefault())
@@ -121,7 +122,7 @@ namespace JRPG_Project.ClassLibrary.Data
 
             character.Stats.XP += xp;
 
-            while (character.Level < CharacterXPTable.Keys.LastOrDefault() && character.Stats.XP > CharacterXPTable[character.Level + 1].Item1)
+            while (character.Level < CharacterXPTable.Keys.LastOrDefault() && character.Stats.XP >= CharacterXPTable[character.Level + 1].Item1)
             {
                 character.LevelUp();
             }
@@ -136,7 +137,7 @@ namespace JRPG_Project.ClassLibrary.Data
 
                 wpn.Stats.XP += xp;
 
-                while (wpn.Level < WeaponXPTable.Keys.LastOrDefault() && wpn.Stats.XP > WeaponXPTable[wpn.Level + 1].Item1)
+                while (wpn.Level < WeaponXPTable.Keys.LastOrDefault() && wpn.Stats.XP >= WeaponXPTable[wpn.Level + 1].Item1)
                 {
                     wpn.LevelUp(wpn);
                 }
@@ -147,7 +148,7 @@ namespace JRPG_Project.ClassLibrary.Data
                     return;
                 arm.Stats.XP += xp;
 
-                while (arm.Level < ArmourXPTable.Keys.LastOrDefault() && arm.Stats.XP > ArmourXPTable[arm.Level + 1].Item1)
+                while (arm.Level < ArmourXPTable.Keys.LastOrDefault() && arm.Stats.XP >= ArmourXPTable[arm.Level + 1].Item1)
                 {
                     arm.LevelUp(arm);
                 }
@@ -158,7 +159,7 @@ namespace JRPG_Project.ClassLibrary.Data
                     return;
                 amu.Stats.XP += xp;
 
-                while (amu.Level < AmuletXPTable.Keys.LastOrDefault() && amu.Stats.XP > AmuletXPTable[amu.Level + 1].Item1)
+                while (amu.Level < AmuletXPTable.Keys.LastOrDefault() && amu.Stats.XP >= AmuletXPTable[amu.Level + 1].Item1)
                 {
                     amu.LevelUp(amu);
                 }

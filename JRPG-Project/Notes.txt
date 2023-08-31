@@ -1,14 +1,19 @@
 ﻿Hi and welcome to the general App Notes!
-[Last updated: 24/08/2023]
+[Last updated: 31/08/2023]
 
 #Known Issues
 >-------------
+- THE WHOLE FOE INCLUSION ON THE PLATFORMS CAUSED LOTS OF BUGS AAAAA
+	The load button on the platform designer is also buggy as hell AAAAA
+	-> break time
+(RIP)
+
 - When upgrading, it can use a bit too much essence materials, leaving you in the negatives. 
 	This tab is incredibly buggy.
-(Need investigation --)
+(Need investigation --Fixed)
 
 - Upgrading items to max level causes the game to crash.
-(Need investigation --)
+(Need investigation --Fixed)
 
 - Deducting XP doesn't work properly on the upgrades tab.
 (Need investigation --Removed)
@@ -39,8 +44,9 @@ Also, it favors collectables a bit too much.
 .
 #Upcoming Features
 >------------------
+[Pending] Foes on the platforms
 [Done] Battles!!
-[Fixing] Being able to upgrade items
+[Done] Being able to upgrade items
 [Done] Being able to equip items to characters
 [Done] Being able to "sell"/destroy items
 [Done] Being able to view the team's characters and items

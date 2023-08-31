@@ -9,7 +9,7 @@
     <Grid Background="#272829">
         <Grid.RowDefinitions>
             <RowDefinition Height="225"/>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="40"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="35"/>
         </Grid.RowDefinitions>
@@ -26,8 +26,15 @@
             
             <!--Upgrade Info-->
             <StackPanel Grid.Column="1" Margin="6" VerticalAlignment="Center">
+                <StackPanel.Background>
+                    <SolidColorBrush Color="LightSeaGreen" Opacity="0.03"/>
+                </StackPanel.Background>
                 <!--Stats Preview-->
-                <TextBlock x:Name="TxtName" Text="Item name" FontSize="24" Margin="2 0 0 5"/>
+                <DockPanel Margin="2 0 0 8">
+                    <TextBlock x:Name="TxtRarity" DockPanel.Dock="Right" Text="COMMON" FontSize="18" VerticalAlignment="Center"
+                               Background="#272829" Foreground="WhiteSmoke" Padding="8 4"/>
+                    <TextBlock x:Name="TxtName" Text="Item name" FontSize="28" FontWeight="Bold"/>
+                </DockPanel>
                 <Border Background="WhiteSmoke" BorderBrush="Black" BorderThickness="1" CornerRadius="2" HorizontalAlignment="Center">
                     <StackPanel>
                         <WrapPanel HorizontalAlignment="Center" Margin="0 5">
@@ -93,7 +100,7 @@
         </Grid>
         
         <!--Upgrade availability-->
-        <TextBlock Grid.Row="1" x:Name="TxtUpgradeStatus" FontSize="14" Text="Can Upgrade for 10 orbs!" HorizontalAlignment="Center" VerticalAlignment="Center"
+        <TextBlock Grid.Row="1" x:Name="TxtUpgradeStatus" FontSize="20" Text="Can Upgrade for 10 orbs!" HorizontalAlignment="Center" VerticalAlignment="Center"
                    Foreground="White" FontWeight="Bold" Margin="4"/>
         <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Right" Margin="5 0">
             <!--<Image x:Name="ImgGold" Source="/Resources/Assets/Collectables/essence-bottle.png" Height="22" Margin="0 0 5 0"/>
