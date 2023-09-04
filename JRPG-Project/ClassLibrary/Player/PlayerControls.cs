@@ -16,10 +16,10 @@ namespace JRPG_ClassLibrary
     public static class PlayerControls
     {
         public static Grid MainGrid { get; set; }
-        private static int playerSpeed = 5;
+        private static int playerSpeed = 6;
         private static int speedX = 0;
         private static int speedY = 0;
-        private static int collisionSpeed = 2;
+        private static int collisionSpeed = 3;
         private static int animationDelay = 1;
 
 
@@ -49,10 +49,10 @@ namespace JRPG_ClassLibrary
         public static async Task StartPlayerMovementAsync(string direction)
         {
             RotatePlayer(direction);
-            ////Is player already moving? Or is it the foe turn?
+            //Is player already moving? Or is it the foe turn?
             if (isPlayerMoving /*|| FoeControls.FoeTurn*/) { return; }
 
-            ////Calculate the target tile
+            //Calculate the target tile
             Stages.CurrentStage.Player.Position.DirectionX = 0;
             Stages.CurrentStage.Player.Position.DirectionY = 0;
 
@@ -60,8 +60,8 @@ namespace JRPG_ClassLibrary
             {
                 case "UP":
                     {
-                        speedY = -1;
-                        Player.Position.DirectionY = -1;
+                        speedY = -1; //For animation
+                        Player.Position.DirectionY = -1; //For placment
                         break;
                     }
                 case "RIGHT":
@@ -85,22 +85,21 @@ namespace JRPG_ClassLibrary
             }
 
             //Get target tile
-            Tile targetTile = Stages.CurrentStage.TileList.Find(t => 
+            Tile targetTile = Stages.CurrentStage.TileList.Find(t =>
             t.Position.X == Player.Position.X + Player.Position.DirectionX &&
                            t.Position.Y == Player.Position.Y + Player.Position.DirectionY);
 
-            ////Collission detection
+            //Collission detection
             if (targetTile is null || !targetTile.IsWalkable)
             {
-                await AnimateMovement(true, null);
+                await AnimateCollision(targetTile);
             }
             else
             {
-                //await AnimateMovement(false, targetTile);
-                MovePlayer(targetTile);
+                await AnimateMovement(targetTile);
             }
 
-            ////(Start foe turn)
+            //(Start foe turn)
             FoeControls.MoveFoes();
         }
 
@@ -134,61 +133,71 @@ namespace JRPG_ClassLibrary
             Stages.CurrentStage.Player.Icon.RenderTransformOrigin = new Point(0.5, 0.5);
         }
 
-        private static async Task AnimateMovement(bool collision, Tile targetTile)
+        private static async Task AnimateCollision(Tile targetTile)
         {
-            ////Set player moving to true
+            //Set player moving to true
             isPlayerMoving = true;
 
-            ////Get image margin
+            //Get image margin
             Thickness margin = Player.Icon.Margin;
 
-            ////Modify tile size
-            int dividor = collision ? 4 : 1;
-            int speed = collision ? collisionSpeed : playerSpeed;
-
-            ////Move
-            while (Math.Abs(margin.Right) < Math.Abs(Stages.CurrentStage.TileWidth / dividor) &&
-                Math.Abs(margin.Top) < Math.Abs(Stages.CurrentStage.TileHeight / dividor))
+            //Move
+            while (Math.Abs(margin.Right) < 16 &&
+                Math.Abs(margin.Top) < 16)
             {
-                margin.Left += speed * speedX;
-                margin.Right -= speed * speedX;
-                margin.Top += speed * speedY;
-                margin.Bottom -= speed * speedY;
+                margin.Left += (playerSpeed / 2) * speedX;
+                margin.Right -= (playerSpeed / 2) * speedX;
+                margin.Top += (playerSpeed / 2) * speedY;
+                margin.Bottom -= (playerSpeed / 2) * speedY;
                 Player.Icon.Margin = margin;
                 await Task.Delay(animationDelay);
             }
 
-            if (collision)
+            //Move back
+            while (Math.Abs(margin.Right) > 0 || Math.Abs(margin.Top) > 0)
             {
-                //Move back
-                while (Math.Abs(margin.Right) > 0 || Math.Abs(margin.Top) > 0)
-                {
-                    margin.Left -= collisionSpeed * speedX;
-                    margin.Right += collisionSpeed * speedX;
-                    margin.Top -= collisionSpeed * speedY;
-                    margin.Bottom += collisionSpeed * speedY;
-                    Player.Icon.Margin = margin;
-                    await Task.Delay(animationDelay);
-                }
-            }
-            else
-            {
-                MovePlayer(targetTile);
+                margin.Left -= (playerSpeed / 2) * speedX;
+                margin.Right += (playerSpeed / 2) * speedX;
+                margin.Top -= (playerSpeed / 2) * speedY;
+                margin.Bottom += (playerSpeed / 2) * speedY;
+                Player.Icon.Margin = margin;
+                await Task.Delay(animationDelay);
             }
 
-            ////Reset
-            speedX = 0;
-            speedY = 0;
+            //Reset
+            EndTurn();
 
+            //set player moving to false
+            isPlayerMoving = false;
+        }
 
+        private static async Task AnimateMovement(Tile targetTile)
+        {
+            //Set player moving to true
+            isPlayerMoving = true;
 
-            //while (FoeControls.FoeTurn)
-            //{
-            //    await Task.Delay(50);
-            //    continue;
-            //}
+            //Get image margin
+            Thickness margin = Player.Icon.Margin;
 
-            ////set player moving to false
+            //Move
+            while (Math.Abs(margin.Right) < 24 &&
+                Math.Abs(margin.Top) < 24)
+            {
+                margin.Left += playerSpeed * speedX;
+                margin.Right -= playerSpeed * speedX;
+                margin.Top += playerSpeed * speedY;
+                margin.Bottom -= playerSpeed * speedY;
+                Player.Icon.Margin = margin;
+                await Task.Delay(animationDelay);
+            }
+
+            //Wait
+            //await Task.Delay(0);
+
+            //Reset
+            MovePlayer(targetTile);
+
+            //set player moving to false
             isPlayerMoving = false;
         }
 
@@ -204,23 +213,30 @@ namespace JRPG_ClassLibrary
             //Apply changes
             Player.Icon.Margin = new Thickness(0);
 
-            //Grid.SetColumn(Player.Icon, tile.Position.X);
             Player.Position.X = tile.Position.X;
-            //Grid.SetRow(Player.Icon, tile.Position.Y);
             Player.Position.Y = tile.Position.Y;
 
-            //Battle?
-            Stages.BattleTrigger();
-            ////Is there a foe on the tile?
-            //MapFoe foe = Stages.CurrentStage.FoeList.Find(f => f.X == tile.X && f.Y == tile.Y);
-            //if (foe != null)
-            //{
-            //    //Attack foe
-            //    BattleControls.InitiateBattle(true, foe);
-            //}
+            EndTurn();
+        }
+
+        /// <summary>
+        /// Ends the turn of player. This method will check for items or battles with foes.
+        /// </summary>
+        /// <param name="tile">Current tile of player.</param>
+        private static void EndTurn()
+        {
+            //Get current tile
+            Tile tile = Stages.CurrentStage.TileList.Find(t => t.Position.X == Player.Position.X && t.Position.Y == Player.Position.Y);
+
+            //Reset directional speed
+            speedX = 0;
+            speedY = 0;
 
             //Update visible platform
             Stages.UpdateVisiblePlatform();
+
+            //Battle?
+            Stages.BattleTrigger();
 
             //Collect item
             PlayerActions.CollectTileItem(tile);

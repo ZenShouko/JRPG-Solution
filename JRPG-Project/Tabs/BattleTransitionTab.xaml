@@ -6,20 +6,22 @@
              xmlns:local="clr-namespace:JRPG_Project.Tabs"
              mc:Ignorable="d"
              d:DesignHeight="600" d:DesignWidth="800">
-    <Grid Width="400" Height="200" Background="AntiqueWhite" ClipToBounds="True">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
-        
-        <!--Player-->
-        <Image x:Name="ImgPlayer" Source="/Resources/Assets/Platform/player.png" Height="80" Width="80"/>
-        
-        <!--Foe-->
-        <Image x:Name="ImgFoe" Margin="150 0 -150 0" Grid.Column="1" Source="/Resources/Assets/Platform/foe-neutral.png" Height="80" Width="80"/>
-        
-        <!--Funny shock emoji-->
-        <Image x:Name="ImgEmoji" Source="/Resources/Assets/GUI/emoji-fear.png" Grid.ColumnSpan="2" Height="74" VerticalAlignment="Top" Margin="0 50" Opacity="0.9"
-               Visibility="Collapsed"/>
-    </Grid>
+    <Border BorderBrush="DarkSlateBlue" BorderThickness="2 2 4 4" CornerRadius="2" HorizontalAlignment="Center" VerticalAlignment="Center" ClipToBounds="True">
+        <Grid Width="400" Height="200" Background="GhostWhite" ClipToBounds="True">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!--Player-->
+            <Image x:Name="ImgPlayer" Source="/Resources/Assets/Platform/player.png" Height="80" Width="80"/>
+
+            <!--Foe-->
+            <Image x:Name="ImgFoe" Margin="150 0 -150 0" Grid.Column="1" Source="/Resources/Assets/Platform/foe-neutral.png" Height="80" Width="80"/>
+
+            <!--Funny shock emoji-->
+            <TextBlock x:Name="Emoji" Grid.ColumnSpan="2" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="150 50 0 0" Opacity="1"
+               Visibility="Collapsed" Text="😡" FontSize="36" FontWeight="Bold"/>
+        </Grid>
+    </Border>
 </UserControl>

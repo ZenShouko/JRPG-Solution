@@ -3,6 +3,7 @@ using JRPG_Project.ClassLibrary;
 using JRPG_Project.ClassLibrary.Data;
 using JRPG_Project.ClassLibrary.Items;
 using JRPG_Project.ClassLibrary.Player;
+using JRPG_Project.ClassLibrary.Universal;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -293,6 +294,9 @@ namespace JRPG_Project.Tabs
 
         private void PickCharacter(object sender, MouseButtonEventArgs e)
         {
+            //play sound
+            SoundManager.PlaySound("switch.wav");
+
             //Which character was clicked?
             Image img = (Image)sender;
 

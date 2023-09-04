@@ -3,6 +3,7 @@ using JRPG_Project.ClassLibrary;
 using JRPG_Project.ClassLibrary.Data;
 using JRPG_Project.ClassLibrary.Entities;
 using JRPG_Project.ClassLibrary.Player;
+using JRPG_Project.ClassLibrary.Universal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +21,7 @@ namespace JRPG_Project.Tabs
         {
             InitializeComponent();
             SetRandomBackground();
+            SoundManager.PlaySound("battle-start.wav");
             this.FoeTeam = foeTeam;
             this.PlayerTeam = Stages.CurrentStage.Team;
             InitializeBattle();
@@ -199,6 +201,9 @@ namespace JRPG_Project.Tabs
         {
             if (playerWin)
             {
+                //play win sound
+                SoundManager.PlaySound("battle-win.wav");
+
                 //Get Xp and coins
                 (int xp, int coins) = CalculateXpCoinRewards();
 
@@ -219,6 +224,9 @@ namespace JRPG_Project.Tabs
             }
             else
             {
+                //play lose sound
+                SoundManager.PlaySound("battle-lose.wav");
+
                 //Lose (10% + 10) of coins
                 int coinsLost = (int)Math.Ceiling((Inventory.Coins + 10) * 0.1);
                 Inventory.Coins -= coinsLost;
@@ -300,6 +308,7 @@ namespace JRPG_Project.Tabs
                             Battle = false;
                             BtnFinish.Visibility = Visibility.Visible;
                             BtnSpeedToggle.Visibility = Visibility.Collapsed;
+                            BtnGodSpeed.Visibility = Visibility.Collapsed;
                             BtnPause.Visibility = Visibility.Collapsed;
                             break;
                         }
@@ -318,6 +327,9 @@ namespace JRPG_Project.Tabs
 
                 //Create character queue
                 CreateQueue();
+
+                //play refill sound
+                SoundManager.PlaySound("refill.wav");
 
                 //Regenerate stamina
                 RegenerateStamina();
@@ -645,6 +657,8 @@ namespace JRPG_Project.Tabs
             //Get damage
             (int dmg, bool crit) = CalculateDmg(attacker);
 
+
+
             //Consume Stamina
             ConsumeStamina(attacker, dmg);
 
@@ -670,6 +684,14 @@ namespace JRPG_Project.Tabs
                     CharHpDef[target] = (CharHpDef[target].Item1 - Math.Abs(CharHpDef[target].Item2), 0);
                 }
             }
+
+            //Play sound
+            if (brokeDef)
+                SoundManager.PlaySound($"shield-break{Interaction.GetRandomNumber(1, 3)}.wav");
+            else if (crit)
+                SoundManager.PlaySound($"crit-hit{Interaction.GetRandomNumber(1, 2)}.wav");
+            else
+                SoundManager.PlaySound($"hit{Interaction.GetRandomNumber(1, 3)}.wav");
 
             //Animate hit
             AnimateHit(target);
@@ -989,6 +1011,9 @@ namespace JRPG_Project.Tabs
 
         private async void AnimateDeath(Character victim)
         {
+            //play death sound
+            SoundManager.PlaySound("ko.wav");
+
             //Get border from CharacterCanvas
             Canvas canvas = CharacterCanvas[victim];
             Border border = canvas.Children.OfType<Border>().FirstOrDefault();
@@ -1181,6 +1206,21 @@ namespace JRPG_Project.Tabs
             window.ShowDialog();
         }
 
+        private void BtnGodSpeed_Click(object sender, RoutedEventArgs e)
+        {
+            //Put speed toggle on 100
+            speedToggle = 20;
+
+            //Background kala
+            ((Button)sender).Background = Brushes.Crimson;
+
+            BtnSpeedToggle.IsEnabled = false;
+            BtnSpeedToggle.Background = Brushes.Gray;
+            BtnPause.IsEnabled = false;
+            BtnPause.Background = Brushes.Gray;
+        }
+
         #endregion
+
     }
 }

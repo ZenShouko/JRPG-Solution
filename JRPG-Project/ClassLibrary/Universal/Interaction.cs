@@ -67,7 +67,7 @@ namespace JRPG_ClassLibrary
                         Grid.Children.Add(shopTab);
                         break;
                     }
-                case "BTNBATTLE":
+                case "BTNBATTLE": //[Battle Sim] button on MainTab
                     {
                         //Get current tab in Grid and save it
                         previousTab = (UserControl)Grid.Children[0];
@@ -134,6 +134,8 @@ namespace JRPG_ClassLibrary
             BattleTab battleTab = new BattleTab(mapFoe.FoeTeam);
             Grid.Children.Clear();
             Grid.Children.Add(battleTab);
+
+            //MessageBox.Show(Grid.Children.Count.ToString() + " Tabs in MainGrid.");
         }
 
         public static void CloseBattleTab(bool win)

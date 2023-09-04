@@ -59,6 +59,8 @@ namespace JRPG_Project.Tabs
             //[SHOCK]
             AnimateShock();
 
+            ImgFoe.Source = new BitmapImage(new Uri(@"../../Resources/Assets/Platform/foe-alert.png", UriKind.RelativeOrAbsolute));
+
             await Task.Delay(320);
 
             //Move player and foe to each other
@@ -72,15 +74,15 @@ namespace JRPG_Project.Tabs
 
         private async void AnimateShock()
         {
-            ImgEmoji.Visibility = Visibility.Visible;
-            while(ImgEmoji.Margin.Top > 0)
+            Emoji.Visibility = Visibility.Visible;
+            while(Emoji.Margin.Top > 0)
             {
-                ImgEmoji.Margin = new Thickness(ImgEmoji.Margin.Left, ImgEmoji.Margin.Top - 1, ImgEmoji.Margin.Right, ImgEmoji.Margin.Bottom + 1);
+                Emoji.Margin = new Thickness(Emoji.Margin.Left, Emoji.Margin.Top - 1, Emoji.Margin.Right, Emoji.Margin.Bottom + 1);
                 await Task.Delay(10);
             }
 
             await Task.Delay(100);
-            ImgEmoji.Visibility = Visibility.Collapsed;
+            Emoji.Visibility = Visibility.Collapsed;
         }
     }
 }

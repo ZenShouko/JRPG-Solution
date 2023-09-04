@@ -9,7 +9,7 @@ namespace JRPG_Project.ClassLibrary.Player
         public static void CollectTileItem(Tile tile)
         {
             //Return if no lootbox is present
-            if (string.IsNullOrEmpty(tile.TypeLootbox)) { return; }
+            if (tile is null || string.IsNullOrEmpty(tile.TypeLootbox)) { return; }
 
             //(Visible)Remove the lootbox from the tile
             tile.TileElement.Child = null;

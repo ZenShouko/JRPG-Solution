@@ -2,6 +2,7 @@
 using JRPG_Project.ClassLibrary.Data;
 using JRPG_Project.ClassLibrary.Items;
 using JRPG_Project.ClassLibrary.Player;
+using JRPG_Project.ClassLibrary.Universal;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -147,6 +148,9 @@ namespace JRPG_Project
                 return;
             }
 
+            //Play sound
+            SoundManager.PlaySound("equip.wav");
+
             //Get UniqueID of selected item
             ListBoxItem item = (ListBoxItem)ListEquipments.SelectedItem;
             string uniqueId = (string)item.Tag;
@@ -172,6 +176,9 @@ namespace JRPG_Project
 
         private void RemoveEquipment(object sender, RoutedEventArgs e)
         {
+            //playsound
+            SoundManager.PlaySound("unequip.wav");
+
             CharacterData.ClearEquipment(charIndex, type.ToUpper());
             Close();
         }

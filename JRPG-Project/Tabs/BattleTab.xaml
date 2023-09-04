@@ -37,6 +37,7 @@
             <Button x:Name="BtnPause" Content="Pause" Width="85" Style="{StaticResource menu-button}" Margin="5 0" Click="BtnPause_Click"/>
             <Button x:Name="BtnFinish" Visibility="Collapsed" Width="85" Content="Finish" Style="{StaticResource menu-button}" Margin="5 0" Click="BtnFinish_Click"/>
             <Button x:Name="BtnSpeedToggle" Content="Faster" Width="85" Style="{StaticResource menu-button}" Margin="5 0" Click="BtnSpeedToggle_Click"/>
+            <Button x:Name="BtnGodSpeed" Content="もういいよ" Width="85" Style="{StaticResource menu-button}" Margin="5 0" Click="BtnGodSpeed_Click"/>
         </StackPanel>
 
         <!--Global Anouncer-->

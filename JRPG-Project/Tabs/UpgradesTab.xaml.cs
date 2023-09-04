@@ -3,9 +3,12 @@ using JRPG_Project.ClassLibrary;
 using JRPG_Project.ClassLibrary.Data;
 using JRPG_Project.ClassLibrary.Items;
 using JRPG_Project.ClassLibrary.Player;
+using JRPG_Project.ClassLibrary.Universal;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Media;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -22,6 +25,7 @@ namespace JRPG_Project.Tabs
         {
             //TEST
             Inventory.Materials["M2"] += 100;
+            Inventory.Materials["M7"] += 20;
             InitializeComponent();
             Item = item;
             PrepareGuiForUpgrade();
@@ -211,6 +215,9 @@ namespace JRPG_Project.Tabs
         #region Buttons
         private void ApplyScroll(Material mat)
         {
+            //Play sound
+            SoundManager.PlaySound("magical-power-up.wav");
+
             //Add all material stats to item
             ItemStatObj.Stats.HP += mat.Stats.HP;
             ItemStatObj.Stats.DEF += mat.Stats.DEF;
@@ -252,6 +259,9 @@ namespace JRPG_Project.Tabs
         {
             //Animate upgrade
             AnimateTexts();
+
+            //Play sound
+            SoundManager.PlaySound("power-up.wav");
 
             //Get required orbs
             int requiredOrbs = GetRequiredOrbs(GetRequiredXp());

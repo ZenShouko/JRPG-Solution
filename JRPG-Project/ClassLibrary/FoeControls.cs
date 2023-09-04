@@ -4,14 +4,19 @@ using JRPG_Project.ClassLibrary.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Controls;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace JRPG_Project.ClassLibrary
 {
     public static class FoeControls
     {
+        //Test
+        private static List<string> _movementLog = new List<string>();
+
         public static bool FoeTurn { get; private set; } = false;
         private static int speed = 16; //might remove
         private static int animationDelay = 10; //might remove
@@ -242,6 +247,8 @@ namespace JRPG_Project.ClassLibrary
                 //If all directions have been attempted, cancel movement
                 if (availableDirections is null || availableDirections.Count == 0)
                 {
+                    foe.Position.DirectionX = 0;
+                    foe.Position.DirectionY = 0;
                     return;
                 }
 
@@ -311,6 +318,40 @@ namespace JRPG_Project.ClassLibrary
             return true;
         }
 
+        private static async void AnimateMovement(MapFoe foe)
+        {
+            //Vars
+            int moveDistance = 60;
+            TranslateTransform transform = new TranslateTransform();
+            foe.Icon.RenderTransform = transform;
+
+            //Prepare foe
+            if (foe.Position.DirectionX > 0)
+                transform.X = -moveDistance;
+            else if (foe.Position.DirectionX < 0)
+                transform.X = moveDistance;
+            else if (foe.Position.DirectionY > 0)
+                transform.Y = -moveDistance;
+            else if (foe.Position.DirectionY < 0)
+                transform.Y = moveDistance;
+
+            //Move
+            int steps = 0;
+            while (steps < moveDistance)
+            {
+                steps += 2;
+
+                //Move foe
+                if (transform.X != 0)
+                    transform.X = transform.X < 0 ? transform.X + 2 : transform.X - 2;
+                if (transform.Y != 0)
+                    transform.Y = transform.Y < 0 ? transform.Y + 2 : transform.Y - 2;
+
+                //await Task.Delay(animationDelay);
+                await Task.Delay(1);
+            }
+        }
+
         private static void MoveFoe(MapFoe foe)
         {
             //Reset margin  (might remove)
@@ -322,13 +363,12 @@ namespace JRPG_Project.ClassLibrary
             //Remove foe from current tile
             currentTile.Foe = null;
 
+            //Log
+            _movementLog.Add($"Position: [{foe.Position.X};{foe.Position.Y}], Direction: [{foe.Position.DirectionX};{foe.Position.DirectionY}]");
+
             //Modify Foe Position
             foe.Position.X += foe.Position.DirectionX;
             foe.Position.Y += foe.Position.DirectionY;
-
-            //Reset direction
-            //foe.Position.DirectionX = 0;
-            //foe.Position.DirectionY = 0;
 
             //Get tile on new position
             Tile newTile = Stages.CurrentStage.TileList.FirstOrDefault(t => t.Position.X == foe.Position.X && t.Position.Y == foe.Position.Y);
@@ -336,11 +376,23 @@ namespace JRPG_Project.ClassLibrary
             //Add foe to new tile
             newTile.Foe = foe;
 
-            //Battle trigger
+            //Animate movement
+            AnimateMovement(foe);
+
+            //Battle trigger (starts a battle)
             Stages.BattleTrigger();
 
             //Check if player is in detection range
             _ = FoeDetection(foe);
+
+            //Renew stage
+            Stages.UpdateVisiblePlatform();
+
+            //battle trigger
+            Stages.BattleTrigger();
+
+            //Renew stage
+            Stages.UpdateVisiblePlatform();
         }
     }
 }

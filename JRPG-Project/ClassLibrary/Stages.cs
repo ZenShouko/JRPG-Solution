@@ -25,7 +25,6 @@ namespace JRPG_ClassLibrary
             CurrentStage = new Stage();
             CurrentStage.Name = stageName;
             CurrentStage.VisiblePlatform = grid;
-            //CurrentStage.Platform = new Grid();
 
             //Read stage data from file
             string json = File.ReadAllText($@"../../Stages/{stageName}");
@@ -50,6 +49,8 @@ namespace JRPG_ClassLibrary
 
             //[5]Create visible platform
             CreateVisiblePlatform();
+            CurrentStage.TileWidth = CurrentStage.VisiblePlatform.Width / CurrentStage.Columns;
+            CurrentStage.TileHeight = CurrentStage.VisiblePlatform.Height / CurrentStage.Rows;
 
             //[5.5]Update visible platform
             UpdateVisiblePlatform();
@@ -60,7 +61,6 @@ namespace JRPG_ClassLibrary
             //[7]Place team
             LoadTeam();
         }
-
 
         private static void InitializeStageProperties(string json)
         {
@@ -213,6 +213,7 @@ namespace JRPG_ClassLibrary
                     tileElement.CornerRadius = new CornerRadius(2);
                     Grid.SetColumn(tileElement, x);
                     Grid.SetRow(tileElement, y);
+                    Panel.SetZIndex(tileElement, 1);
                     CurrentStage.VisiblePlatform.Children.Add(tileElement);
 
                     //Copy lootbox to visible platform
@@ -226,29 +227,25 @@ namespace JRPG_ClassLibrary
                         //Place lootbox on tile
                         Grid.SetColumn(lootbox.Icon, x);
                         Grid.SetRow(lootbox.Icon, y);
+                        Panel.SetZIndex(lootbox.Icon, 2);
                         CurrentStage.VisiblePlatform.Children.Add(lootbox.Icon);
                     }
 
                     //Copy foe to visible platform
                     if (tile.Foe != null)
                     {
-                        //Create foe
-                        MapFoe foe = tile.Foe;
-
-                        //Create a new instance of icon
-                        Image icon = new Image();
-                        icon.Source = foe.Icon.Source;
-
                         //Place foe on tile
-                        Grid.SetColumn(icon, x);
-                        Grid.SetRow(icon, y);
-                        CurrentStage.VisiblePlatform.Children.Add(icon);
+                        Grid.SetColumn(tile.Foe.Icon, x);
+                        Grid.SetRow(tile.Foe.Icon, y);
+                        Panel.SetZIndex(tile.Foe.Icon, 3);
+                        CurrentStage.VisiblePlatform.Children.Add(tile.Foe.Icon);
                     }
                 }
             }
 
             //Copy player to visible platform
             CurrentStage.VisiblePlatform.Children.Remove(CurrentStage.Player.Icon);
+            Panel.SetZIndex(CurrentStage.Player.Icon, 4);
             CurrentStage.VisiblePlatform.Children.Add(CurrentStage.Player.Icon);
         }
 
@@ -293,16 +290,22 @@ namespace JRPG_ClassLibrary
             }
         }
 
+        /// <summary>
+        /// Checks if player and foe are on the same tile. If so, start battle.
+        /// </summary>
         public static void BattleTrigger()
         {
+            //[!] Battle trigger can be triggered even though a battle is going on. Hence why this safety check.
+            if (CurrentStage.IsBattle) { return; }
+
             //Check if player is on a tile with foe
-            Tile playerTile = CurrentStage.TileList.Find(t => t.Player != null);
-            if (playerTile.Foe != null)
+            Tile toile = CurrentStage.TileList.Find(t => t.Player != null && t.Foe != null);
+            if (toile != null)
             {
                 //Start battle
                 CurrentStage.IsBattle = true;
-                CurrentStage.BattlingWith = playerTile.Foe;
-                Interaction.OpenBattletab(playerTile.Foe);
+                CurrentStage.BattlingWith = toile.Foe;
+                Interaction.OpenBattletab(toile.Foe);
             }
         }
     }
