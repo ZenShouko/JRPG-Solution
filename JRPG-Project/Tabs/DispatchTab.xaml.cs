@@ -1,6 +1,8 @@
 ﻿using JRPG_ClassLibrary;
 using JRPG_ClassLibrary.Entities;
 using JRPG_Project.ClassLibrary.Data;
+using JRPG_Project.ClassLibrary.Player;
+using JRPG_Project.ClassLibrary.Universal;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -36,11 +38,22 @@ namespace JRPG_Project.Tabs
             //Unsubscribe from keydown event
             Window.GetWindow(this).KeyDown -= DispatchTab_KeyDown;
 
-            //Discard current stage
-            Stages.CurrentStage = null;
+            //Save progression
+            Interaction.LastProgression = Stages.CurrentStage.Progression;
+
+            //Hand out progression reward
+            ProgressionReward();
 
             //Return to main screen
             Interaction.OpenTab("MainTab");
+
+            //Discard current stage
+            Stages.CurrentStage = null;
+        }
+
+        private void ProgressionReward()
+        {
+            Inventory.Coins += Stages.GetProgressionRewards();
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
@@ -100,6 +113,7 @@ namespace JRPG_Project.Tabs
 
         private void BtnInventory_Click(object sender, RoutedEventArgs e)
         {
+            SoundManager.PlaySound("click-medium.wav");
             Interaction.OpenInventory();
         }
 

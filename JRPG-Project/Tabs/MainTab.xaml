@@ -68,14 +68,14 @@
 
 
         <!--Progress-->
-        <Border Grid.Row="1" Margin="5" Grid.Column="1" Height="75" Width="300" VerticalAlignment="Bottom" CornerRadius="4"
+        <Border Grid.Row="1" Margin="5" Grid.Column="1" MinHeight="75" MinWidth="300" VerticalAlignment="Bottom" HorizontalAlignment="Center" CornerRadius="4"
                 BorderThickness="1 1 2 2" BorderBrush="Black">
             <Border.Background>
                 <SolidColorBrush Color="White" Opacity="0.9"/>
             </Border.Background>
             <StackPanel Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="15">
-                <TextBlock FontSize="20" Text="App version 1.0" Foreground="Black"/>
-                <TextBlock Text="Still in full development!" Margin="2" Foreground="Black"/>
+                <TextBlock FontSize="20" Text="Progress Update:" Foreground="Black"/>
+                <TextBlock x:Name="TxtProgress" Text="Return from an adventure to view progress." Margin="2" Foreground="Black"/>
             </StackPanel>
         </Border>
     </Grid>

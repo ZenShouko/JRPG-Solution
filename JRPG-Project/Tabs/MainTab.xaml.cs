@@ -2,6 +2,8 @@
 using JRPG_Project.ClassLibrary.Data;
 using JRPG_Project.ClassLibrary.Player;
 using JRPG_Project.ClassLibrary.Universal;
+using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -21,6 +23,20 @@ namespace JRPG_Project.Tabs
         private void UpdateGUI()
         {
             TxtCoins.Text = Inventory.Coins.ToString();
+
+            if (Interaction.LastProgression.Count == 0)
+                return;
+
+            //Get % of progression foreach category
+            float foes = (float)Interaction.LastProgression["Foes"].Item1 / (float)Interaction.LastProgression["Foes"].Item2 * 100;
+            foes = (float)Math.Round(foes, 2);
+            float lootboxes = (float)Interaction.LastProgression["Lootboxes"].Item1 / (float)Interaction.LastProgression["Lootboxes"].Item2 * 100;
+            lootboxes = (float)Math.Round(lootboxes, 2);
+
+            //Update progression
+            TxtProgress.Text = $"Got {Interaction.LastProgression["Lootboxes"].Item1}/{Interaction.LastProgression["Lootboxes"].Item2} lootboxes ({lootboxes}%) " +
+                $"and defeated {Interaction.LastProgression["Foes"].Item1}/{Interaction.LastProgression["Foes"].Item2} foes ({foes}%).\n";
+            TxtProgress.Text += $"You've received {Stages.GetProgressionRewards()} coins as completion reward!";
         }
 
         private void OpenTab(object sender, RoutedEventArgs e)

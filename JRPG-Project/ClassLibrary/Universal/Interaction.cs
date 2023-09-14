@@ -7,6 +7,7 @@ using JRPG_Project.ClassLibrary.Player;
 using JRPG_Project.ClassLibrary.Universal;
 using JRPG_Project.Tabs;
 using System;
+using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Windows;
@@ -17,6 +18,8 @@ namespace JRPG_ClassLibrary
     public static class Interaction
     {
         public static Grid Grid { get; set; }
+
+        public static Dictionary<string, (int, int)> LastProgression { get; set; } = new Dictionary<string, (int, int)>();
 
         private static UserControl previousTab { get; set; }
 

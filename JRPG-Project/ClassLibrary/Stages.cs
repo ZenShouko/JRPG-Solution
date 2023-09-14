@@ -4,6 +4,7 @@ using JRPG_Project.ClassLibrary.Entities;
 using JRPG_Project.ClassLibrary.Player;
 using JRPG_Project.ClassLibrary.Universal;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
@@ -893,6 +894,27 @@ namespace JRPG_ClassLibrary
                 CurrentStage.IsBattle = true;
                 CurrentStage.BattlingWith = toile.Foe;
                 Interaction.OpenBattletab(toile.Foe);
+            }
+        }
+
+        public static int GetProgressionRewards()
+        {
+            //Foreach lootbox, 2 coin. Foreach foe, 10 coin. Double rewards for completion.
+            try
+            {
+                double coins = Interaction.LastProgression["Lootboxes"].Item1 * 2 + Interaction.LastProgression["Foes"].Item1 * 10;
+
+                //BONUS
+                if (Interaction.LastProgression["Lootboxes"].Item1 == Interaction.LastProgression["Lootboxes"].Item2 && Interaction.LastProgression["Lootboxes"].Item2 > 0)
+                    coins *= 1.5;
+                if (Interaction.LastProgression["Foes"].Item1 == Interaction.LastProgression["Foes"].Item2 && Interaction.LastProgression["Foes"].Item2 > 0)
+                    coins *= 2;
+
+                return Convert.ToInt16(coins);
+            }
+            catch (Exception ex)
+            {
+                return 0;
             }
         }
     }

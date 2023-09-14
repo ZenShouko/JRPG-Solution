@@ -24,8 +24,8 @@ namespace JRPG_Project.Tabs
         public UpgradesTab(BaseItem item)
         {
             //TEST
-            Inventory.Materials["M2"] += 100;
-            Inventory.Materials["M7"] += 20;
+            //Inventory.Materials["M2"] += 100;
+            //Inventory.Materials["M7"] += 20;
             InitializeComponent();
             Item = item;
             PrepareGuiForUpgrade();
