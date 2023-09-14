@@ -2,6 +2,7 @@
 using JRPG_Project.ClassLibrary;
 using JRPG_Project.ClassLibrary.Entities;
 using JRPG_Project.ClassLibrary.Player;
+using JRPG_Project.ClassLibrary.Universal;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -92,10 +93,12 @@ namespace JRPG_ClassLibrary
             //Collission detection
             if (targetTile is null || !targetTile.IsWalkable)
             {
+                SoundManager.PlaySound("collision.wav");
                 await AnimateCollision(targetTile);
             }
             else
             {
+                SoundManager.PlaySound("step.wav");
                 await AnimateMovement(targetTile);
             }
 

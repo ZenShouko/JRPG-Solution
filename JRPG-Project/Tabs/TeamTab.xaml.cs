@@ -308,6 +308,7 @@ namespace JRPG_Project.Tabs
 
         private void OpenMainTab(object sender, RoutedEventArgs e)
         {
+            SoundManager.PlaySound("click-short.wav");
             Interaction.OpenTab("MainTab");
         }
 

@@ -2,6 +2,7 @@
 using JRPG_Project.ClassLibrary.Data;
 using JRPG_Project.ClassLibrary.Entities;
 using JRPG_Project.ClassLibrary.Items;
+using JRPG_Project.ClassLibrary.Universal;
 using System;
 using System.Linq;
 using System.Security.Cryptography;
@@ -22,6 +23,8 @@ namespace JRPG_Project.ClassLibrary.Player
         {
             InitializeComponent();
             this.Title = rarity;
+            //Play sound
+            SoundManager.PlaySound("lootbox.wav");
 
             //Get item
             GetRandomItem(rarity);
@@ -79,6 +82,8 @@ namespace JRPG_Project.ClassLibrary.Player
 
             //The rest
             SetTitleColour(itemRarity);
+
+
         }
 
         private string GetItemRarity(Lootbox box)

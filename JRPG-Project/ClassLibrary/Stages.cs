@@ -2,6 +2,7 @@
 using JRPG_Project.ClassLibrary.Data;
 using JRPG_Project.ClassLibrary.Entities;
 using JRPG_Project.ClassLibrary.Player;
+using JRPG_Project.ClassLibrary.Universal;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Data;
@@ -887,6 +888,7 @@ namespace JRPG_ClassLibrary
             Tile toile = CurrentStage.TileList.Find(t => t.Player != null && t.Foe != null);
             if (toile != null)
             {
+                SoundManager.PlaySound("foe-encounter.wav");
                 //Start battle
                 CurrentStage.IsBattle = true;
                 CurrentStage.BattlingWith = toile.Foe;

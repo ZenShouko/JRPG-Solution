@@ -507,6 +507,7 @@ namespace JRPG_Project.ClassLibrary.Universal
 
         private void ReturnButton_Click(object sender, RoutedEventArgs e)
         {
+            SoundManager.PlaySound("click-short.wav");
             if (Stages.CurrentStage == null)
                 Interaction.OpenTab("MainTab");
             else
@@ -520,6 +521,7 @@ namespace JRPG_Project.ClassLibrary.Universal
 
         private void ExtractEssence_Click(object sender, RoutedEventArgs e)
         {
+            SoundManager.PlaySound("click-medium.wav");
             if (!BulkExtract)
             {
                 //Get selected item as base item
@@ -610,6 +612,7 @@ namespace JRPG_Project.ClassLibrary.Universal
 
         private void ButtonBulkExtract_Click(object sender, RoutedEventArgs e)
         {
+            SoundManager.PlaySound("click-short.wav");
             BulkExtract = !BulkExtract;
             BtnBulkExtract.Content = BulkExtract ? "Cancel" : "Bulk Extract";
             BtnBulkExtract.Foreground = BulkExtract ? Brushes.Crimson : Brushes.Black;
@@ -644,6 +647,7 @@ namespace JRPG_Project.ClassLibrary.Universal
 
         private void BtnUpgrade_Click(object sender, RoutedEventArgs e)
         {
+            SoundManager.PlaySound("click-medium.wav");
             //Get selected item as base item
             BaseItem item;
 

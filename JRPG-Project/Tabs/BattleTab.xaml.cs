@@ -458,7 +458,7 @@ namespace JRPG_Project.Tabs
         {
             while (bar.Value < limit)
             {
-                bar.Value += 2;
+                bar.Value += 2 * speedToggle > 1 ? 2 : 1;
                 await Task.Delay(12 / speedToggle);
             }
 
@@ -1123,6 +1123,11 @@ namespace JRPG_Project.Tabs
         #region Button Events
         private void BtnFinish_Click(object sender, RoutedEventArgs e)
         {
+            if (playerWin)
+                SoundManager.PlaySound("equip.wav");
+            else
+                SoundManager.PlaySound("unequip.wav");
+
             //Add deductions to team
             foreach (Character c in PlayerTeam)
                 Stages.CurrentStage.TeamHpDefDeduct[c] = (c.GetAccumulatedStats().HP - CharHpDef[c].Item1, c.GetAccumulatedStats().DEF - CharHpDef[c].Item2);
@@ -1156,6 +1161,7 @@ namespace JRPG_Project.Tabs
 
         private void BtnLog_Click(object sender, RoutedEventArgs e)
         {
+            SoundManager.PlaySound("click-short.wav");
             LogWindow window = new LogWindow(BattleLog);
             window.ShowDialog();
         }
