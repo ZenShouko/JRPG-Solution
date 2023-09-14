@@ -1,6 +1,7 @@
 ﻿using JRPG_ClassLibrary;
 using JRPG_Project.ClassLibrary.Data;
 using JRPG_Project.ClassLibrary.Player;
+using JRPG_Project.ClassLibrary.Universal;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -24,12 +25,18 @@ namespace JRPG_Project.Tabs
 
         private void OpenTab(object sender, RoutedEventArgs e)
         {
+            //Play sound
+            SoundManager.PlaySound("click-medium.wav");
+
+            //Open tab
             Button btn = sender as Button;
             Interaction.OpenTab(btn.Name);
         }
 
         private void BtnExit_Click(object sender, RoutedEventArgs e)
         {
+            SoundManager.PlaySound("click-short.wav");
+
             //Check if user has unsaved changes
             MessageBoxResult result = MessageBox.Show("Save before closing?", "Unsaved changes", MessageBoxButton.YesNoCancel);
             if (result == MessageBoxResult.Yes)

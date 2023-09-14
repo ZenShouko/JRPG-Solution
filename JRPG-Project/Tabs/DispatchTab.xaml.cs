@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
 
 namespace JRPG_Project.Tabs
 {
@@ -25,25 +26,18 @@ namespace JRPG_Project.Tabs
         public DispatchTab(string stageName)
         {
             InitializeComponent();
-
-            Stopwatch watch = new Stopwatch();
-            watch.Start();
-
-            //Security check
-            //GameData.InitializeDatabase();
-            
-            Stages.CreateStage(MainGrid, stageName);
+            Stages.CreateStage(MainGrid, RadarGrid, stageName);
             Grid.SetColumnSpan(Menu, 9);
             Grid.SetRowSpan(Menu, 9);
-
-            watch.Stop();
-            loadTimeMS = (int)watch.ElapsedMilliseconds;
         }
 
         private void BtnLeave_Click(object sender, RoutedEventArgs e)
         {
             //Unsubscribe from keydown event
             Window.GetWindow(this).KeyDown -= DispatchTab_KeyDown;
+
+            //Discard current stage
+            Stages.CurrentStage = null;
 
             //Return to main screen
             Interaction.OpenTab("MainTab");
@@ -71,6 +65,23 @@ namespace JRPG_Project.Tabs
             {
                 Menu.Visibility = Menu.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
                 MainGrid.Opacity = Menu.Visibility == Visibility.Visible ? 0.8 : 1;
+
+                if (Menu.Visibility == Visibility.Visible)
+                {
+                    Stages.UpdateFoeRadar();
+                    PlayRadarAnimation();
+                    UpdateProgression();
+                }
+
+                //Did player finish progression?
+                if (Stages.CurrentStage.Progression["Lootboxes"].Item1 == Stages.CurrentStage.Progression["Lootboxes"].Item2 && 
+                    Stages.CurrentStage.Progression["Foes"].Item1 == Stages.CurrentStage.Progression["Foes"].Item2)
+                {
+                    //Display finished on button
+                    BtnExit.Content = "Finish";
+                    BtnExit.Background = Brushes.LightSeaGreen;
+                }
+
                 return;
             }
 
@@ -85,6 +96,58 @@ namespace JRPG_Project.Tabs
             {
                 PlayerControls.HandleInput(e.Key);
             }
+        }
+
+        private void BtnInventory_Click(object sender, RoutedEventArgs e)
+        {
+            Interaction.OpenInventory();
+        }
+
+        private void UpdateProgression()
+        {
+            Stages.UpdateProgression();
+
+            TxtPlatformName.Text = Stages.CurrentStage.Name;
+            TxtLootCount.Text = $"Loot: {Stages.CurrentStage.Progression["Lootboxes"].Item1}/{Stages.CurrentStage.Progression["Lootboxes"].Item2}";
+            TxtFoeCount.Text = $"Foes: {Stages.CurrentStage.Progression["Foes"].Item1}/{Stages.CurrentStage.Progression["Foes"].Item2}";
+            TxtDimensions.Text = $"Size: {Stages.CurrentStage.TileList.Max(t => t.Position.X)}x{Stages.CurrentStage.TileList.Max(t => t.Position.Y)}";
+        }
+
+        private async void PlayRadarAnimation()
+        {
+            //[Start] Add a white ellipse in the center of the radar panel
+            Ellipse ellipse = new Ellipse();
+            ellipse.Width = 10;
+            ellipse.Height = 10;
+            ellipse.Fill = Brushes.LightSlateGray;
+            ellipse.HorizontalAlignment = HorizontalAlignment.Center;
+            ellipse.VerticalAlignment = VerticalAlignment.Center;
+            Grid.SetColumn(ellipse, 0);
+            Grid.SetRow(ellipse, 0);
+            Grid.SetColumnSpan(ellipse, 3);
+            Grid.SetRowSpan(ellipse, 3);
+            RadarGrid.Children.Add(ellipse);
+
+            //[Start] Animate the ellipse, grow in size
+            DoubleAnimation growAnimation = new DoubleAnimation();
+            growAnimation.From = 10;
+            growAnimation.To = 250;
+            growAnimation.Duration = new Duration(TimeSpan.FromSeconds(1.5));
+            ellipse.BeginAnimation(Ellipse.WidthProperty, growAnimation);
+            ellipse.BeginAnimation(Ellipse.HeightProperty, growAnimation);
+
+            //[Start] Animate the ellipse, fade out
+            DoubleAnimation fadeAnimation = new DoubleAnimation();
+            fadeAnimation.From = 1;
+            fadeAnimation.To = 0;
+            fadeAnimation.Duration = new Duration(TimeSpan.FromSeconds(1));
+            ellipse.BeginAnimation(Ellipse.OpacityProperty, fadeAnimation);
+
+            //[End] Wait for the animation to finish
+            await Task.Delay(1500);
+
+            //[End] Remove the ellipse from the radar panel
+            RadarGrid.Children.Remove(ellipse);
         }
     }
 }

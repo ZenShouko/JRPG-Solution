@@ -1,18 +1,16 @@
-﻿using JRPG_Project;
+﻿using JRPG_ClassLibrary.Entities;
+using JRPG_Project;
+using JRPG_Project.ClassLibrary;
 using JRPG_Project.ClassLibrary.Data;
+using JRPG_Project.ClassLibrary.Entities;
+using JRPG_Project.ClassLibrary.Player;
 using JRPG_Project.ClassLibrary.Universal;
 using JRPG_Project.Tabs;
-using System.Security.Cryptography;
 using System;
+using System.Security.Cryptography;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using JRPG_Project.ClassLibrary.Player;
-using JRPG_Project.ClassLibrary;
-using System.Collections.Generic;
-using JRPG_Project.ClassLibrary.Entities;
-using JRPG_ClassLibrary.Entities;
-using System.Threading.Tasks;
-using System.Linq;
 
 namespace JRPG_ClassLibrary
 {
@@ -60,7 +58,7 @@ namespace JRPG_ClassLibrary
                         OpenTab("MainTab");
                         break;
                     }
-                    case "BTNMARKET":
+                case "BTNMARKET":
                     {
                         MarketTab shopTab = new MarketTab();
                         Grid.Children.Clear();
@@ -76,7 +74,7 @@ namespace JRPG_ClassLibrary
                         Stages.CurrentStage = new Stage();
                         foreach (Character c in Inventory.Team)
                         {
-                            Stages.CurrentStage.Team.Add(c);
+                            Stages.CurrentStage.TeamHpDefDeduct.Add(c, (0, 0));
                         }
 
                         BattleTab battleTab = new BattleTab(FoeData.GetGenericFoeTeam());
@@ -111,6 +109,16 @@ namespace JRPG_ClassLibrary
             Grid.Children.Add(upgradeTab);
         }
 
+        public static void OpenInventory()
+        {
+            //Save current tab
+            previousTab = (UserControl)Grid.Children[0];
+
+            InventoryTab inventoryTab = new InventoryTab();
+            Grid.Children.Clear();
+            Grid.Children.Add(inventoryTab);
+        }
+
         public static void ReturnToPreviousTab()
         {
             Grid.Children.Clear();
@@ -123,19 +131,17 @@ namespace JRPG_ClassLibrary
             BattleTransitionTab battleTransitionTab = new BattleTransitionTab();
             Grid.Children.Add(battleTransitionTab);
 
-            await Task.Delay(3000);
+            await Task.Delay(1200);
 
             //remove transition tab
             Grid.Children.Remove(battleTransitionTab);
-            
+
             //Get current tab in Grid and save it
             previousTab = (UserControl)Grid.Children[0];
 
             BattleTab battleTab = new BattleTab(mapFoe.FoeTeam);
             Grid.Children.Clear();
             Grid.Children.Add(battleTab);
-
-            //MessageBox.Show(Grid.Children.Count.ToString() + " Tabs in MainGrid.");
         }
 
         public static void CloseBattleTab(bool win)
@@ -162,6 +168,12 @@ namespace JRPG_ClassLibrary
             }
             else
             {
+                //Discard currents stage
+                Stages.CurrentStage = null;
+
+                //Discard previous tab
+                previousTab = null;
+
                 //Return back to main tab
                 OpenTab("MainTab");
             }

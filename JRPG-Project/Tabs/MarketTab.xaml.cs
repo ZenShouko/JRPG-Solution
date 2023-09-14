@@ -107,7 +107,7 @@ namespace JRPG_Project.Tabs
         private void UpdateGUI()
         {
             //#Vending Machine
-            VendingMachineTab tab = new VendingMachineTab();
+            VendingMachineTab tab = new VendingMachineTab(TxtLuck, TxtCoins);
             VendingMachinePanel.Children.Clear();
             VendingMachinePanel.Children.Add(tab);
 
@@ -310,6 +310,9 @@ namespace JRPG_Project.Tabs
                 //Let them know
                 TxtItem3Reward.Text = "(Completed)";
             }
+
+            //Update GUI
+            TxtCoins.Text = Inventory.Coins.ToString();
         }
     }
 }

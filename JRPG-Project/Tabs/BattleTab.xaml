@@ -54,7 +54,7 @@
                 <SolidColorBrush Color="Black" Opacity="0.35"/>
             </DockPanel.Background>
             <TextBlock x:Name="TxtRound" Text="Round 1" VerticalAlignment="Center" Foreground="Azure" FontSize="16" Padding="5 0" FontStyle="Italic"/>
-            <TextBlock x:Name="TxtDetails" DockPanel.Dock="Right" Text="Sample Small text" Foreground="Azure" Padding="4"
+            <TextBlock x:Name="TxtDetails" DockPanel.Dock="Right" Text="(Hover over a character to view info)" Foreground="Azure" Padding="4"
                    VerticalAlignment="Center" HorizontalAlignment="Stretch" TextAlignment="Center" FontSize="18"/>
         </DockPanel>
         

@@ -48,18 +48,27 @@
             <!--Character Info-->
             <TextBlock Text="Info" Background="#ffc300" Foreground="Black" Grid.ColumnSpan="2" FontSize="18" Padding="20 0"/>
             <DockPanel Grid.Row="1" Grid.ColumnSpan="2" Background="#262626">
+                <!--Image-->
                 <Border DockPanel.Dock="Left" Width="135" Height="135" BorderBrush="Black" BorderThickness="1" CornerRadius="4" Margin="10 0">
                     <Image x:Name="CharacterImage"  Stretch="UniformToFill" HorizontalAlignment="Center"/>
                 </Border>
-                <StackPanel  Margin="0 0" HorizontalAlignment="Left" VerticalAlignment="Top">
+                <!--Threat score-->
+                <Border DockPanel.Dock="Right" HorizontalAlignment="Right" VerticalAlignment="Center"
+                        BorderThickness="1 1 2 2" BorderBrush="MediumAquamarine" CornerRadius="2" Padding="8 4"
+                        Background="#353535" ToolTip="Threat Score" Margin="8 0">
+                    <TextBlock x:Name="TxtThreatScore" Text="500" FontSize="16" Foreground="White"/>
+                </Border>
+                <!--Info-->
+                <StackPanel  Margin="0 0" DockPanel.Dock="Top" HorizontalAlignment="Left" VerticalAlignment="Top">
                     <TextBlock x:Name="TxtCharacterName" Text="Mr Riverman" FontSize="24" Foreground="White"/>
                     <TextBlock x:Name="TxtCharacterLevel" Text="Level 20" Foreground="#48cae4" FontSize="15" Margin="4"/>
                     <TextBlock x:Name="TxtCharacterDescription" Text="Sample: This guy is tough!!" FontSize="16" Foreground="White" Margin="0 10 0 0"/>
-                    <!--XP-->
+                </StackPanel>
+                <!--XP-->
+                <StackPanel DockPanel.Dock="Bottom" HorizontalAlignment="Left">
                     <TextBlock x:Name="TxtXp" Text="XP:" Margin="0 12 0 4" Foreground="#FEFEFE"/>
                     <ProgressBar x:Name="XpBar" Style="{StaticResource XpProgressBar}" Width="350" HorizontalAlignment="Left"/>
                 </StackPanel>
-                
             </DockPanel>
             
             <!--Character Equipment-->

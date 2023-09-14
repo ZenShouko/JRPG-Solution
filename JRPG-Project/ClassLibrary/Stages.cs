@@ -3,7 +3,6 @@ using JRPG_Project.ClassLibrary.Data;
 using JRPG_Project.ClassLibrary.Entities;
 using JRPG_Project.ClassLibrary.Player;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
@@ -11,7 +10,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
 
 namespace JRPG_ClassLibrary
 {
@@ -19,18 +18,20 @@ namespace JRPG_ClassLibrary
     {
         public static Stage CurrentStage { get; set; }
 
-        public static void CreateStage(Grid grid, string stageName)
+        public static void CreateStage(Grid platformGrid, Grid radar, string stageName)
         {
             //[1]Initialize stage properties
             CurrentStage = new Stage();
-            CurrentStage.Name = stageName;
-            CurrentStage.VisiblePlatform = grid;
+            CurrentStage.Name = stageName.Split('.')[0];
+            CurrentStage.VisiblePlatform = platformGrid;
+            CurrentStage.FoeRadar = radar;
 
             //Read stage data from file
             string json = File.ReadAllText($@"../../Stages/{stageName}");
 
             //Initialize stage properties
             CurrentStage.TileList = JsonConvert.DeserializeObject<List<Tile>>(json);
+
             //Initialize tile elements
             foreach (Tile tile in CurrentStage.TileList)
             {
@@ -43,6 +44,9 @@ namespace JRPG_ClassLibrary
 
             //Add foes to foelist
             InitializeFoes();
+
+            //Create progression dictionary
+            InitializeProgression();
 
             //[4]Place lootboxes
             PlaceLootboxes();
@@ -116,17 +120,36 @@ namespace JRPG_ClassLibrary
             //}
         }
 
+        private static void InitializeProgression()
+        {
+            //Add foes to progression
+            CurrentStage.Progression.Add("Foes", (0, CurrentStage.FoeList.Count));
+
+            //Add lootboxes to progression
+            CurrentStage.Progression.Add("Lootboxes", (0, CurrentStage.TileList.Count(t => t.TypeLootbox != null)));
+        }
+
+        public static void UpdateProgression()
+        {
+            //Update slayn foes
+            CurrentStage.Progression["Foes"] = (CurrentStage.Progression["Foes"].Item2 - CurrentStage.FoeList.Count, CurrentStage.Progression["Foes"].Item2);
+
+            //Update collected lootboxes
+            CurrentStage.Progression["Lootboxes"] =
+                (CurrentStage.Progression["Lootboxes"].Item2 - CurrentStage.TileList.Count(t => t.TypeLootbox != null), CurrentStage.Progression["Lootboxes"].Item2);
+        }
+
         private static void PlacePlayer()
         {
             //Find tile where player is not null
             Tile playerTile = CurrentStage.TileList.Find(t => t.Player != null);
 
             //Set player position property
-            CurrentStage.Player.Position = playerTile.Player.Position; //Set player property
+            CurrentStage.Player.Position = new Coordinates();
+            CurrentStage.Player.Position.X = playerTile.Player.Position.X;
+            CurrentStage.Player.Position.Y = playerTile.Player.Position.Y;
 
             //Place player on that tile
-            //Grid.SetColumn(CurrentStage.Player.Icon, playerTile.Position.X);
-            //Grid.SetRow(CurrentStage.Player.Icon, playerTile.Position.Y);
             Grid.SetColumn(CurrentStage.Player.Icon, 4);
             Grid.SetRow(CurrentStage.Player.Icon, 4);
 
@@ -206,11 +229,7 @@ namespace JRPG_ClassLibrary
                     }
 
                     //Copy tile to visible platform
-                    Border tileElement = new Border();
-                    tileElement.Background = tile.TileColor;
-                    tileElement.BorderBrush = Brushes.Black;
-                    tileElement.BorderThickness = new Thickness(1);
-                    tileElement.CornerRadius = new CornerRadius(2);
+                    Border tileElement = tile.TileElement;
                     Grid.SetColumn(tileElement, x);
                     Grid.SetRow(tileElement, y);
                     Panel.SetZIndex(tileElement, 1);
@@ -247,6 +266,572 @@ namespace JRPG_ClassLibrary
             CurrentStage.VisiblePlatform.Children.Remove(CurrentStage.Player.Icon);
             Panel.SetZIndex(CurrentStage.Player.Icon, 4);
             CurrentStage.VisiblePlatform.Children.Add(CurrentStage.Player.Icon);
+        }
+
+        public static void UpdateFoeRadar()
+        {
+            //Clear foe radar
+            CurrentStage.FoeRadar.Children.Clear();
+
+            //Vars
+            Coordinates position = CurrentStage.TileList.Find(t => t.Player != null).Position;
+
+            //Calculate how far it needs to scan
+            int leftDistance = position.X - 7;
+            leftDistance = leftDistance < 0 ? 0 : leftDistance;
+            int rightDistance = position.X + 7;
+            //Is rightDistance bigger than the biggest X in tile list?
+            rightDistance = rightDistance > CurrentStage.TileList.Max(t => t.Position.X) ? CurrentStage.TileList.Max(t => t.Position.X) : rightDistance;
+            int upDistance = position.Y - 7;
+            upDistance = upDistance < 0 ? 0 : upDistance;
+            int downDistance = position.Y + 7;
+            //Is downDistance bigger than the biggest Y in tile list?
+            downDistance = downDistance > CurrentStage.TileList.Max(t => t.Position.Y) ? CurrentStage.TileList.Max(t => t.Position.Y) : downDistance;
+
+            //Place placer in the center of the radar
+            Ellipse placer = GetDot("royalblue");
+            Grid.SetColumn(placer, 1);
+            Grid.SetRow(placer, 1);
+            CurrentStage.FoeRadar.Children.Add(placer);
+
+            //Scan all the way to the left
+            List<Tile> scanLeft = CurrentStage.TileList
+                .Where(x => x.Position.X >= leftDistance && x.Position.X < position.X)
+                .Where(x => x.Position.Y == position.Y)
+                .ToList();
+
+            //Get the first 2 tiles closest to the player
+            List<Tile> filterLeft = scanLeft
+                .OrderByDescending(x => x.Position.X)
+                .Take(2)
+                .ToList();
+
+            if (filterLeft.Any(x => x.Foe != null))
+            {
+                //Draw red dot
+                Ellipse dot = GetDot("red");
+                Grid.SetColumn(dot, 0);
+                Grid.SetRow(dot, 1);
+                CurrentStage.FoeRadar.Children.Add(dot);
+            }
+            else
+            {
+                //[Left] medium
+                filterLeft = scanLeft
+                    .OrderByDescending(x => x.Position.X)
+                    .Take(5)
+                    .ToList();
+
+                if (filterLeft.Any(x => x.Foe != null))
+                {
+                    Ellipse dot = GetDot("orange");
+                    Grid.SetColumn(dot, 0);
+                    Grid.SetRow(dot, 1);
+                    CurrentStage.FoeRadar.Children.Add(dot);
+                }
+                else
+                {
+                    //[Left] far
+                    filterLeft = scanLeft
+                        .OrderByDescending(x => x.Position.X)
+                        .Take(8)
+                        .ToList();
+
+                    if (filterLeft.Any(x => x.Foe != null))
+                    {
+                        Ellipse dot = GetDot("yellow");
+                        Grid.SetColumn(dot, 0);
+                        Grid.SetRow(dot, 1);
+                        CurrentStage.FoeRadar.Children.Add(dot);
+                    }
+                }
+            }
+
+            //[Right]
+            List<Tile> scanRight = CurrentStage.TileList
+                .Where(x => x.Position.X <= rightDistance && x.Position.X > position.X)
+                .Where(x => x.Position.Y == position.Y)
+                .ToList();
+
+            //Get the first 2 tiles closest to the player
+            List<Tile> filterRight = scanRight
+                .OrderBy(x => x.Position.X)
+                .Take(2)
+                .ToList();
+
+
+            if (filterRight.Any(x => x.Foe != null))
+            {
+                Ellipse dot = GetDot("red");
+                Grid.SetColumn(dot, 2);
+                Grid.SetRow(dot, 1);
+                CurrentStage.FoeRadar.Children.Add(dot);
+            }
+            else
+            {
+                //[Right] medium
+                filterRight = scanRight
+                    .OrderBy(x => x.Position.X)
+                    .Take(5)
+                    .ToList();
+
+                if (filterRight.Any(x => x.Foe != null))
+                {
+                    Ellipse dot = GetDot("orange");
+                    Grid.SetColumn(dot, 2);
+                    Grid.SetRow(dot, 1);
+                    CurrentStage.FoeRadar.Children.Add(dot);
+                }
+                else
+                {
+                    //[Right] far
+                    filterRight = scanRight
+                        .OrderBy(x => x.Position.X)
+                        .Take(8)
+                        .ToList();
+
+                    if (filterRight.Any(x => x.Foe != null))
+                    {
+                        Ellipse dot = GetDot("yellow");
+                        Grid.SetColumn(dot, 2);
+                        Grid.SetRow(dot, 1);
+                        CurrentStage.FoeRadar.Children.Add(dot);
+                    }
+                }
+            }
+
+            //[Up] close
+            //Scan all the way up
+            List<Tile> scanUp = CurrentStage.TileList
+                .Where(x => x.Position.Y >= upDistance && x.Position.Y < position.Y)
+                .Where(x => x.Position.X == position.X)
+                .ToList();
+
+            //Get the first 2 tiles closest to the player
+            List<Tile> filterUp = scanUp
+                .OrderByDescending(x => x.Position.Y)
+                .Take(2)
+                .ToList();
+
+            if (filterUp.Any(x => x.Foe != null))
+            {
+                Ellipse dot = GetDot("red");
+                Grid.SetColumn(dot, 1);
+                Grid.SetRow(dot, 0);
+                CurrentStage.FoeRadar.Children.Add(dot);
+            }
+            else
+            {
+                //[Up] medium
+                filterUp = scanUp
+                    .OrderByDescending(x => x.Position.Y)
+                    .Take(5)
+                    .ToList();
+
+                if (filterUp.Any(x => x.Foe != null))
+                {
+                    Ellipse dot = GetDot("orange");
+                    Grid.SetColumn(dot, 1);
+                    Grid.SetRow(dot, 0);
+                    CurrentStage.FoeRadar.Children.Add(dot);
+                }
+                else
+                {
+                    //[Up] far
+                    filterUp = scanUp
+                        .OrderByDescending(x => x.Position.Y)
+                        .Take(8)
+                        .ToList();
+
+                    if (filterUp.Any(x => x.Foe != null))
+                    {
+                        Ellipse dot = GetDot("yellow");
+                        Grid.SetColumn(dot, 1);
+                        Grid.SetRow(dot, 0);
+                        CurrentStage.FoeRadar.Children.Add(dot);
+                    }
+                }
+            }
+
+            //[Down] close
+            //Scan all the way down
+            List<Tile> scanDown = CurrentStage.TileList
+                .Where(x => x.Position.Y <= downDistance && x.Position.Y > position.Y)
+                .Where(x => x.Position.X == position.X)
+                .ToList();
+
+            //Get the first 2 tiles closest to the player
+            List<Tile> filterDown = scanDown
+                .OrderBy(x => x.Position.Y)
+                .Take(2)
+                .ToList();
+
+            if (filterDown.Any(x => x.Foe != null))
+            {
+                Ellipse dot = GetDot("red");
+                Grid.SetColumn(dot, 1);
+                Grid.SetRow(dot, 2);
+                CurrentStage.FoeRadar.Children.Add(dot);
+            }
+            else
+            {
+                //[Down] medium
+                filterDown = scanDown
+                    .OrderBy(x => x.Position.Y)
+                    .Take(5)
+                    .ToList();
+
+                if (filterDown.Any(x => x.Foe != null))
+                {
+                    Ellipse dot = GetDot("orange");
+                    Grid.SetColumn(dot, 1);
+                    Grid.SetRow(dot, 2);
+                    CurrentStage.FoeRadar.Children.Add(dot);
+                }
+                else
+                {
+                    //[Down] far
+                    filterDown = scanDown
+                        .OrderBy(x => x.Position.Y)
+                        .Take(8)
+                        .ToList();
+
+                    if (filterDown.Any(x => x.Foe != null))
+                    {
+                        Ellipse dot = GetDot("yellow");
+                        Grid.SetColumn(dot, 1);
+                        Grid.SetRow(dot, 2);
+                        CurrentStage.FoeRadar.Children.Add(dot);
+                    }
+                }
+            }
+
+            //[Diagonal Left Up]
+            //[Close]
+            List<Tile> scanDiagonalLeftUp = new List<Tile>();
+            scanDiagonalLeftUp.Add(CurrentStage.TileList
+                .FirstOrDefault(x => x.Position.X == position.X - 1 && x.Position.Y == position.Y - 1));
+            scanDiagonalLeftUp.Add(CurrentStage.TileList
+                .FirstOrDefault(x => x.Position.X == position.X - 2 && x.Position.Y == position.Y - 1));
+            scanDiagonalLeftUp.Add(CurrentStage.TileList
+                .FirstOrDefault(x => x.Position.X == position.X - 1 && x.Position.Y == position.Y - 2));
+
+            //Filter
+            scanDiagonalLeftUp = scanDiagonalLeftUp.Where(x => x != null).ToList();
+
+            if (scanDiagonalLeftUp.Any(x => x.Foe != null))
+            {
+                Ellipse dot = GetDot("red");
+                Grid.SetColumn(dot, 0);
+                Grid.SetRow(dot, 0);
+                CurrentStage.FoeRadar.Children.Add(dot);
+            }
+            else
+            {
+                //[Medium]
+                scanDiagonalLeftUp.Add(CurrentStage.TileList
+                    .FirstOrDefault(t => t.Position.X == position.X - 3 && t.Position.Y == position.Y - 1));
+                scanDiagonalLeftUp.Add(CurrentStage.TileList
+                    .FirstOrDefault(t => t.Position.X == position.X - 2 && t.Position.Y == position.Y - 2));
+                scanDiagonalLeftUp.Add(CurrentStage.TileList
+                    .FirstOrDefault(t => t.Position.X == position.X - 1 && t.Position.Y == position.Y - 3));
+
+                //Filter
+                scanDiagonalLeftUp = scanDiagonalLeftUp.Where(x => x != null).ToList();
+
+                if (scanDiagonalLeftUp.Any(x => x.Foe != null))
+                {
+                    Ellipse dot = GetDot("orange");
+                    Grid.SetColumn(dot, 0);
+                    Grid.SetRow(dot, 0);
+                    CurrentStage.FoeRadar.Children.Add(dot);
+                }
+                else
+                {
+                    //[Far]
+                    scanDiagonalLeftUp.Add(CurrentStage.TileList
+                        .FirstOrDefault(t => t.Position.X == position.X - 4 && t.Position.Y == position.Y - 1));
+                    scanDiagonalLeftUp.Add(CurrentStage.TileList
+                        .FirstOrDefault(t => t.Position.X == position.X - 3 && t.Position.Y == position.Y - 2));
+                    scanDiagonalLeftUp.Add(CurrentStage.TileList
+                        .FirstOrDefault(t => t.Position.X == position.X - 2 && t.Position.Y == position.Y - 3));
+                    scanDiagonalLeftUp.Add(CurrentStage.TileList
+                        .FirstOrDefault(t => t.Position.X == position.X - 1 && t.Position.Y == position.Y - 4));
+
+                    //Filter
+                    scanDiagonalLeftUp = scanDiagonalLeftUp.Where(x => x != null).ToList();
+
+                    if (scanDiagonalLeftUp.Any(x => x.Foe != null))
+                    {
+                        Ellipse dot = GetDot("yellow");
+                        Grid.SetColumn(dot, 0);
+                        Grid.SetRow(dot, 0);
+                        CurrentStage.FoeRadar.Children.Add(dot);
+                    }
+                }
+            }
+
+            //[Diagonal Left Down]
+            // [Close]
+            List<Tile> scanDiagonalLeftDown = new List<Tile>();
+            scanDiagonalLeftDown.Add(CurrentStage.TileList
+                .FirstOrDefault(t => t.Position.X == position.X - 1 && t.Position.Y == position.Y + 1));
+            scanDiagonalLeftDown.Add(CurrentStage.TileList
+                .FirstOrDefault(t => t.Position.X == position.X - 2 && t.Position.Y == position.Y + 1));
+            scanDiagonalLeftDown.Add(CurrentStage.TileList
+                .FirstOrDefault(t => t.Position.X == position.X - 1 && t.Position.Y == position.Y + 2));
+
+            //Filter
+            scanDiagonalLeftDown = scanDiagonalLeftDown.Where(x => x != null).ToList();
+
+            if (scanDiagonalLeftDown.Any(x => x.Foe != null))
+            {
+                Ellipse dot = GetDot("red");
+                Grid.SetColumn(dot, 0);
+                Grid.SetRow(dot, 2);
+                CurrentStage.FoeRadar.Children.Add(dot);
+            }
+            else
+            {
+                //[Medium]
+                scanDiagonalLeftDown.Add(CurrentStage.TileList
+                    .FirstOrDefault(t => t.Position.X == position.X - 3 && t.Position.Y == position.Y + 1));
+                scanDiagonalLeftDown.Add(CurrentStage.TileList
+                    .FirstOrDefault(t => t.Position.X == position.X - 2 && t.Position.Y == position.Y + 2));
+                scanDiagonalLeftDown.Add(CurrentStage.TileList
+                    .FirstOrDefault(t => t.Position.X == position.X - 1 && t.Position.Y == position.Y + 3));
+
+                //Filter
+                scanDiagonalLeftDown = scanDiagonalLeftDown.Where(x => x != null).ToList();
+
+                if (scanDiagonalLeftDown.Any(x => x.Foe != null))
+                {
+                    Ellipse dot = GetDot("orange");
+                    Grid.SetColumn(dot, 0);
+                    Grid.SetRow(dot, 2);
+                    CurrentStage.FoeRadar.Children.Add(dot);
+                }
+                else
+                {
+                    //[Far]
+                    scanDiagonalLeftDown.Add(CurrentStage.TileList
+                        .FirstOrDefault(t => t.Position.X == position.X - 4 && t.Position.Y == position.Y + 1));
+                    scanDiagonalLeftDown.Add(CurrentStage.TileList
+                        .FirstOrDefault(t => t.Position.X == position.X - 3 && t.Position.Y == position.Y + 2));
+                    scanDiagonalLeftDown.Add(CurrentStage.TileList
+                        .FirstOrDefault(t => t.Position.X == position.X - 2 && t.Position.Y == position.Y + 3));
+                    scanDiagonalLeftDown.Add(CurrentStage.TileList
+                        .FirstOrDefault(t => t.Position.X == position.X - 1 && t.Position.Y == position.Y + 4));
+
+                    //Filter
+                    scanDiagonalLeftDown = scanDiagonalLeftDown.Where(x => x != null).ToList();
+
+                    if (scanDiagonalLeftDown.Any(x => x.Foe != null))
+                    {
+                        Ellipse dot = GetDot("yellow");
+                        Grid.SetColumn(dot, 0);
+                        Grid.SetRow(dot, 2);
+                        CurrentStage.FoeRadar.Children.Add(dot);
+                    }
+                }
+            }
+
+            //[Diagonal Right Up]
+            //[Close range]
+            List<Tile> scanDiagonalRightUp = new List<Tile>();
+            scanDiagonalRightUp.Add(CurrentStage.TileList
+                .FirstOrDefault(t => t.Position.X == position.X + 1 && t.Position.Y == position.Y - 1));
+            scanDiagonalRightUp.Add(CurrentStage.TileList
+                .FirstOrDefault(t => t.Position.X == position.X + 2 && t.Position.Y == position.Y - 1));
+            scanDiagonalRightUp.Add(CurrentStage.TileList
+                .FirstOrDefault(t => t.Position.X == position.X + 1 && t.Position.Y == position.Y - 2));
+
+            //Filter
+            scanDiagonalRightUp = scanDiagonalRightUp.Where(x => x != null).ToList();
+
+            if (scanDiagonalRightUp.Any(x => x.Foe != null))
+            {
+                Ellipse dot = GetDot("red");
+                Grid.SetColumn(dot, 2);
+                Grid.SetRow(dot, 0);
+                CurrentStage.FoeRadar.Children.Add(dot);
+            }
+            else
+            {
+                //[Medium Range] 
+                scanDiagonalRightUp.Add(CurrentStage.TileList
+                    .FirstOrDefault(t => t.Position.X == position.X + 3 && t.Position.Y == position.Y - 1));
+                scanDiagonalRightUp.Add(CurrentStage.TileList
+                    .FirstOrDefault(t => t.Position.X == position.X + 2 && t.Position.Y == position.Y - 2));
+                scanDiagonalRightUp.Add(CurrentStage.TileList
+                    .FirstOrDefault(t => t.Position.X == position.X + 1 && t.Position.Y == position.Y - 3));
+
+                //Filter
+                scanDiagonalRightUp = scanDiagonalRightUp.Where(x => x != null).ToList();
+
+                if (scanDiagonalRightUp.Any(x => x.Foe != null))
+                {
+                    Ellipse dot = GetDot("orange");
+                    Grid.SetColumn(dot, 2);
+                    Grid.SetRow(dot, 0);
+                    CurrentStage.FoeRadar.Children.Add(dot);
+                }
+                else
+                {
+                    //[Far Range]
+                    scanDiagonalRightUp.Add(CurrentStage.TileList
+                        .FirstOrDefault(t => t.Position.X == position.X + 4 && t.Position.Y == position.Y - 1));
+                    scanDiagonalRightUp.Add(CurrentStage.TileList
+                        .FirstOrDefault(t => t.Position.X == position.X + 3 && t.Position.Y == position.Y - 2));
+                    scanDiagonalRightUp.Add(CurrentStage.TileList
+                        .FirstOrDefault(t => t.Position.X == position.X + 2 && t.Position.Y == position.Y - 3));
+                    scanDiagonalRightUp.Add(CurrentStage.TileList
+                        .FirstOrDefault(t => t.Position.X == position.X + 1 && t.Position.Y == position.Y - 4));
+
+                    //Filter empty tiles
+                    scanDiagonalRightUp = scanDiagonalRightUp.Where(x => x != null).ToList();
+
+                    if (scanDiagonalRightUp.Any(x => x.Foe != null))
+                    {
+                        Ellipse dot = GetDot("yellow");
+                        Grid.SetColumn(dot, 2);
+                        Grid.SetRow(dot, 0);
+                        CurrentStage.FoeRadar.Children.Add(dot);
+                    }
+                }
+            }
+
+            //[Diagonal Right Down]
+
+            List<Tile> scanDiagonalRightDown = new List<Tile>();
+            scanDiagonalRightDown.Add(CurrentStage.TileList
+                .FirstOrDefault(t => t.Position.X == position.X + 1 && t.Position.Y == position.Y + 1));
+            scanDiagonalRightDown.Add(CurrentStage.TileList
+                .FirstOrDefault(t => t.Position.X == position.X + 2 && t.Position.Y == position.Y + 1));
+            scanDiagonalRightDown.Add(CurrentStage.TileList
+                .FirstOrDefault(t => t.Position.X == position.X + 1 && t.Position.Y == position.Y + 2));
+
+            //Filter
+            scanDiagonalRightDown = scanDiagonalRightDown.Where(x => x != null).ToList();
+
+            if (scanDiagonalRightDown.Any(x => x.Foe != null))
+            {
+                Ellipse dot = GetDot("red");
+                Grid.SetColumn(dot, 2);
+                Grid.SetRow(dot, 2);
+                CurrentStage.FoeRadar.Children.Add(dot);
+            }
+            else
+            {
+                scanDiagonalRightDown.Add(CurrentStage.TileList
+                    .FirstOrDefault(t => t.Position.X == position.X + 3 && t.Position.Y == position.Y + 1));
+                scanDiagonalRightDown.Add(CurrentStage.TileList
+                    .FirstOrDefault(t => t.Position.X == position.X + 2 && t.Position.Y == position.Y + 2));
+                scanDiagonalRightDown.Add(CurrentStage.TileList
+                    .FirstOrDefault(t => t.Position.X == position.X + 1 && t.Position.Y == position.Y + 3));
+
+                //Filter
+                scanDiagonalRightDown = scanDiagonalRightDown.Where(x => x != null).ToList();
+
+                if (scanDiagonalRightDown.Any(x => x.Foe != null))
+                {
+                    Ellipse dot = GetDot("orange");
+                    Grid.SetColumn(dot, 2);
+                    Grid.SetRow(dot, 2);
+                    CurrentStage.FoeRadar.Children.Add(dot);
+                }
+                else
+                {
+                    scanDiagonalRightDown.Add(CurrentStage.TileList
+                        .FirstOrDefault(t => t.Position.X == position.X + 4 && t.Position.Y == position.Y + 1));
+                    scanDiagonalRightDown.Add(CurrentStage.TileList
+                        .FirstOrDefault(t => t.Position.X == position.X + 3 && t.Position.Y == position.Y + 2));
+                    scanDiagonalRightDown.Add(CurrentStage.TileList
+                        .FirstOrDefault(t => t.Position.X == position.X + 2 && t.Position.Y == position.Y + 3));
+                    scanDiagonalRightDown.Add(CurrentStage.TileList
+                        .FirstOrDefault(t => t.Position.X == position.X + 1 && t.Position.Y == position.Y + 4));
+
+                    //Filter
+                    scanDiagonalRightDown = scanDiagonalRightDown.Where(x => x != null).ToList();
+
+                    if (scanDiagonalRightDown.Any(x => x.Foe != null))
+                    {
+                        Ellipse dot = GetDot("yellow");
+                        Grid.SetColumn(dot, 2);
+                        Grid.SetRow(dot, 2);
+                        CurrentStage.FoeRadar.Children.Add(dot);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Directions include: up, down, left, right, diagonalLeftUp, diagonalLeftDown, diagonalRightUp, diagonalRightDown
+        /// </summary>
+        /// <param name="direction"></param>
+        /// <returns></returns>
+        private static List<Coordinates> GetDetectionRange(string direction)
+        {
+            //hmm :/
+            Coordinates playerPosition = CurrentStage.TileList.Find(x => x.Player != null).Position;
+            List<Coordinates> range = new List<Coordinates>();
+
+
+            if (direction.ToLower() == "left")
+            {
+                for (int i = 1; i < 4; i++)
+                {
+                    range.Add(new Coordinates() { X = playerPosition.X - i, Y = playerPosition.Y });
+                }
+
+                return range;
+            }
+            else if (direction.ToLower() == "right")
+            {
+                for (int i = 1; i < 10; i++)
+                {
+                    range.Add(new Coordinates() { X = playerPosition.X + i, Y = playerPosition.Y });
+                }
+            }
+
+            return range;
+        }
+
+        /// <summary>
+        /// Color options: red, orange, yellow, royalblue
+        /// </summary>
+        /// <param name="color"></param>
+        /// <returns></returns>
+        private static Ellipse GetDot(string color)
+        {
+            Ellipse dot = new Ellipse();
+
+            if (color == "red")
+            {
+                dot.Fill = Brushes.Red;
+                dot.Width = 32;
+                dot.Height = 32;
+            }
+            else if (color == "orange")
+            {
+                dot.Fill = Brushes.Orange;
+                dot.Width = 24;
+                dot.Height = 24;
+            }
+            else if (color == "yellow")
+            {
+                dot.Fill = Brushes.Yellow;
+                dot.Width = 20;
+                dot.Height = 20;
+            }
+            else if (color == "royalblue")
+            {
+                dot.Fill = Brushes.RoyalBlue;
+                dot.Width = 32;
+                dot.Height = 32;
+            }
+
+            return dot;
         }
 
         private static void InsertEmptyTile(int x, int y)
@@ -286,7 +871,7 @@ namespace JRPG_ClassLibrary
         {
             foreach (Character character in Inventory.Team)
             {
-                CurrentStage.Team.Add(character);
+                CurrentStage.TeamHpDefDeduct.Add(character, (0, 0));
             }
         }
 

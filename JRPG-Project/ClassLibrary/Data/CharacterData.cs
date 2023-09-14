@@ -25,7 +25,6 @@ namespace JRPG_Project.ClassLibrary.Data
             foreach (Character character in CharacterList)
             {
                 character.CharImage = GetCharacterImage(character.ImageName);
-                ApplyDefaultEquipment(character);
             }
         }
 
@@ -51,49 +50,22 @@ namespace JRPG_Project.ClassLibrary.Data
             return img;
         }
 
-        private static void ApplyDefaultEquipment(Character character)
-        {
-            /// '/' = no equipment || 1st = weapon || 2st = armour || 3st = amulet
-            string[] parts = character.EquipmentIDs.Split(';');
-
-            //Equip weapon
-            if (parts[0] != "/")
-            {
-                character.Weapon = ItemData.ListWeapons.Find(x => x.ID == parts[0]);
-            }
-
-            //Equip armour
-            if (parts[1] != "/")
-            {
-                character.Armour = ItemData.ListArmours.Find(x => x.ID == parts[1]);
-            }
-
-            //Equip amulet
-            if (parts[2] != "/")
-            {
-                character.Amulet = ItemData.ListAmulets.Find(x => x.ID == parts[2]);
-            }
-        }
-
         public static void UnequipItem(BaseItem item)
         {
-            if (item is Weapon wpn)
+            foreach (Character member in Inventory.Team)
             {
-                Inventory.Team[0].Weapon = Inventory.Team[0].Weapon == wpn ? null : Inventory.Team[0].Weapon;
-                Inventory.Team[1].Weapon = Inventory.Team[1].Weapon == wpn ? null : Inventory.Team[1].Weapon;
-                Inventory.Team[2].Weapon = Inventory.Team[2].Weapon == wpn ? null : Inventory.Team[2].Weapon;
-            }
-            else if (item is Armour arm)
-            {
-                Inventory.Team[0].Armour = Inventory.Team[0].Armour == arm ? null : Inventory.Team[0].Armour;
-                Inventory.Team[1].Armour = Inventory.Team[1].Armour == arm ? null : Inventory.Team[1].Armour;
-                Inventory.Team[2].Armour = Inventory.Team[2].Armour == arm ? null : Inventory.Team[2].Armour;
-            }
-            else if (item is Amulet amu)
-            {
-                Inventory.Team[0].Amulet = Inventory.Team[0].Amulet == amu ? null : Inventory.Team[0].Amulet;
-                Inventory.Team[1].Amulet = Inventory.Team[1].Amulet == amu ? null : Inventory.Team[1].Amulet;
-                Inventory.Team[2].Amulet = Inventory.Team[2].Amulet == amu ? null : Inventory.Team[2].Amulet;
+                if (member.Weapon != null && member.Weapon.UniqueID == item.UniqueID)
+                {
+                    member.Weapon = null;
+                }
+                else if (member.Armour != null && member.Armour.UniqueID == item.UniqueID)
+                {
+                    member.Armour = null;
+                }
+                else if (member.Amulet != null && member.Amulet.UniqueID == item.UniqueID)
+                {
+                    member.Amulet = null;
+                }
             }
         }
 
@@ -117,30 +89,6 @@ namespace JRPG_Project.ClassLibrary.Data
             {
                 throw new Exception("Item type not recognized.");
             }
-
-            //Equip item
-            //if (item.UniqueID.Contains("weapon"))
-            //{
-            //    //Cast item to weapon
-            //    Weapon wpn = item as Weapon;
-
-            //    //Equip weapon
-            //    Inventory.Team[charIndex].Weapon = wpn;
-            //}
-            //else if (item.UniqueID.Contains("armour"))
-            //{
-            //    Armour arm = item as Armour;
-            //    Inventory.Team[charIndex].Armour = arm;
-            //}
-            //else if (item.UniqueID.Contains("amulet"))
-            //{
-            //    Amulet amu = item as Amulet;
-            //    Inventory.Team[charIndex].Amulet = amu;
-            //}
-            //else
-            //{
-            //    throw new Exception("Item type not recognized.");
-            //}
         }
 
         public static void ClearEquipment(int charIndex, string type)
@@ -163,7 +111,7 @@ namespace JRPG_Project.ClassLibrary.Data
         public static int GetValue(Character c)
         {
             //Incorporate stats
-            double statValue = (c.Stats.HP * 1.2) + (c.Stats.DEF * 1.5) + (c.Stats.DMG * 1.3) + (c.Stats.SPD * 1.1) + (c.Stats.STA * 1.3) + 
+            double statValue = (c.Stats.HP * 1.2) + (c.Stats.DEF * 1.5) + (c.Stats.DMG * 1.3) + (c.Stats.SPD * 1.1) + (c.Stats.STA * 1.3) +
                 (c.Stats.STR * 1.4) + (c.Stats.CRC * 2) + (c.Stats.CRD * 1.8);
             statValue /= 6 - c.Level;
 
@@ -171,5 +119,60 @@ namespace JRPG_Project.ClassLibrary.Data
 
             return (int)statValue;
         }
+
+        public static int GetThreatScore(Character c)
+        {
+            Stats stats = c.GetAccumulatedStats();
+
+            // Calculate effective damage based on stamina and stamina scaling
+            double staminaRatio = stats.DMG < 0 ? 0 : stats.STA / stats.DMG;
+            double effectiveDamage = stats.DMG;
+
+            if (staminaRatio < 0.25)
+            {
+                effectiveDamage *= 0.8;
+            }
+            else if (staminaRatio < 0.5)
+            {
+                effectiveDamage *= 0.45;
+            }
+            else
+            {
+                effectiveDamage *= 0.25;
+            }
+
+            // Apply stamina damage scaling
+            if (stats.STA < 0.15)
+            {
+                effectiveDamage *= 0.5;
+            }
+            else if (stats.STA > 0.6)
+            {
+                effectiveDamage *= 1; // No effect
+            }
+            else
+            {
+                effectiveDamage *= 0.85;
+            }
+
+            // Apply defense regeneration
+            double defenseRegen = stats.STR * 0.5;
+
+            // Calculate crit damage
+            double critDamage = 1.0; // Default, no crit
+            if (stats.CRC > 0)
+            {
+                critDamage = 1.0 + (stats.CRD / 100.0); // Convert CRD to a multiplier
+            }
+
+            // Calculate threat score
+            double threatScore = effectiveDamage * critDamage + stats.DEF + defenseRegen;
+
+            // Round threat score
+            int roundedThreatScore = (int)Math.Round(threatScore);
+
+            return roundedThreatScore;
+        }
+
     }
 }

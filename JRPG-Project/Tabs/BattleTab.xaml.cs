@@ -23,7 +23,10 @@ namespace JRPG_Project.Tabs
             SetRandomBackground();
             SoundManager.PlaySound("battle-start.wav");
             this.FoeTeam = foeTeam;
-            this.PlayerTeam = Stages.CurrentStage.Team;
+            foreach (Character c in Stages.CurrentStage.TeamHpDefDeduct.Keys)
+            {
+                PlayerTeam.Add(c);
+            }
             InitializeBattle();
         }
         //Foe teams
@@ -49,41 +52,41 @@ namespace JRPG_Project.Tabs
             //Add all characters to the hp dictionary AND stamina dictionary
             foreach (Character character in PlayerTeam)
             {
-                CharHpDef.Add(character, (character.GetAccumelatedStats().HP, character.GetAccumelatedStats().DEF));
-                CharStaStrMax.Add(character, (character.GetAccumelatedStats().STA, character.GetAccumelatedStats().STR, character.GetAccumelatedStats().STA));
+                CharHpDef.Add(character, (character.GetAccumulatedStats().HP - Stages.CurrentStage.TeamHpDefDeduct[character].Item1,
+                    character.GetAccumulatedStats().DEF - Stages.CurrentStage.TeamHpDefDeduct[character].Item2));
+                CharStaStrMax.Add(character, (character.GetAccumulatedStats().STA, character.GetAccumulatedStats().STR, character.GetAccumulatedStats().STA));
             }
             foreach (Character character in FoeTeam)
             {
-                CharHpDef.Add(character, (character.GetAccumelatedStats().HP, character.GetAccumelatedStats().DEF));
-                CharStaStrMax.Add(character, (character.GetAccumelatedStats().STA, character.GetAccumelatedStats().STR, character.GetAccumelatedStats().STA));
+                CharHpDef.Add(character, (character.GetAccumulatedStats().HP, character.GetAccumulatedStats().DEF));
+                CharStaStrMax.Add(character, (character.GetAccumulatedStats().STA, character.GetAccumulatedStats().STR, character.GetAccumulatedStats().STA));
             }
 
             //Place foes on the grid
             for (int i = 0; i < FoeTeam.Count(); i++)
             {
-                //Border border = GetCharacterBorder(FoeTeam[i]);
                 Canvas canvas = GetCharacterBorder(FoeTeam[i]);
                 FoePanel.Children.Add(canvas);
 
-                //Add border to dictionary
-                //CharacterBorder.Add(FoeTeam[i], border);
+                //Add canvas to dictionary
                 CharacterCanvas.Add(FoeTeam[i], canvas);
             }
 
             //Place player team on the grid
             for (int i = 0; i < PlayerTeam.Count(); i++)
             {
-                //Skip dead characters
-                if (PlayerTeam[i].GetAccumelatedStats().HP <= 0)
-                    continue;
-
-                //Create border
-                //Border border = GetCharacterBorder(PlayerTeam[i]);
+                //Create canvas
                 Canvas canvas = GetCharacterBorder(PlayerTeam[i]);
                 PlayerPanel.Children.Add(canvas);
 
-                //Add border to dictionary
-                //CharacterBorder.Add(PlayerTeam[i], border);
+                //Display dead characters as dead
+                if (CharHpDef[PlayerTeam[i]].Item1 <= 0)
+                {
+                    canvas.Opacity = 0.64;
+                    continue;
+                }
+
+                //Add canvas to dictionary
                 CharacterCanvas.Add(PlayerTeam[i], canvas);
             }
 
@@ -118,9 +121,9 @@ namespace JRPG_Project.Tabs
             tooltip.Style = FindResource("CharacterTooltip") as Style;
             tooltip.Content = $"{character.Name}\n" +
                 $"===============\n" +
-                $"HP: {character.GetAccumelatedStats().HP} | DEF: {character.GetAccumelatedStats().DEF} | SPD: {character.GetAccumelatedStats().SPD}\n" +
-                $"DMG: {character.GetAccumelatedStats().DMG} | CRD: {character.GetAccumelatedStats().CRD} | CRC: {character.GetAccumelatedStats().CRC}\n" +
-                $"STA: {character.GetAccumelatedStats().STA} | STR: {character.GetAccumelatedStats().STR}";
+                $"HP: {character.GetAccumulatedStats().HP} | DEF: {character.GetAccumulatedStats().DEF} | SPD: {character.GetAccumulatedStats().SPD}\n" +
+                $"DMG: {character.GetAccumulatedStats().DMG} | CRD: {character.GetAccumulatedStats().CRD} | CRC: {character.GetAccumulatedStats().CRC}\n" +
+                $"STA: {character.GetAccumulatedStats().STA} | STR: {character.GetAccumulatedStats().STR}";
 
             //Canvas (parent)
             Canvas canvas = new Canvas();
@@ -152,8 +155,8 @@ namespace JRPG_Project.Tabs
             defBar.Height = 10;
             defBar.Width = 116;
             defBar.Margin = new Thickness(2);
-            defBar.Maximum = character.GetAccumelatedStats().DEF;
-            defBar.Value = defBar.Maximum;
+            defBar.Maximum = character.GetAccumulatedStats().DEF;
+            defBar.Value = CharHpDef[character].Item2;
             defBar.Style = (Style)FindResource("XpProgressBar");
             defBar.Foreground = (Brush)new BrushConverter().ConvertFrom("#525FE1");
             stackPanel.Children.Add(defBar);
@@ -174,8 +177,8 @@ namespace JRPG_Project.Tabs
             hpBar.Height = 10;
             hpBar.Width = 116;
             hpBar.Margin = new Thickness(2);
-            hpBar.Maximum = character.GetAccumelatedStats().HP;
-            hpBar.Value = hpBar.Maximum;
+            hpBar.Maximum = character.GetAccumulatedStats().HP;
+            hpBar.Value = CharHpDef[character].Item1;
             hpBar.Style = (Style)FindResource("XpProgressBar");
             hpBar.Foreground = (Brush)new BrushConverter().ConvertFrom("#F31559");
             stackPanel.Children.Add(hpBar);
@@ -185,7 +188,7 @@ namespace JRPG_Project.Tabs
             staBar.Height = 8;
             staBar.Width = 110;
             staBar.Margin = new Thickness(2);
-            staBar.Maximum = character.GetAccumelatedStats().STA;
+            staBar.Maximum = character.GetAccumulatedStats().STA;
             staBar.Value = staBar.Maximum;
             staBar.Style = (Style)FindResource("XpProgressBar");
             staBar.Foreground = (Brush)new BrushConverter().ConvertFrom("#F4D160");
@@ -328,6 +331,10 @@ namespace JRPG_Project.Tabs
                 //Create character queue
                 CreateQueue();
 
+                //Skip regeneration if round = 1
+                if (Round <= 1)
+                    continue;
+
                 //play refill sound
                 SoundManager.PlaySound("refill.wav");
 
@@ -382,7 +389,7 @@ namespace JRPG_Project.Tabs
 
                 //Calculate speed based on stamina
                 double staRatio = (double)CharStaStrMax[character].Item1 / (double)CharStaStrMax[character].Item3;
-                double speed = (double)character.GetAccumelatedStats().SPD;
+                double speed = (double)character.GetAccumulatedStats().SPD;
 
                 //If ratio is below default sta consumtion, skip | ratio < 50%, speed -= 25% | else speed = speed
                 if (CharStaStrMax[character].Item1 < GetStaminaConsumtion(character))
@@ -533,7 +540,7 @@ namespace JRPG_Project.Tabs
             int teamDamage = Queue
                 .SkipWhile(x => x != currentChar)
                 .Where(x => x.ID.Contains(allyDistinguisher))
-                .Sum(x => x.GetAccumelatedStats().DMG);
+                .Sum(x => x.GetAccumulatedStats().DMG);
 
             //Target list
             List<Character> targets = CharHpDef.Keys.Where(x => x.ID.Contains(targetDistinguisher)).ToList();
@@ -576,10 +583,10 @@ namespace JRPG_Project.Tabs
                     break;
 
                 //[5] Get target with highest threat score
-                target = targets.OrderByDescending(x => GetThreatScore(x)).FirstOrDefault();
+                target = targets.OrderByDescending(x => CharacterData.GetThreatScore(x)).FirstOrDefault();
 
                 //-> Can we kill target within 3 turns?
-                int teamDamage3Turns = (Queue.Where(x => x.ID.Contains(allyDistinguisher)).Sum(x => x.GetAccumelatedStats().DMG) * 2) + teamDamage;
+                int teamDamage3Turns = (Queue.Where(x => x.ID.Contains(allyDistinguisher)).Sum(x => x.GetAccumulatedStats().DMG) * 2) + teamDamage;
                 if (CharHpDef[target].Item1 + CharHpDef[target].Item2 <= teamDamage3Turns)
                     break;
 
@@ -589,61 +596,6 @@ namespace JRPG_Project.Tabs
             }
 
             return target;
-        }
-
-        private int GetThreatScore(Character c)
-        {
-            Stats stats = c.GetAccumelatedStats();
-            //Get threat score
-            double threatScore = 0;
-
-            // Calculate effective damage based on stamina and stamina scaling
-            double staminaRatio = stats.STA / stats.DMG;
-            double effectiveDamage = stats.DMG;
-
-            if (staminaRatio < 0.25)
-            {
-                effectiveDamage *= 0.8;
-            }
-            else if (staminaRatio < 0.5)
-            {
-                effectiveDamage *= 0.45;
-            }
-            else
-            {
-                effectiveDamage *= 0.25;
-            }
-
-            // Apply stamina damage scaling
-            if (stats.STA < 0.15)
-            {
-                effectiveDamage *= 0.5;
-            }
-            else if (stats.STA > 0.6)
-            {
-                effectiveDamage *= 1; // No effect
-            }
-            else
-            {
-                effectiveDamage *= 0.85;
-            }
-
-            // Apply defense regeneration
-            double defenseRegen = stats.STR * 0.5;
-
-            // Apply speed factor
-            threatScore *= stats.SPD;
-
-            // Apply health factor (max hp divided by avarage team hp)
-            double hpFactor = stats.HP / PlayerTeam.Average(x => x.GetAccumelatedStats().HP);
-
-            // Calculate threat score
-            threatScore = effectiveDamage * (1 + stats.CRC * 1.2) * (1 + stats.CRD * 1.5) - stats.DEF + defenseRegen + hpFactor;
-
-            // Round threat score
-            threatScore = Math.Round(threatScore);
-
-            return (int)threatScore;
         }
 
         private void Attack(Character attacker, Character target)
@@ -656,8 +608,6 @@ namespace JRPG_Project.Tabs
 
             //Get damage
             (int dmg, bool crit) = CalculateDmg(attacker);
-
-
 
             //Consume Stamina
             ConsumeStamina(attacker, dmg);
@@ -714,14 +664,14 @@ namespace JRPG_Project.Tabs
         private (int, bool) CalculateDmg(Character attacker)
         {
             //Base dmg
-            double DMG = attacker.GetAccumelatedStats().DMG;
+            double DMG = attacker.GetAccumulatedStats().DMG;
             bool crit = false;
 
             //Do we have a crit hit?
-            if (Interaction.GetRandomNumber(0, 100) <= attacker.GetAccumelatedStats().CRC)
+            if (Interaction.GetRandomNumber(0, 100) <= attacker.GetAccumulatedStats().CRC)
             {
                 //Yes, crit hit
-                DMG += (DMG / 100) * attacker.GetAccumelatedStats().CRD;
+                DMG += (DMG / 100) * attacker.GetAccumulatedStats().CRD;
                 crit = true;
             }
 
@@ -767,7 +717,7 @@ namespace JRPG_Project.Tabs
         {
             ///Gives an idea of how much stamina will be consumed. This number is affected by crit stats, hence why it's not accurate.
             //Get stamina to damage ratio
-            double staToDmgRatio = (double)CharStaStrMax[c].Item3 / c.GetAccumelatedStats().DMG;
+            double staToDmgRatio = (double)CharStaStrMax[c].Item3 / c.GetAccumulatedStats().DMG;
             double staToConsume = 0;
 
             //If ratio is < 25%, consume 80% stamina | If ratio is < 50%, consume 45% stamina | else consume 25% stamina
@@ -790,7 +740,7 @@ namespace JRPG_Project.Tabs
             foreach (Character c in Queue)
             {
                 //calculate stamina
-                double sta = CharStaStrMax[c].Item1 + (CharStaStrMax[c].Item2 / 2);
+                double sta = CharStaStrMax[c].Item1 + (CharStaStrMax[c].Item2 / Interaction.GetRandomNumber(1, 2));
                 sta = Math.Ceiling(sta);
 
                 //If stamina is above max, set to max
@@ -811,15 +761,15 @@ namespace JRPG_Project.Tabs
                     continue;
 
                 //calculate armour
-                double armour = CharStaStrMax[c].Item2 / 2;
+                double armour = CharStaStrMax[c].Item2 / Interaction.GetRandomNumber(1, 3);
                 armour = Math.Ceiling(armour);
 
                 //Regenerate armour
                 CharHpDef[c] = (CharHpDef[c].Item1, CharHpDef[c].Item2 + (int)armour);
 
                 //Balance armour if above max
-                if (CharHpDef[c].Item2 > c.GetAccumelatedStats().DEF)
-                    CharHpDef[c] = (CharHpDef[c].Item1, c.GetAccumelatedStats().DEF);
+                if (CharHpDef[c].Item2 > c.GetAccumulatedStats().DEF)
+                    CharHpDef[c] = (CharHpDef[c].Item1, c.GetAccumulatedStats().DEF);
             }
         }
 
@@ -1021,7 +971,7 @@ namespace JRPG_Project.Tabs
             //Animate death symbol
             AnimateDeathSymbol(victim);
 
-            //Lower opacity to 0.4
+            //Lower opacity to 0.64
             while (border.Opacity > 0.64)
             {
                 border.Opacity -= 0.04;
@@ -1041,7 +991,7 @@ namespace JRPG_Project.Tabs
             backColor.Opacity = 0.05;
             skull.Background = backColor;
             skull.Padding = new Thickness(4, 2, 4, 2);
-            skull.Text = "💀";
+            skull.Text = "😵";
             skull.FontSize = 32;
             skull.Foreground = Brushes.White;
             skull.TextTrimming = TextTrimming.None;
@@ -1173,6 +1123,10 @@ namespace JRPG_Project.Tabs
         #region Button Events
         private void BtnFinish_Click(object sender, RoutedEventArgs e)
         {
+            //Add deductions to team
+            foreach (Character c in PlayerTeam)
+                Stages.CurrentStage.TeamHpDefDeduct[c] = (c.GetAccumulatedStats().HP - CharHpDef[c].Item1, c.GetAccumulatedStats().DEF - CharHpDef[c].Item2);
+
             //Return to previous tab
             Interaction.CloseBattleTab(playerWin);
         }
@@ -1208,6 +1162,13 @@ namespace JRPG_Project.Tabs
 
         private void BtnGodSpeed_Click(object sender, RoutedEventArgs e)
         {
+            //Unpause game if paused
+            if (PauseBattle)
+            {
+                BtnPause.Content = "Pause";
+                PauseBattle = false;
+            }
+
             //Put speed toggle on 100
             speedToggle = 20;
 

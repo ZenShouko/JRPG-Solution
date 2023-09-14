@@ -18,5 +18,10 @@ namespace JRPG_Project.ClassLibrary.Entities
         //Direction of the object
         public int DirectionX { get; set; } = 0;
         public int DirectionY { get; set; } = 0;
+
+        public override string ToString()
+        {
+            return $"{X};{Y}";
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using JRPG_ClassLibrary;
 using JRPG_ClassLibrary.Entities;
 using JRPG_Project.ClassLibrary.Entities;
+using JRPG_Project.ClassLibrary.Universal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,6 +33,9 @@ namespace JRPG_Project.ClassLibrary
 
             //Clear the task list & planned coordinates
             plannedCoordinates.Clear();
+
+            //[Foe undetected sound] Keep track wether any foe has detected the player before this turn
+            bool wasDetected = Stages.CurrentStage.FoeList.Any(f => f.HasDetectedPlayer);
 
             //Run through all foes
             foreach (MapFoe foe in Stages.CurrentStage.FoeList)
@@ -72,6 +76,13 @@ namespace JRPG_Project.ClassLibrary
                 }
             }
 
+            //[Foe undetected sound] Check if player has escaped from any foe
+            if (wasDetected && Stages.CurrentStage.FoeList.All(f => !f.HasDetectedPlayer))
+            {
+                //Play sound
+                SoundManager.PlaySound("foe-lost.wav");
+            }
+
             //Deactivate the foe turn
             FoeTurn = false;
         }
@@ -84,7 +95,14 @@ namespace JRPG_Project.ClassLibrary
             //Check if any foe is on a tile in the detection range
             if (detectionRange.Contains($"{foe.Position.X};{foe.Position.Y}"))
             {
-                //If so, beep.
+                //Only play sound if player was not detected yet
+                if (!foe.HasDetectedPlayer)
+                {
+                    //Play sound
+                    SoundManager.PlaySound("foe-spotted.wav");
+                }
+
+                //Change icon
                 foe.Icon.Source = new BitmapImage(new Uri(@"../../Resources/Assets/Platform/foe-alert.png", UriKind.Relative));
                 foe.HasDetectedPlayer = true;
                 return true;
@@ -376,8 +394,9 @@ namespace JRPG_Project.ClassLibrary
             //Add foe to new tile
             newTile.Foe = foe;
 
-            //Animate movement
-            AnimateMovement(foe);
+            //Animate movement if foe is on visible platform. (Else it's a waste of resources)
+            if (Stages.CurrentStage.VisiblePlatform.Children.Contains(newTile.TileElement))
+                AnimateMovement(foe);
 
             //Battle trigger (starts a battle)
             Stages.BattleTrigger();

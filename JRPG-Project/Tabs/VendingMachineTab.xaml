@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:JRPG_Project"
              mc:Ignorable="d" 
              d:DesignHeight="225" d:DesignWidth="800">
-    <Border x:Name="BorderTicket" CornerRadius="6" BorderThickness="1" BorderBrush="Black" Padding="4">
+    <Border x:Name="BorderTicket" CornerRadius="6" BorderThickness="1" BorderBrush="Black" Padding="4" HorizontalAlignment="Center" Width="800">
         <Border.Background>
             <LinearGradientBrush StartPoint="0,0" EndPoint="1,2">
                 <GradientStop Color="#322653" Offset="-1"/>
@@ -23,15 +23,16 @@
                 </LinearGradientBrush>
             </DockPanel.Background>
             <Image x:Name="ImgVendingMachine" DockPanel.Dock="Left" Source="/Resources/Assets/GUI/vendingmachine.gif"/>
-            <StackPanel HorizontalAlignment="Center">
+            <StackPanel x:Name="StackInfo" HorizontalAlignment="Center">
                 <TextBlock Text="Vending Machine" TextAlignment="Center" FontSize="20" Margin="0 4" Foreground="White"/>
-                <TextBlock Text="GOLDEN TICKET" TextAlignment="Center" FontSize="28" Margin="0 4" Foreground="Goldenrod" FontWeight="Bold"/>
-                <TextBlock TextAlignment="Center" FontSize="16" Margin="0 4" Foreground="DarkGoldenrod" TextWrapping="Wrap">
-                    <Run Text="Easily one of the best chances you can get in life!"/>
-                    <Run Text="DO not miss on this opportunity!!"/>
+                <TextBlock Text="Get Cool Materials !!" TextAlignment="Center" FontSize="28" Margin="0 8" Foreground="Aquamarine" FontWeight="Bold"/>
+                <TextBlock TextAlignment="Center" FontSize="16" Margin="0 4" Foreground="MediumAquamarine" TextWrapping="Wrap">
+                    <Run Text="A chance to get Orbs and Scrolls. Are you feeling lucky?"/>
+                    <LineBreak/>
+                    <Run Text="Double your rewards!!"/>
                 </TextBlock>
-                <TextBlock Text="Price: 400 coins" FontStyle="Italic" TextAlignment="Center" FontSize="22" Margin="0 4" Foreground="Crimson"/>
-                <Button Content="Buy Now!" Style="{StaticResource menu-button}" Margin="10" Background="#606C5D" Foreground="Black" Click="Button_Click"/>
+                <TextBlock Text="Price: 100 coins" FontStyle="Italic" TextAlignment="Center" FontSize="22" Margin="0 10 0 0" Foreground="SkyBlue"/>
+                <Button x:Name="BtnBuy" Content="Buy Now!" Style="{StaticResource menu-button}" Margin="20" Background="DarkSlateBlue" Foreground="Black" Click="Button_Click"/>
             </StackPanel>
         </DockPanel>
     </Border>

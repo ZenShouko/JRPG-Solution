@@ -3,6 +3,7 @@ using JRPG_Project.ClassLibrary;
 using JRPG_Project.ClassLibrary.Data;
 using JRPG_Project.ClassLibrary.Items;
 using JRPG_Project.ClassLibrary.Player;
+using JRPG_Project.ClassLibrary.Universal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -164,6 +165,7 @@ namespace JRPG_Project
             {
                 foreach (BaseItem item in Items)
                 {
+                    CharacterData.UnequipItem(item);
                     Inventory.Collectables.RemoveAll(x => x.UniqueID == item.UniqueID);
                     Inventory.Weapons.RemoveAll(x => x.UniqueID == item.UniqueID);
                     Inventory.Armours.RemoveAll(x => x.UniqueID == item.UniqueID);
@@ -172,6 +174,7 @@ namespace JRPG_Project
             }
             else
             {
+                CharacterData.UnequipItem(Item);
                 Inventory.Collectables.RemoveAll(x => x.UniqueID == Item.UniqueID);
                 Inventory.Weapons.RemoveAll(x => x.UniqueID == Item.UniqueID);
                 Inventory.Armours.RemoveAll(x => x.UniqueID == Item.UniqueID);
@@ -181,6 +184,9 @@ namespace JRPG_Project
 
         private void ExtractButtonAsync(object sender, RoutedEventArgs e)
         {
+            //Play sound
+            SoundManager.PlaySound("extraction.wav");
+
             //IDs [Bottle of Essence: M1, Orb of Essence: M2]
             //Remove item from inventory
             RemoveItem();
@@ -286,8 +292,6 @@ namespace JRPG_Project
             {
                 await Task.Delay(20);
                 margin += 4;
-                //BottleContainer.Margin = new Thickness(-margin, 0, margin, 0);
-                //FirstPlusSymbol.Margin = new Thickness(-margin + 8, 0, margin + 8, 0);
                 OrbContainer.Margin = new Thickness(-margin, 0, margin, 0);
             }
 
@@ -297,8 +301,6 @@ namespace JRPG_Project
             //Collapse & reset
             BorderValue.Visibility = Visibility.Collapsed;
             ConvertionSymbol.Visibility = Visibility.Collapsed;
-            //BottleContainer.Margin = new Thickness(0, 0, 0, 0);
-            //FirstPlusSymbol.Margin = new Thickness(8, 0, 8, 0);
             OrbContainer.Margin = new Thickness(0, 0, 0, 0);
 
             if (withScroll)
@@ -323,7 +325,6 @@ namespace JRPG_Project
             ScrollContainer.Opacity = 1;
             FinalPlusSymbol.Opacity = 1;
         }
-
 
         private async void IdleAnimation(DockPanel panel)
         {

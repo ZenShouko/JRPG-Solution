@@ -31,29 +31,27 @@ namespace JRPG_Project.Tabs
 
         private async void PlayAnimation()
         {
-            await Task.Delay(600);
-
             //Move foe in
             while (ImgFoe.Margin.Left > 0)
             {
                 ImgFoe.Margin = new Thickness(ImgFoe.Margin.Left - 5, ImgFoe.Margin.Top, ImgFoe.Margin.Right + 5, ImgFoe.Margin.Bottom);
-                await Task.Delay(12);
+                await Task.Delay(6);
             }
 
-            await Task.Delay(200);
+            await Task.Delay(50);
 
 
             //Move player up
-            while (ImgPlayer.Margin.Top > -4)
+            while (ImgPlayer.Margin.Top > -8)
             {
                 ImgPlayer.Margin = new Thickness(0, ImgPlayer.Margin.Top - 2, 0, ImgPlayer.Margin.Bottom + 2);
-                await Task.Delay(22);
+                await Task.Delay(12);
             }
             //Move player down
             while (ImgPlayer.Margin.Top < 0)
             {
                 ImgPlayer.Margin = new Thickness(0, ImgPlayer.Margin.Top + 2, 0, ImgPlayer.Margin.Bottom - 2);
-                await Task.Delay(28);
+                await Task.Delay(16);
             }
 
             //[SHOCK]
@@ -61,14 +59,14 @@ namespace JRPG_Project.Tabs
 
             ImgFoe.Source = new BitmapImage(new Uri(@"../../Resources/Assets/Platform/foe-alert.png", UriKind.RelativeOrAbsolute));
 
-            await Task.Delay(320);
+            await Task.Delay(60);
 
             //Move player and foe to each other
             while (ImgPlayer.Margin.Left < 55)
             {
                 ImgPlayer.Margin = new Thickness(ImgPlayer.Margin.Left + 1, 0, ImgPlayer.Margin.Right - 1, 0);
                 ImgFoe.Margin = new Thickness(ImgFoe.Margin.Left - 1, 0, ImgFoe.Margin.Right + 1, 0);
-                await Task.Delay(22);
+                await Task.Delay(10);
             }
         }
 
@@ -78,10 +76,10 @@ namespace JRPG_Project.Tabs
             while(Emoji.Margin.Top > 0)
             {
                 Emoji.Margin = new Thickness(Emoji.Margin.Left, Emoji.Margin.Top - 1, Emoji.Margin.Right, Emoji.Margin.Bottom + 1);
-                await Task.Delay(10);
+                await Task.Delay(6);
             }
 
-            await Task.Delay(100);
+            await Task.Delay(50);
             Emoji.Visibility = Visibility.Collapsed;
         }
     }

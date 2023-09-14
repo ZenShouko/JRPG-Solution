@@ -22,7 +22,7 @@ namespace JRPG_Project.ClassLibrary.Entities
 
         public string EquipmentIDs { get; set; }
         public string ID { get; set; }
-        public string Name { get; set; } //Unique ... I don't remember what I meant by this
+        public string Name { get; set; } 
         public string Description { get; set; }
         public string ImageName { get; set; }
 
@@ -33,7 +33,7 @@ namespace JRPG_Project.ClassLibrary.Entities
         /// Returns the stats of the character with all the equipment stats added.
         /// </summary>
         /// <returns></returns>
-        public Stats GetAccumelatedStats()
+        public Stats GetAccumulatedStats()
         {
             Stats accStats = new Stats();
 

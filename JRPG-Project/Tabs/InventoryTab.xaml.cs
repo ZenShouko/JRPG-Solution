@@ -30,7 +30,6 @@ namespace JRPG_Project.ClassLibrary.Universal
             //Load all items
             //LoadAllitems();
         }
-
         string SelectedItemUniqueID = "";
 
         Dictionary<int, string> SortOptions = new Dictionary<int, string>()
@@ -53,6 +52,17 @@ namespace JRPG_Project.ClassLibrary.Universal
             }
 
             CboxSort.SelectedIndex = 0;
+
+            //If player comes from a platform, disable extra functionality
+            if (Stages.CurrentStage != null)
+            {
+                BtnExtractEssence.IsEnabled = false;
+                BtnExtractEssence.Background = Brushes.Gray;
+                BtnBulkExtract.IsEnabled = false;
+                BtnBulkExtract.Background = Brushes.Gray;
+                BtnUpgrade.IsEnabled = false;
+                BtnUpgrade.Background = Brushes.Gray;
+            }
         }
 
         private void LoadAllitems()
@@ -497,7 +507,10 @@ namespace JRPG_Project.ClassLibrary.Universal
 
         private void ReturnButton_Click(object sender, RoutedEventArgs e)
         {
-            Interaction.OpenTab("MainTab");
+            if (Stages.CurrentStage == null)
+                Interaction.OpenTab("MainTab");
+            else
+                Interaction.ReturnToPreviousTab();
         }
 
         private void CboxSort_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -659,7 +672,7 @@ namespace JRPG_Project.ClassLibrary.Universal
         }
 
 
-        Dictionary<string, (bool, bool, bool, bool, bool)> BulkPreference = new Dictionary<string, (bool, bool, bool, bool, bool)>() 
+        Dictionary<string, (bool, bool, bool, bool, bool)> BulkPreference = new Dictionary<string, (bool, bool, bool, bool, bool)>()
         {
             {"LstCollectables", (false, false, false, false, false) },
             {"LstWeapons", (false, false, false, false, false) },
@@ -685,7 +698,7 @@ namespace JRPG_Project.ClassLibrary.Universal
             bool enhancedItems = BulkPreference[currentListbox.Name].Item5;
 
             //Open rarity selector window
-            RaritySelectorWindow window = new RaritySelectorWindow(BulkPreference[currentListbox.Name].Item1, BulkPreference[currentListbox.Name].Item2, 
+            RaritySelectorWindow window = new RaritySelectorWindow(BulkPreference[currentListbox.Name].Item1, BulkPreference[currentListbox.Name].Item2,
                 BulkPreference[currentListbox.Name].Item3, BulkPreference[currentListbox.Name].Item4, BulkPreference[currentListbox.Name].Item5);
             if (window.ShowDialog() == true)
             {
