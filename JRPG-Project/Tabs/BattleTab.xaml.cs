@@ -17,6 +17,40 @@ namespace JRPG_Project.Tabs
 {
     public partial class BattleTab : UserControl
     {
+        private void BattlePrediction()
+        {
+            //Get total threat score of team
+            int teamThreatScore = 0;
+            foreach (Character c in Inventory.Team)
+            {
+                teamThreatScore += CharacterData.GetThreatScore(c);
+            }
+
+            //Get total threat score of foes
+            int foeThreatScore = 0;
+            foreach (Character c in FoeTeam)
+            {
+                foeThreatScore += CharacterData.GetThreatScore(c);
+            }
+
+            //Get difference
+            if (teamThreatScore > foeThreatScore)
+            {
+                //Player team is stronger
+                BattleLog.Add($"📖 Your team ({teamThreatScore} TS) is stronger than the enemy team ({foeThreatScore} TS)! The numbers are in your favor!");
+            }
+            else if (teamThreatScore < foeThreatScore)
+            {
+                //Foe team is stronger
+                BattleLog.Add($"📖 The enemy team ({foeThreatScore} TS) is stronger than your team ({teamThreatScore} TS)! Odds are stacked against us!");
+            }
+            else
+            {
+                //Teams are equal
+                BattleLog.Add($"📖 Your team is equal to the enemy team! ({teamThreatScore} TS) We have an equal team??");
+            }
+        }
+
         public BattleTab(List<Character> foeTeam)
         {
             InitializeComponent();
@@ -27,6 +61,8 @@ namespace JRPG_Project.Tabs
             {
                 PlayerTeam.Add(c);
             }
+
+            BattlePrediction();
             InitializeBattle();
         }
         //Foe teams
@@ -213,7 +249,16 @@ namespace JRPG_Project.Tabs
                 //Give every character xp
                 foreach (Character c in Inventory.Team)
                 {
+                    int oldLevel = c.Level;
                     LevelData.AddXP(c, xp);
+
+                    //Check if character leveled up
+                    if (c.Level > oldLevel)
+                    {
+                        BattleLog.Add($"🎉{c.Name} leveled up! (Lv. {oldLevel} -> {c.Level})");
+                        CharacterLevelUpWindow window = new CharacterLevelUpWindow(c);
+                        window.ShowDialog();
+                    }
                 }
 
                 //Give coins
@@ -785,10 +830,10 @@ namespace JRPG_Project.Tabs
                 value += CharacterData.GetValue(c);
             }
 
-            xpReward = (int)Math.Ceiling(value * (0.64 - (Round / 32)));
+            xpReward = (int)Math.Ceiling(Convert.ToDouble(value) * (0.64 - (Round / 32)));
 
             //Calculate coins reward
-            coinsReward = (int)Math.Ceiling(value * 0.32);
+            coinsReward = (int)Math.Ceiling(Convert.ToDouble(value) * 0.32);
 
             if (Round < 2)
             {
@@ -796,9 +841,15 @@ namespace JRPG_Project.Tabs
             }
             else
             {
-                int roundPunishment = coinsReward % 10;
+                int roundPunishment = Convert.ToInt32(Convert.ToDouble(coinsReward) % 10);
                 coinsReward -= roundPunishment * Round;
             }
+
+            //Avoid negative values
+            if (xpReward < 0)
+                xpReward = 0;
+            if (coinsReward < 0)
+                coinsReward = 0;
 
             return (xpReward, coinsReward);
         }
@@ -824,7 +875,7 @@ namespace JRPG_Project.Tabs
 
         private void DisplayDetails(Character c)
         {
-            TxtDetails.Text = $"{c.Name}: [{CharHpDef[c].Item1} HP]  [{CharHpDef[c].Item2} DEF]  [{CharStaStrMax[c].Item1} STA]";
+            TxtDetails.Text = $"{c.Name}: [{CharHpDef[c].Item1} HP]  [{CharHpDef[c].Item2} DEF]  [{CharStaStrMax[c].Item1} STA] [{CharacterData.GetThreatScore(c)} TS]";
         }
 
         private void GlobalAnouncer(string text)

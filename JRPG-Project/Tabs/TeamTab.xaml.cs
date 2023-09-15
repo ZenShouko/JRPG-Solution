@@ -384,5 +384,14 @@ namespace JRPG_Project.Tabs
                 ChangeItem("AMULET");
             }
         }
+
+        private void Border_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            MessageBox.Show("This is the threat score. The game looks at the stats and makes a rough estimate of how strong the character is." +
+                " Threat scores are not 100% accurate! Someone with very high stats but very low damage will have a high threat score. " +
+                "The game has lots of randomnesses implemented paired with crit-chances which makes it harder to make an accurate estimate. " +
+                "Pair it with the power of friendship ('cause together we're strong!), it becomes even more challenging to calculate."
+                , "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
     }
 }

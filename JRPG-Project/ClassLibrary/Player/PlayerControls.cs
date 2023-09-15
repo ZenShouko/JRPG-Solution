@@ -98,12 +98,9 @@ namespace JRPG_ClassLibrary
             }
             else
             {
-                SoundManager.PlaySound("step.wav");
+                //SoundManager.PlaySound("step.wav"); //Too taxing on SoundManager
                 await AnimateMovement(targetTile);
             }
-
-            //(Start foe turn)
-            FoeControls.MoveFoes();
         }
 
         private static void RotatePlayer(string direction)
@@ -168,7 +165,7 @@ namespace JRPG_ClassLibrary
             }
 
             //Reset
-            EndTurn();
+            EndTurnAsync();
 
             //set player moving to false
             isPlayerMoving = false;
@@ -219,14 +216,14 @@ namespace JRPG_ClassLibrary
             Player.Position.X = tile.Position.X;
             Player.Position.Y = tile.Position.Y;
 
-            EndTurn();
+            EndTurnAsync();
         }
 
         /// <summary>
         /// Ends the turn of player. This method will check for items or battles with foes.
         /// </summary>
         /// <param name="tile">Current tile of player.</param>
-        private static void EndTurn()
+        private static async Task EndTurnAsync()
         {
             //Get current tile
             Tile tile = Stages.CurrentStage.TileList.Find(t => t.Position.X == Player.Position.X && t.Position.Y == Player.Position.Y);
@@ -246,6 +243,19 @@ namespace JRPG_ClassLibrary
 
             //Update visible platform
             Stages.UpdateVisiblePlatform();
+
+            //If tile contains a lootbox, wait for the lootbox window to close
+            if (tile.TypeLootbox != null)
+            {
+                //Wait for the lootbox window to close
+                while (tile.TypeLootbox != null)
+                {
+                    await Task.Delay(100);
+                }
+            }
+
+            //(Start foe turn)
+            FoeControls.MoveFoes();
         }
     }
 }

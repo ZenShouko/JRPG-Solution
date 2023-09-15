@@ -2,6 +2,7 @@
 using JRPG_Project.ClassLibrary.Entities;
 using JRPG_Project.ClassLibrary.Items;
 using JRPG_Project.ClassLibrary.Player;
+using JRPG_Project.ClassLibrary.Universal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -231,6 +232,11 @@ namespace JRPG_Project
                 default:
                     return Brushes.WhiteSmoke;
             }
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            SoundManager.PlaySound("click-short.wav");
         }
     }
 }

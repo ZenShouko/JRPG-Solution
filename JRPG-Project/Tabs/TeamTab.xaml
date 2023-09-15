@@ -55,7 +55,7 @@
                 <!--Threat score-->
                 <Border DockPanel.Dock="Right" HorizontalAlignment="Right" VerticalAlignment="Center"
                         BorderThickness="1 1 2 2" BorderBrush="MediumAquamarine" CornerRadius="2" Padding="8 4"
-                        Background="#353535" ToolTip="Threat Score" Margin="8 0">
+                        Background="#353535" ToolTip="Threat Score" Margin="8 0" Cursor="Help" MouseUp="Border_MouseUp">
                     <TextBlock x:Name="TxtThreatScore" Text="500" FontSize="16" Foreground="White"/>
                 </Border>
                 <!--Info-->

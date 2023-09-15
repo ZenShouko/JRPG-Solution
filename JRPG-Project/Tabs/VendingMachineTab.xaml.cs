@@ -35,12 +35,13 @@ namespace JRPG_Project
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
             //Playsound
-            SoundManager.PlaySound("machine-click.wav");
+            SoundManager.PlaySound("machine-insert.wav");
 
             //Do we have enough money?
             if (Inventory.Coins < 100)
             {
-                MessageBox.Show("You don't have enough coins to buy a ticket.");
+                SoundManager.PlaySound("denied.wav");
+                await DenyPurchase();
                 return;
             }
 
@@ -48,8 +49,6 @@ namespace JRPG_Project
             Inventory.Coins -= 100;
             TxtCoins.Text = Inventory.Coins.ToString();
 
-            //[1]playsound
-            //SoundManager.PlaySound("machine-insert.wav");
             //[1] Push ticket to the side
             await MoveTicketAway();
 
@@ -66,6 +65,42 @@ namespace JRPG_Project
             SoundManager.PlaySound("machine-printing.wav");
             //[4] Push ticket back in
             await MoveTicketIn();
+        }
+
+        private async Task DenyPurchase()
+        {
+            //Make coins red
+            TxtCoins.Foreground = Brushes.OrangeRed;
+            TxtCoins.FontSize = 42;
+
+            //Shake ticket
+            int shakeCount = 0;
+            while (shakeCount < 3)
+            {
+                //Move ticket to the right
+                while (BorderTicket.Margin.Left < 50)
+                {
+                    BorderTicket.Margin = new Thickness(BorderTicket.Margin.Left + 25, BorderTicket.Margin.Top, BorderTicket.Margin.Right - 25, BorderTicket.Margin.Bottom);
+                    await Task.Delay(12);
+                }
+
+                //Move ticket to the left
+                while (BorderTicket.Margin.Left > -50)
+                {
+                    BorderTicket.Margin = new Thickness(BorderTicket.Margin.Left - 25, BorderTicket.Margin.Top, BorderTicket.Margin.Right + 25, BorderTicket.Margin.Bottom);
+                    await Task.Delay(12);
+                }
+
+                shakeCount++;
+            }
+
+            //Reset ticket position
+            BorderTicket.Margin = new Thickness(0);
+
+            //Reset coins
+            await Task.Delay(500);
+            TxtCoins.Foreground = Brushes.White;
+            TxtCoins.FontSize = 20;
         }
 
         private async Task MoveTicketAway()

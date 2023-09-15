@@ -1,0 +1,35 @@
+﻿<Window x:Class="JRPG_Project.CharacterLevelUpWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:JRPG_Project"
+        mc:Ignorable="d" WindowStartupLocation="CenterScreen" WindowStyle="ToolWindow" ResizeMode="NoResize" SizeToContent="WidthAndHeight"
+        Title="Level Up!" Height="auto" Width="auto">
+    <Grid Height="360" Width="340" Background="#e9edc9">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="1.5*"/>
+        </Grid.RowDefinitions>
+        
+        <!--What is this doing here, hmm??-->
+        <Image x:Name="ImgAni" Visibility="Visible" Source="/Resources/Assets/Characters/pingu.png" Grid.RowSpan="3" 
+               HorizontalAlignment="Center" Height="300" Width="280" Panel.ZIndex="100" Stretch="Fill" Opacity="0.75"/>
+
+        <!--Title-->
+        <TextBlock x:Name="TxtTitle" Text="Pingu has leveled up!" FontSize="28" VerticalAlignment="Center" HorizontalAlignment="Center" Background="#ccd5ae" Padding="8 4"/>
+        
+        <!--Char Image-->
+        <Border x:Name="CharBorder" Grid.Row="1" BorderBrush="#ccd5ae" BorderThickness="1 2 1 2" CornerRadius="4" HorizontalAlignment="Center" VerticalAlignment="Center"
+                Padding="0">
+            <Image x:Name="CharImg" Source="/Resources/Assets/Characters/pingu.png" Width="200" MaxHeight="150" VerticalAlignment="Top" HorizontalAlignment="Center" Stretch="Uniform"/>
+        </Border>
+        
+        <!--Bottom-->
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="2">
+            <TextBlock x:Name="TxtDetails" Text="Pingu is now level 6!" FontSize="16" Background="#ccd5ae" Padding="6 2"/>
+            <Button Content="Jipie!! 😆" Style="{StaticResource menu-button}" Margin="0 10" Click="Button_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>

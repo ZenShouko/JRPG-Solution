@@ -1,6 +1,7 @@
 ﻿using JRPG_Project.ClassLibrary.Entities;
 using JRPG_Project.ClassLibrary.Items;
 using System;
+using System.Threading.Tasks;
 
 namespace JRPG_Project.ClassLibrary.Player
 {
@@ -9,7 +10,8 @@ namespace JRPG_Project.ClassLibrary.Player
         public static void CollectTileItem(Tile tile)
         {
             //Return if no lootbox is present
-            if (tile is null || string.IsNullOrEmpty(tile.TypeLootbox)) { return; }
+            if (tile is null || string.IsNullOrEmpty(tile.TypeLootbox)) 
+                return;
 
             //(Visible)Remove the lootbox from the tile
             tile.TileElement.Child = null;

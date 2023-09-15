@@ -245,7 +245,7 @@ namespace JRPG_Project.ClassLibrary.Universal
                 }
                 else
                 {
-                    listItem.Content = item.ToString() + " --> " + owner;
+                    listItem.Content = "★ " + item.ToString() + $" x{owner}";
                 }
                 listItem.Tag = item.UniqueID;
                 listItem.Foreground = GetBrush(item.Rarity);
@@ -263,7 +263,7 @@ namespace JRPG_Project.ClassLibrary.Universal
                 }
                 else
                 {
-                    listItem.Content = item.ToString() + " --> " + owner;
+                    listItem.Content = "★ " + item.ToString() + $" x{owner}";
                 }
                 listItem.Tag = item.UniqueID;
                 listItem.Foreground = GetBrush(item.Rarity);
@@ -281,7 +281,7 @@ namespace JRPG_Project.ClassLibrary.Universal
                 }
                 else
                 {
-                    listItem.Content = item.ToString() + " --> " + owner;
+                    listItem.Content = "★ " + item.ToString() + $" x{owner}";
                 }
                 listItem.Tag = item.UniqueID;
                 listItem.Foreground = GetBrush(item.Rarity);

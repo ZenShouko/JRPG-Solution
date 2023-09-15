@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:JRPG_Project"
         mc:Ignorable="d" WindowStartupLocation="CenterScreen" WindowStyle="ToolWindow" ResizeMode="NoResize" SizeToContent="WidthAndHeight"
-        Title="Stats" Height="auto" Width="auto">
+        Title="Stats" Height="auto" Width="auto" Closing="Window_Closing">
     <!--#260017-->
     <Grid Height="325" Width="375">
         <!--Grid properties-->

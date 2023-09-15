@@ -113,9 +113,9 @@ namespace JRPG_Project.ClassLibrary.Data
             //Incorporate stats
             double statValue = (c.Stats.HP * 1.2) + (c.Stats.DEF * 1.5) + (c.Stats.DMG * 1.3) + (c.Stats.SPD * 1.1) + (c.Stats.STA * 1.3) +
                 (c.Stats.STR * 1.4) + (c.Stats.CRC * 2) + (c.Stats.CRD * 1.8);
-            statValue /= 6 - c.Level;
+            statValue -= Convert.ToDouble(GetThreatScore(c)) * 0.9;
 
-            statValue = Math.Ceiling(statValue);
+            statValue = Math.Ceiling(statValue / 2.5);
 
             return (int)statValue;
         }
@@ -125,7 +125,7 @@ namespace JRPG_Project.ClassLibrary.Data
             Stats stats = c.GetAccumulatedStats();
 
             // Calculate effective damage based on stamina and stamina scaling
-            double staminaRatio = stats.DMG < 0 ? 0 : stats.STA / stats.DMG;
+            double staminaRatio = stats.DMG <= 0 ? 0 : stats.STA / stats.DMG;
             double effectiveDamage = stats.DMG;
 
             if (staminaRatio < 0.25)
@@ -174,5 +174,35 @@ namespace JRPG_Project.ClassLibrary.Data
             return roundedThreatScore;
         }
 
+        /// <summary>
+        /// If parameter is null, returns the threat score of the player team.
+        /// </summary>
+        /// <param name="mf"></param>
+        /// <returns></returns>
+        public static int GetTeamThreatScore(MapFoe mf)
+        {
+            if (mf is null)
+            {
+                //Get threat score of player team
+                int threatScore = 0;
+                foreach (Character c in Inventory.Team)
+                {
+                    threatScore += GetThreatScore(c);
+                }
+
+                return threatScore;
+            }
+            else
+            {
+                //Get threat score of foe team
+                int threatScore = 0;
+                foreach (Character c in mf.FoeTeam)
+                {
+                    threatScore += GetThreatScore(c);
+                }
+
+                return threatScore;
+            }
+        }
     }
 }

@@ -42,6 +42,7 @@
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 10">
                 <Button x:Name="BtnExit" Content="Leave" Style="{StaticResource menu-button}" Margin="5 0" Click="BtnLeave_Click"/>
                 <Button Content="Inventory" Style="{StaticResource menu-button}" Margin="5 0" Click="BtnInventory_Click"/>
+                <Button Content="Map" Style="{StaticResource menu-button}" Margin="5 0" Click="BtnMap_Click"/>
             </StackPanel>
         </StackPanel>
 

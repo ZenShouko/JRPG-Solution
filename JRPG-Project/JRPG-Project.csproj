@@ -88,6 +88,9 @@
     <Compile Include="ChangeEquipmentWindow.xaml.cs">
       <DependentUpon>ChangeEquipmentWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CharacterLevelUpWindow.xaml.cs">
+      <DependentUpon>CharacterLevelUpWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ClassLibrary\Data\CharacterData.cs" />
     <Compile Include="ClassLibrary\Data\InventoryData.cs" />
     <Compile Include="ClassLibrary\Data\ItemData.cs" />
@@ -138,6 +141,9 @@
     <Compile Include="ClassLibrary\Player\PlayerControls.cs" />
     <Compile Include="ClassLibrary\Tiles.cs" />
     <Compile Include="ClassLibrary\Items\Weapon.cs" />
+    <Compile Include="MapWindow.xaml.cs">
+      <DependentUpon>MapWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="RaritySelectorWindow.xaml.cs">
       <DependentUpon>RaritySelectorWindow.xaml</DependentUpon>
     </Compile>
@@ -184,6 +190,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="CharacterLevelUpWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="EssenceExtractionWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -193,6 +203,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="LootboxWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MapWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -577,6 +591,12 @@
     </Resource>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\Assets\Platform\strong-foe-alert.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Assets\Platform\strong-foe-neutral.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Content Include="Resources\Sfx\Effects\battle-lose.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -599,6 +619,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\Sfx\Effects\crit-hit2.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Sfx\Effects\denied.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\Sfx\Effects\equip.wav">

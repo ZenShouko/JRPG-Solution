@@ -163,5 +163,11 @@ namespace JRPG_Project.Tabs
             //[End] Remove the ellipse from the radar panel
             RadarGrid.Children.Remove(ellipse);
         }
+
+        private void BtnMap_Click(object sender, RoutedEventArgs e)
+        {
+            MapWindow mapWindow = new MapWindow();
+            mapWindow.ShowDialog();
+        }
     }
 }

@@ -21,6 +21,9 @@ namespace JRPG_Project.ClassLibrary
         public static bool FoeTurn { get; private set; } = false;
         private static int speed = 16; //might remove
         private static int animationDelay = 10; //might remove
+        /// <summary>
+        /// List with all the possible directions. (⬆️ ⬇️ ⬅️ ➡️)
+        /// </summary>
         private static List<string> directions = new List<string>()
             { "UP", "DOWN", "LEFT", "RIGHT" };
 
@@ -73,6 +76,11 @@ namespace JRPG_Project.ClassLibrary
                             CalculateStraightForward(foe);
                             break;
                         }
+                    case "RANDOM":
+                        {
+                            CalculateRandom(foe);
+                            break;
+                        }
                 }
             }
 
@@ -103,7 +111,10 @@ namespace JRPG_Project.ClassLibrary
                 }
 
                 //Change icon
-                foe.Icon.Source = new BitmapImage(new Uri(@"../../Resources/Assets/Platform/foe-alert.png", UriKind.Relative));
+                if (foe.Icon.Source.ToString().Contains("strong"))
+                    foe.Icon.Source = new BitmapImage(new Uri(@"../../Resources/Assets/Platform/strong-foe-alert.png", UriKind.Relative));
+                else
+                    foe.Icon.Source = new BitmapImage(new Uri(@"../../Resources/Assets/Platform/foe-alert.png", UriKind.Relative));
                 foe.HasDetectedPlayer = true;
                 return true;
             }
@@ -312,7 +323,79 @@ namespace JRPG_Project.ClassLibrary
             //Add the movement to the list
             plannedCoordinates.Add($"{targetTile.Position.X};{targetTile.Position.Y}");
 
-            //Move player
+            //Move foe
+            MoveFoe(foe);
+        }
+
+        private static void CalculateRandom(MapFoe foe)
+        {
+            Tile targetTile = null;
+
+            while (true)
+            {
+                //Reset directions
+                foe.Position.DirectionX = 0;
+                foe.Position.DirectionY = 0;
+
+                //Directions lists
+                List<string> attemptedDirections = new List<string>();
+                List<string> availableDirections = new List<string>();
+
+                //Get a list with directions that haven't been attempted yet
+                availableDirections = directions.Except(attemptedDirections).ToList();
+
+                //If all directions have been attempted, cancel movement
+                if (availableDirections is null || availableDirections.Count == 0)
+                {
+                    foe.Position.DirectionX = 0;
+                    foe.Position.DirectionY = 0;
+                    return;
+                }
+
+                //Pick a random direction
+                switch (availableDirections[Interaction.GetRandomNumber(0, availableDirections.Count - 1)])
+                {
+                    case "UP":
+                        {
+                            foe.Position.DirectionY = -1;
+                            attemptedDirections.Add("UP");
+                            break;
+                        }
+                    case "DOWN":
+                        {
+                            foe.Position.DirectionY = 1;
+                            attemptedDirections.Add("DOWN");
+                            break;
+                        }
+                    case "LEFT":
+                        {
+                            foe.Position.DirectionX = -1;
+                            attemptedDirections.Add("LEFT");
+                            break;
+                        }
+                    case "RIGHT":
+                        {
+                            foe.Position.DirectionX = 1;
+                            attemptedDirections.Add("RIGHT");
+                            break;
+                        }
+                }
+
+                //Assign targetTile
+                targetTile = Tiles.GetTile(foe.Position.X + foe.Position.DirectionX, foe.Position.Y + foe.Position.DirectionY);
+
+                //Check if targetTile is valid
+                if (IsTileAccessible(targetTile))
+                {
+                    //Cancel movement
+                    break;
+                }
+            }
+
+            //Add the movement to the list
+            plannedCoordinates.Add($"{targetTile.Position.X};{targetTile.Position.Y}");
+
+            //Move foe
             MoveFoe(foe);
         }
 

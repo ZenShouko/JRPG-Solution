@@ -12,6 +12,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
 namespace JRPG_ClassLibrary
@@ -22,7 +23,7 @@ namespace JRPG_ClassLibrary
 
         public static void CreateStage(Grid platformGrid, Grid radar, string stageName)
         {
-            //[1]Initialize stage properties
+            //[1] Initialize stage properties
             CurrentStage = new Stage();
             CurrentStage.Name = stageName.Split('.')[0];
             CurrentStage.VisiblePlatform = platformGrid;
@@ -44,27 +45,27 @@ namespace JRPG_ClassLibrary
                 tile.TileElement.CornerRadius = new CornerRadius(2);
             }
 
-            //Add foes to foelist
+            //[2] Add foes to foelist
             InitializeFoes();
 
-            //Create progression dictionary
+            //[3] Create progression dictionary
             InitializeProgression();
 
-            //[4]Place lootboxes
+            //[4] Place lootboxes
             PlaceLootboxes();
 
-            //[5]Create visible platform
+            //[5] Create visible platform
             CreateVisiblePlatform();
             CurrentStage.TileWidth = CurrentStage.VisiblePlatform.Width / CurrentStage.Columns;
             CurrentStage.TileHeight = CurrentStage.VisiblePlatform.Height / CurrentStage.Rows;
 
-            //[5.5]Update visible platform
+            //[5.5] Update visible platform
             UpdateVisiblePlatform();
 
-            //[6]Place player
+            //[6] Place player
             PlacePlayer();
 
-            //[7]Place team
+            //[7] Place team
             LoadTeam();
         }
 
@@ -854,10 +855,36 @@ namespace JRPG_ClassLibrary
             {
                 if (tile.Foe != null)
                 {
+                    //Initialize icons based on team threat score
+                    if (IsFoeABigThreat(tile.Foe))
+                        tile.Foe.Icon.Source = new BitmapImage(new Uri("pack://application:,,,/Resources/Assets/Platform/strong-foe-neutral.png"));
+                    else
+                        tile.Foe.Icon.Source = new BitmapImage(new Uri("pack://application:,,,/Resources/Assets/Platform/foe-neutral.png"));
+
                     InitializeFoeImages(tile.Foe); //Images are not saved in stagedata
                     CurrentStage.FoeList.Add(tile.Foe);
                 }
             }
+        }
+
+        /// <summary>
+        /// Returns true if foe's threat score is 2x bigger than player's threat score.
+        /// </summary>
+        /// <param name="mf"></param>
+        /// <returns></returns>
+        private static bool IsFoeABigThreat(MapFoe mf)
+        {
+            //Get threat score of foe team
+            int foeThreatScore = CharacterData.GetTeamThreatScore(mf);
+
+            //Get threat score of player team
+            int playerThreatScore = CharacterData.GetTeamThreatScore(null);
+
+            //If foe threat score is significantly bigger than player threat score, return true
+            if (foeThreatScore > playerThreatScore * 2)
+                return true;
+            else 
+                return false;
         }
 
         private static void InitializeFoeImages(MapFoe mf)

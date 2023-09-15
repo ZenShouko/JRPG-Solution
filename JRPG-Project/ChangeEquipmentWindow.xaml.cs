@@ -68,7 +68,7 @@ namespace JRPG_Project
                     }
                     else
                     {
-                        item.Content = "★ " + $"[{weapon.Level}] " + weapon.Name + $"    -->    {owner}";
+                        item.Content =  $"[{weapon.Level}] " + "★ " + weapon.Name + $" x{owner}";
                     }
 
                     ListEquipments.Items.Add(item);
@@ -92,7 +92,7 @@ namespace JRPG_Project
                     }
                     else
                     {
-                        item.Content = "★ " + $"[{armour.Level}] " + armour.Name + $"    -->    {owner}";
+                        item.Content = $"[{armour.Level}] " + "★ " + armour.Name + $" x{owner}";
                     }
 
                     ListEquipments.Items.Add(item);
@@ -116,7 +116,7 @@ namespace JRPG_Project
                     }
                     else
                     {
-                        item.Content = "★ " + $"[{amu.Level}] " + amu.Name + $"    -->    {owner}";
+                        item.Content = $"[{amu.Level}] " + "★ " + amu.Name + $" x{owner}";
                     }
 
                     ListEquipments.Items.Add(item);
@@ -136,6 +136,7 @@ namespace JRPG_Project
 
         private void Return_Click(object sender, RoutedEventArgs e)
         {
+            SoundManager.PlaySound("click-short.wav");
             Close();
         }
 
