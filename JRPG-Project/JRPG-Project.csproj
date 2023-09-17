@@ -314,7 +314,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <None Include="Stages\BIGU.json" />
+    <None Include="Stages\Doom.json" />
     <None Include="Stages\kirby.json" />
+    <None Include="Stages\Oh by Heavens.json" />
     <None Include="Stages\Testfield.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

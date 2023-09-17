@@ -23,9 +23,7 @@ namespace JRPG_Project.ClassLibrary.Data
 
             //Generate image for each character AND equip their default weapon
             foreach (Character character in CharacterList)
-            {
                 character.CharImage = GetCharacterImage(character.ImageName);
-            }
         }
 
         public static Image GetCharacterImage(string imageName)
@@ -39,13 +37,9 @@ namespace JRPG_Project.ClassLibrary.Data
         {
             Image img = new Image();
             if (c.ID.Contains("F")) //Foe
-            {
                 img.Source = FoeData.FoeList.FirstOrDefault(x => x.ID == c.ID).CharImage.Source;
-            }
             else
-            {
                 img.Source = CharacterData.CharacterList.FirstOrDefault(x => x.ID == c.ID).CharImage.Source;
-            }
 
             return img;
         }
@@ -55,57 +49,38 @@ namespace JRPG_Project.ClassLibrary.Data
             foreach (Character member in Inventory.Team)
             {
                 if (member.Weapon != null && member.Weapon.UniqueID == item.UniqueID)
-                {
                     member.Weapon = null;
-                }
                 else if (member.Armour != null && member.Armour.UniqueID == item.UniqueID)
-                {
                     member.Armour = null;
-                }
                 else if (member.Amulet != null && member.Amulet.UniqueID == item.UniqueID)
-                {
                     member.Amulet = null;
-                }
             }
         }
 
         public static void EquipItem(BaseItem item, int charIndex)
         {
+            //Unequip item to avoid duplicates
             UnequipItem(item);
 
             if (item is Weapon wpn)
-            {
                 Inventory.Team[charIndex].Weapon = wpn;
-            }
             else if (item is Armour arm)
-            {
                 Inventory.Team[charIndex].Armour = arm;
-            }
             else if (item is Amulet amu)
-            {
                 Inventory.Team[charIndex].Amulet = amu;
-            }
             else
-            {
                 throw new Exception("Item type not recognized.");
-            }
         }
 
         public static void ClearEquipment(int charIndex, string type)
         {
             //Remove equipment
             if (type.ToUpper() == "WEAPON")
-            {
                 Inventory.Team[charIndex].Weapon = null;
-            }
             else if (type.ToUpper() == "ARMOUR")
-            {
                 Inventory.Team[charIndex].Armour = null;
-            }
             else if (type.ToUpper() == "AMULET")
-            {
                 Inventory.Team[charIndex].Amulet = null;
-            }
         }
 
         public static int GetValue(Character c)
@@ -186,9 +161,7 @@ namespace JRPG_Project.ClassLibrary.Data
                 //Get threat score of player team
                 int threatScore = 0;
                 foreach (Character c in Inventory.Team)
-                {
                     threatScore += GetThreatScore(c);
-                }
 
                 return threatScore;
             }
@@ -197,9 +170,7 @@ namespace JRPG_Project.ClassLibrary.Data
                 //Get threat score of foe team
                 int threatScore = 0;
                 foreach (Character c in mf.FoeTeam)
-                {
                     threatScore += GetThreatScore(c);
-                }
 
                 return threatScore;
             }

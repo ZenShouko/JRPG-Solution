@@ -67,6 +67,10 @@ namespace JRPG_Project.Tabs
 
         private void DispatchTab_KeyDown(object sender, KeyEventArgs e)
         {
+            //Return if current tab is not active
+            if (Window.GetWindow(this) is null || Window.GetWindow(this).IsActive == false)
+                return;
+
             //Return if battle is active
             if (Stages.CurrentStage.IsBattle)
             {
@@ -76,38 +80,67 @@ namespace JRPG_Project.Tabs
             //Open main menu?
             if (e.Key == Key.Escape)
             {
-                Menu.Visibility = Menu.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
-                MainGrid.Opacity = Menu.Visibility == Visibility.Visible ? 0.8 : 1;
-
-                if (Menu.Visibility == Visibility.Visible)
-                {
-                    Stages.UpdateFoeRadar();
-                    PlayRadarAnimation();
-                    UpdateProgression();
-                }
-
-                //Did player finish progression?
-                if (Stages.CurrentStage.Progression["Lootboxes"].Item1 == Stages.CurrentStage.Progression["Lootboxes"].Item2 && 
-                    Stages.CurrentStage.Progression["Foes"].Item1 == Stages.CurrentStage.Progression["Foes"].Item2)
-                {
-                    //Display finished on button
-                    BtnExit.Content = "Finish";
-                    BtnExit.Background = Brushes.LightSeaGreen;
-                }
-
+                SoundManager.PlaySound("click-medium.wav");
+                ToggleMainMenu();
                 return;
             }
 
-            //Cancel if menu is open
-            if (Menu.Visibility == Visibility.Visible)
+            //Open Map?
+            if (e.Key == Key.M || e.Key == Key.Space)
             {
+                SoundManager.PlaySound("click-medium.wav");
+                if (Menu.Visibility == Visibility.Collapsed)
+                    ToggleMainMenu();
+
+                //Open map
+                MapWindow mapWindow = new MapWindow();
+                mapWindow.ShowDialog();
                 return;
             }
+
+            //Open Inventory?
+            if (e.Key == Key.I || e.Key == Key.Tab)
+            {
+                SoundManager.PlaySound("click-medium.wav");
+                if (Menu.Visibility == Visibility.Collapsed)
+                    ToggleMainMenu();
+
+                //Open inventory
+                Interaction.OpenInventory();
+                return;
+            }
+
+            //Cancel movement if menu is open
+            if (Menu.Visibility == Visibility.Visible)
+                return;
 
             //Send directional keys to player controls
             if (PlayerControls.DirectionalKeys.Contains(e.Key))
             {
                 PlayerControls.HandleInput(e.Key);
+                return;
+            }
+        }
+
+        private void ToggleMainMenu()
+        {
+            Menu.Visibility = Menu.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
+            MainGrid.Opacity = Menu.Visibility == Visibility.Visible ? 0.8 : 1;
+
+            if (Menu.Visibility == Visibility.Visible)
+            {
+                Stages.UpdateFoeRadar();
+                PlayRadarAnimation();
+                UpdateProgression();
+            }
+
+            //Did player finish progression?
+            if (Stages.CurrentStage.Progression["Lootboxes"].Item1 == Stages.CurrentStage.Progression["Lootboxes"].Item2 &&
+                Stages.CurrentStage.Progression["Foes"].Item1 == Stages.CurrentStage.Progression["Foes"].Item2)
+            {
+                //Display finished on button
+                BtnExit.Content = "Finish";
+                BtnExit.Background = Brushes.LightSeaGreen;
             }
         }
 
@@ -166,6 +199,7 @@ namespace JRPG_Project.Tabs
 
         private void BtnMap_Click(object sender, RoutedEventArgs e)
         {
+            SoundManager.PlaySound("click-medium.wav");
             MapWindow mapWindow = new MapWindow();
             mapWindow.ShowDialog();
         }

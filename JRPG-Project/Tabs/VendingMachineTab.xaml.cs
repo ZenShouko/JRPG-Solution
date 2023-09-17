@@ -32,16 +32,23 @@ namespace JRPG_Project
 
         Button BuyButton = new Button();
 
+        bool IsBuyButtonAccessible = true;
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
-            //Playsound
+            //Is the button accessible?
+            if (!IsBuyButtonAccessible)
+                return;
+
+            //Playsound && put button on cooldown
             SoundManager.PlaySound("machine-insert.wav");
+            IsBuyButtonAccessible = false;
 
             //Do we have enough money?
             if (Inventory.Coins < 100)
             {
                 SoundManager.PlaySound("denied.wav");
                 await DenyPurchase();
+                IsBuyButtonAccessible = true;
                 return;
             }
 
@@ -65,6 +72,9 @@ namespace JRPG_Project
             SoundManager.PlaySound("machine-printing.wav");
             //[4] Push ticket back in
             await MoveTicketIn();
+
+            //Make button accessible again
+            IsBuyButtonAccessible = true;
         }
 
         private async Task DenyPurchase()

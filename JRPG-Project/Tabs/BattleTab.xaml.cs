@@ -1,5 +1,4 @@
 ﻿using JRPG_ClassLibrary;
-using JRPG_Project.ClassLibrary;
 using JRPG_Project.ClassLibrary.Data;
 using JRPG_Project.ClassLibrary.Entities;
 using JRPG_Project.ClassLibrary.Player;
@@ -806,7 +805,7 @@ namespace JRPG_Project.Tabs
                     continue;
 
                 //calculate armour
-                double armour = CharStaStrMax[c].Item2 / Interaction.GetRandomNumber(1, 3);
+                double armour = CharStaStrMax[c].Item2 / Interaction.GetRandomNumber(4, 8);
                 armour = Math.Ceiling(armour);
 
                 //Regenerate armour
@@ -1212,9 +1211,23 @@ namespace JRPG_Project.Tabs
 
         private void BtnLog_Click(object sender, RoutedEventArgs e)
         {
+            //Pause game if not paused
+            if (!PauseBattle)
+            {
+                PauseBattle = true;
+                BtnPause.Content = "Paused..";
+            }
+
             SoundManager.PlaySound("click-short.wav");
             LogWindow window = new LogWindow(BattleLog);
             window.ShowDialog();
+
+            //Unpause game after closing log window
+            if (window.IsActive == false)
+            {
+                PauseBattle = false;
+                BtnPause.Content = "Pause";
+            }
         }
 
         private void BtnGodSpeed_Click(object sender, RoutedEventArgs e)
@@ -1239,6 +1252,5 @@ namespace JRPG_Project.Tabs
         }
 
         #endregion
-
     }
 }

@@ -1,6 +1,7 @@
 ﻿using JRPG_ClassLibrary;
 using JRPG_Project.ClassLibrary;
 using JRPG_Project.ClassLibrary.Data;
+using JRPG_Project.ClassLibrary.Entities;
 using JRPG_Project.ClassLibrary.Items;
 using JRPG_Project.ClassLibrary.Player;
 using JRPG_Project.ClassLibrary.Universal;
@@ -28,12 +29,11 @@ namespace JRPG_Project.Tabs
             //Tab preparation
             LoadCharacterImages();
             FocusOnCharacter();
-            DisplayStats("CHARACTER");
+            DisplayStats(Inventory.Team[CharacterIndex]);
         }
         //#Vars
         int CharacterIndex = 0;
         Brush ItemHighlightBrush = Brushes.Yellow;
-        string CurrentShownStat = "WEAPON";
 
         private void LoadCharacterImages()
         {
@@ -119,6 +119,13 @@ namespace JRPG_Project.Tabs
             XpBar.Maximum = max;
             TxtXp.Text = "Calculating ...";
 
+            //Display empty if max is 1
+            if (max == 1)
+            {
+                TxtXp.Text = "";
+                return;
+            }
+
             //Prep
             int increment = xp / 4;
 
@@ -138,6 +145,8 @@ namespace JRPG_Project.Tabs
                     xpAnimate = false;
                 }
             }
+
+
         }
 
         private void HighlightItemBorder(string item)
@@ -169,125 +178,11 @@ namespace JRPG_Project.Tabs
             }
         }
 
-        private void DisplayStats(string item)
+        private void DisplayStats(BaseItem item)
         {
-            if (item.ToUpper() == "CHARACTER")
+            if (item is null)
             {
-                TxtHp.Text = Inventory.Team[CharacterIndex].GetAccumulatedStats().HP.ToString();
-                TxtDmg.Text = Inventory.Team[CharacterIndex].GetAccumulatedStats().DMG.ToString();
-                TxtDef.Text = Inventory.Team[CharacterIndex].GetAccumulatedStats().DEF.ToString();
-                TxtSpd.Text = Inventory.Team[CharacterIndex].GetAccumulatedStats().SPD.ToString();
-                TxtSta.Text = Inventory.Team[CharacterIndex].GetAccumulatedStats().STA.ToString();
-                TxtStr.Text = Inventory.Team[CharacterIndex].GetAccumulatedStats().STR.ToString();
-                TxtCrc.Text = Inventory.Team[CharacterIndex].GetAccumulatedStats().CRC.ToString();
-                TxtCrd.Text = Inventory.Team[CharacterIndex].GetAccumulatedStats().CRD.ToString();
-
-                CurrentShownStat = "CHARACTER";
                 HighlightItemBorder("NONE");
-            }
-            else if (item.ToUpper() == "WEAPON")
-            {
-                //Get item
-                Weapon weapon = Inventory.Team[CharacterIndex].Weapon;
-
-                //If no item, reset stats
-                if (weapon is null)
-                {
-                    DisplayStats("NONE");
-                    return;
-                }
-
-                //Display stats
-                TxtHp.Text = weapon.Stats.HP.ToString();
-                TxtDmg.Text = weapon.Stats.DMG.ToString();
-                TxtDef.Text = weapon.Stats.DEF.ToString();
-                TxtSpd.Text = weapon.Stats.SPD.ToString();
-                TxtSta.Text = weapon.Stats.STA.ToString();
-                TxtStr.Text = weapon.Stats.STR.ToString();
-                TxtCrc.Text = weapon.Stats.CRC.ToString();
-                TxtCrd.Text = weapon.Stats.CRD.ToString();
-
-                //Highlight item border
-                HighlightItemBorder("WEAPON");
-                CurrentShownStat = "WEAPON";
-
-                //Display XP
-                if (Inventory.Team[CharacterIndex].Weapon.Level < LevelData.WeaponXPTable.Keys.LastOrDefault())
-                {
-                    AnimateXpBar(Inventory.Team[CharacterIndex].Weapon.Stats.XP, LevelData.WeaponXPTable[Inventory.Team[CharacterIndex].Weapon.Level + 1].Item1);
-                }
-                else
-                {
-                    AnimateXpBar(LevelData.WeaponXPTable.Values.Last().Item1, LevelData.WeaponXPTable.Values.Last().Item1);
-                }
-            }
-            else if (item.ToUpper() == "ARMOUR")
-            {
-                Armour armour = Inventory.Team[CharacterIndex].Armour;
-
-                if (armour is null)
-                {
-                    DisplayStats("NONE");
-                    return;
-                }
-
-                TxtHp.Text = armour.Stats.HP.ToString();
-                TxtDmg.Text = armour.Stats.DMG.ToString();
-                TxtDef.Text = armour.Stats.DEF.ToString();
-                TxtSpd.Text = armour.Stats.SPD.ToString();
-                TxtSta.Text = armour.Stats.STA.ToString();
-                TxtStr.Text = armour.Stats.STR.ToString();
-                TxtCrc.Text = armour.Stats.CRC.ToString();
-                TxtCrd.Text = armour.Stats.CRD.ToString();
-
-                HighlightItemBorder("ARMOUR");
-                CurrentShownStat = "ARMOUR";
-
-                //Display XP
-                if (Inventory.Team[CharacterIndex].Armour.Level < LevelData.ArmourXPTable.Keys.LastOrDefault())
-                {
-                    AnimateXpBar(Inventory.Team[CharacterIndex].Armour.Stats.XP, LevelData.ArmourXPTable[Inventory.Team[CharacterIndex].Armour.Level + 1].Item1);
-                }
-                else
-                {
-                    AnimateXpBar(LevelData.ArmourXPTable.Values.Last().Item1, LevelData.ArmourXPTable.Values.Last().Item1);
-                }
-            }
-            else if (item.ToUpper() == "AMULET")
-            {
-                Amulet amulet = Inventory.Team[CharacterIndex].Amulet;
-
-                if (amulet is null)
-                {
-                    DisplayStats("NONE");
-                    return;
-                }
-
-                TxtHp.Text = amulet.Stats.HP.ToString();
-                TxtDmg.Text = amulet.Stats.DMG.ToString();
-                TxtDef.Text = amulet.Stats.DEF.ToString();
-                TxtSpd.Text = amulet.Stats.SPD.ToString();
-                TxtSta.Text = amulet.Stats.STA.ToString();
-                TxtStr.Text = amulet.Stats.STR.ToString();
-                TxtCrc.Text = amulet.Stats.CRC.ToString();
-                TxtCrd.Text = amulet.Stats.CRD.ToString();
-
-                HighlightItemBorder("AMULET");
-                CurrentShownStat = "AMULET";
-
-                //Display XP
-                if (Inventory.Team[CharacterIndex].Amulet.Level < LevelData.AmuletXPTable.Keys.LastOrDefault())
-                {
-                    AnimateXpBar(Inventory.Team[CharacterIndex].Amulet.Stats.XP, LevelData.AmuletXPTable[Inventory.Team[CharacterIndex].Amulet.Level + 1].Item1);
-                }
-                else
-                {
-                    AnimateXpBar(LevelData.AmuletXPTable.Values.Last().Item1, LevelData.AmuletXPTable.Values.Last().Item1);
-                }
-            }
-            else if (item.ToUpper() == "NONE")
-            {
-                //Reset stats
                 TxtHp.Text = "0";
                 TxtDmg.Text = "0";
                 TxtDef.Text = "0";
@@ -297,12 +192,60 @@ namespace JRPG_Project.Tabs
                 TxtCrc.Text = "0";
                 TxtCrd.Text = "0";
 
-                //Reset border
-                HighlightItemBorder("NONE");
-                CurrentShownStat = "NONE";
+                //Display XP
+                AnimateXpBar(0, 1);
+                return;
+            }
 
-                //Reset XP
-                AnimateXpBar(0, 0);
+            //Get stats object
+            IStatsHolder statsObj = item as IStatsHolder;
+
+            TxtHp.Text = statsObj.Stats.HP.ToString();
+            TxtDmg.Text = statsObj.Stats.DMG.ToString();
+            TxtDef.Text = statsObj.Stats.DEF.ToString();
+            TxtSpd.Text = statsObj.Stats.SPD.ToString();
+            TxtSta.Text = statsObj.Stats.STA.ToString();
+            TxtStr.Text = statsObj.Stats.STR.ToString();
+            TxtCrc.Text = statsObj.Stats.CRC.ToString();
+            TxtCrd.Text = statsObj.Stats.CRD.ToString();
+
+            //Highlight item border
+            HighlightItemBorder(item.GetType().Name.ToUpper());
+
+            //Display XP
+            if (item.Level < LevelData.WeaponXPTable.Keys.LastOrDefault())
+            {
+                AnimateXpBar(statsObj.Stats.XP, Convert.ToInt16(LevelData.WeaponXPTable[item.Level + 1].Item1 * ItemData.RarityMultipliers[item.Rarity.ToUpper()]));
+            }
+            else
+            {
+                AnimateXpBar(statsObj.Stats.XP, statsObj.Stats.XP);
+            }
+        }
+
+        private void DisplayStats(Character c)
+        {
+            TxtHp.Text = c.GetAccumulatedStats().HP.ToString();
+            TxtDmg.Text = c.GetAccumulatedStats().DMG.ToString();
+            TxtDef.Text = c.GetAccumulatedStats().DEF.ToString();
+            TxtSpd.Text = c.GetAccumulatedStats().SPD.ToString();
+            TxtSta.Text = c.GetAccumulatedStats().STA.ToString();
+            TxtStr.Text = c.GetAccumulatedStats().STR.ToString();
+            TxtCrc.Text = c.GetAccumulatedStats().CRC.ToString();
+            TxtCrd.Text = c.GetAccumulatedStats().CRD.ToString();
+
+            //Highlight item border
+            HighlightItemBorder("None");
+            FocusOnCharacter();
+
+            //Display XP
+            if (c.Level < LevelData.CharacterXPTable.Keys.LastOrDefault())
+            {
+                AnimateXpBar(c.Stats.XP, LevelData.CharacterXPTable[c.Level + 1].Item1);
+            }
+            else
+            {
+                AnimateXpBar(LevelData.CharacterXPTable.Values.Last().Item1, LevelData.CharacterXPTable.Values.Last().Item1);
             }
         }
 
@@ -334,7 +277,7 @@ namespace JRPG_Project.Tabs
             }
 
             FocusOnCharacter();
-            DisplayStats("CHARACTER");
+            DisplayStats(Inventory.Team[CharacterIndex]);
         }
 
         private void Item_Click(object sender, MouseButtonEventArgs e)
@@ -345,15 +288,15 @@ namespace JRPG_Project.Tabs
             //Display Stat
             if (border.Name.Contains("Weapon"))
             {
-                DisplayStats("WEAPON");
+                DisplayStats(Inventory.Team[CharacterIndex].Weapon);
             }
             else if (border.Name.Contains("Armour"))
             {
-                DisplayStats("ARMOUR");
+                DisplayStats(Inventory.Team[CharacterIndex].Armour);
             }
             else if (border.Name.Contains("Amulet"))
             {
-                DisplayStats("AMULET");
+                DisplayStats(Inventory.Team[CharacterIndex].Amulet);
             }
         }
 
@@ -390,7 +333,8 @@ namespace JRPG_Project.Tabs
             MessageBox.Show("This is the threat score. The game looks at the stats and makes a rough estimate of how strong the character is." +
                 " Threat scores are not 100% accurate! Someone with very high stats but very low damage will have a high threat score. " +
                 "The game has lots of randomnesses implemented paired with crit-chances which makes it harder to make an accurate estimate. " +
-                "Pair it with the power of friendship ('cause together we're strong!), it becomes even more challenging to calculate."
+                "Pair it with the power of friendship ('cause together we're strong!), it becomes even more challenging to calculate." +
+                "\nAnd don't forget about cursed items that make things 100x worse 😵‍💫"
                 , "Info", MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }

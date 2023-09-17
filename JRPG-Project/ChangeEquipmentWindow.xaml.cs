@@ -3,6 +3,7 @@ using JRPG_Project.ClassLibrary.Data;
 using JRPG_Project.ClassLibrary.Items;
 using JRPG_Project.ClassLibrary.Player;
 using JRPG_Project.ClassLibrary.Universal;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -50,77 +51,37 @@ namespace JRPG_Project
 
         private void LoadItems()
         {
-            //Load items based on type
+            //List to use
+            List<BaseItem> items = new List<BaseItem>();
+
+            //Fill list based on type
             if (type == "WEAPON")
-            {
-                foreach (Weapon weapon in Inventory.Weapons)
-                {
-                    ListBoxItem item = new ListBoxItem();
-                    item.Tag = weapon.UniqueID;
-                    item.Foreground = GetBrush(weapon.Rarity);
-                    item.MouseDoubleClick += (sender, e) => ListboxItemClick(sender, e, type);
-
-                    //If weapon is equipped, add a star and the owner
-                    string owner = ItemData.GetOwnersName(weapon);
-                    if (owner == "/")
-                    {
-                        item.Content = $"[{weapon.Level}] " +  weapon.Name;
-                    }
-                    else
-                    {
-                        item.Content =  $"[{weapon.Level}] " + "★ " + weapon.Name + $" x{owner}";
-                    }
-
-                    ListEquipments.Items.Add(item);
-                }
-            }
+                foreach (Weapon wpn in Inventory.Weapons)
+                    items.Add(wpn);
             else if (type == "ARMOUR")
-            {
-                foreach (Armour armour in Inventory.Armours)
-                {
-                    ListBoxItem item = new ListBoxItem();
-                    item.Content = armour.Name;
-                    item.Tag = armour.UniqueID;
-                    item.Foreground = GetBrush(armour.Rarity);
-                    item.MouseDoubleClick += (sender, e) => ListboxItemClick(sender, e, type);
-
-                    //If item is equipped, add a star and the owner
-                    string owner = ItemData.GetOwnersName(armour);
-                    if (owner == "/")
-                    {
-                        item.Content = $"[{armour.Level}] " + armour.Name;
-                    }
-                    else
-                    {
-                        item.Content = $"[{armour.Level}] " + "★ " + armour.Name + $" x{owner}";
-                    }
-
-                    ListEquipments.Items.Add(item);
-                }
-            }
+                foreach (Armour arm in Inventory.Armours)
+                    items.Add(arm);
             else if (type == "AMULET")
-            {
                 foreach (Amulet amu in Inventory.Amulets)
-                {
-                    ListBoxItem item = new ListBoxItem();
-                    item.Content = amu.Name;
-                    item.Tag = amu.UniqueID;
-                    item.Foreground = GetBrush(amu.Rarity);
-                    item.MouseDoubleClick += (sender, e) => ListboxItemClick(sender, e, type);
+                    items.Add(amu);
 
-                    //If item is equipped, add a star and the owner
-                    string owner = ItemData.GetOwnersName(amu);
-                    if (owner == "/")
-                    {
-                        item.Content = $"[{amu.Level}] " + amu.Name;
-                    }
-                    else
-                    {
-                        item.Content = $"[{amu.Level}] " + "★ " + amu.Name + $" x{owner}";
-                    }
+            //Fill listbox based on items
+            foreach (BaseItem item in items)
+            {
+                ListBoxItem listItem = new ListBoxItem();
+                listItem.Content = item.Name;
+                listItem.Tag = item.UniqueID;
+                listItem.Foreground = GetBrush(item.Rarity);
+                listItem.MouseDoubleClick += (sender, e) => ListboxItemClick(sender, e, type);
 
-                    ListEquipments.Items.Add(item);
-                }
+                //If item is equipped, add a star and the owner
+                string owner = ItemData.GetOwnersName(item);
+                if (owner == "/")
+                    listItem.Content = $"[{item.Level}] " + item.Name;
+                else
+                    listItem.Content = $"[{item.Level}] " + "★ " + item.Name + $" x{owner}";
+
+                ListEquipments.Items.Add(listItem);
             }
         }
 
@@ -145,6 +106,7 @@ namespace JRPG_Project
             //If nothing selected, close window
             if (ListEquipments.SelectedIndex == -1)
             {
+                SoundManager.PlaySound("click-short.wav");
                 Close();
                 return;
             }
@@ -155,22 +117,17 @@ namespace JRPG_Project
             //Get UniqueID of selected item
             ListBoxItem item = (ListBoxItem)ListEquipments.SelectedItem;
             string uniqueId = (string)item.Tag;
+            BaseItem thisItem = null;
 
             if (type == "WEAPON")
-            {
-                Weapon wpn = Inventory.Weapons.FirstOrDefault(x => x.UniqueID == uniqueId);
-                CharacterData.EquipItem(wpn, charIndex);
-            }
+                thisItem = Inventory.Weapons.FirstOrDefault(x => x.UniqueID == uniqueId);
             else if (type == "ARMOUR")
-            {
-                Armour arm = Inventory.Armours.FirstOrDefault(x => x.UniqueID == uniqueId);
-                CharacterData.EquipItem(arm, charIndex);
-            }
+                thisItem = Inventory.Armours.FirstOrDefault(x => x.UniqueID == uniqueId);
             else if (type == "AMULET")
-            {
-                Amulet amu = Inventory.Amulets.FirstOrDefault(x => x.UniqueID == uniqueId);
-                CharacterData.EquipItem(amu, charIndex);
-            }
+                thisItem = Inventory.Amulets.FirstOrDefault(x => x.UniqueID == uniqueId);
+
+            //Equip item
+            CharacterData.EquipItem(thisItem, charIndex);
 
             Close();
         }

@@ -6,11 +6,11 @@ namespace JRPG_Project.ClassLibrary
     {
         public Stats Stats { get; set; } = new Stats(); //Stats of the weapon
         public string Type { get; set; } //Type of weapon
-        //public Charm Charm { get; set; } //Charm of the weapon
+        //public Charm Charm { get; set; } //Charm of the weapon, Canceled.
 
         public void WeaponCharm()
         {
-
+            //Canceled.
         }
 
         public override void CopyFrom(BaseItem otherItem)

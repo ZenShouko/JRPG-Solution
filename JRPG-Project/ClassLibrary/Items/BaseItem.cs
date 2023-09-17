@@ -71,106 +71,22 @@ namespace JRPG_Project.ClassLibrary
             item.Level++;
 
             //Substract the required XP
-            obj.Stats.XP -= xpTable[item.Level].Item1;
+            obj.Stats.XP -= Convert.ToInt16(xpTable[item.Level].Item1 * ItemData.RarityMultipliers[item.Rarity.ToUpper()]);
 
-            //Add the stats to the item
-            obj.Stats.HP += xpTable[item.Level].Item2.HP;
-            obj.Stats.DEF += xpTable[item.Level].Item2.DEF;
-            obj.Stats.DMG += xpTable[item.Level].Item2.DMG;
-            obj.Stats.SPD += xpTable[item.Level].Item2.SPD;
-            obj.Stats.STA += xpTable[item.Level].Item2.STA;
-            obj.Stats.STR += xpTable[item.Level].Item2.STR;
-            obj.Stats.CRC += xpTable[item.Level].Item2.CRC;
-            obj.Stats.CRD += xpTable[item.Level].Item2.CRD;
+            //Add the stats to the item. Multiply by rarity multiplier
+            obj.Stats.HP += Convert.ToInt16(xpTable[item.Level].Item2.HP * ItemData.RarityMultipliers[$"{item.Rarity.ToUpper()}"]);
+            obj.Stats.DEF += Convert.ToInt16(xpTable[item.Level].Item2.DEF * ItemData.RarityMultipliers[$"{item.Rarity.ToUpper()}"]);
+            obj.Stats.DMG += Convert.ToInt16(xpTable[item.Level].Item2.DMG * ItemData.RarityMultipliers[$"{item.Rarity.ToUpper()}"]);
+            obj.Stats.SPD += Convert.ToInt16(xpTable[item.Level].Item2.SPD * ItemData.RarityMultipliers[$"{item.Rarity.ToUpper()}"]);
+            obj.Stats.STA += Convert.ToInt16(xpTable[item.Level].Item2.STA * ItemData.RarityMultipliers[$"{item.Rarity.ToUpper()}"]);
+            obj.Stats.STR += Convert.ToInt16(xpTable[item.Level].Item2.STR * ItemData.RarityMultipliers[$"{item.Rarity.ToUpper()}"]);
+            obj.Stats.CRC += Convert.ToInt16(xpTable[item.Level].Item2.CRC * ItemData.RarityMultipliers[$"{item.Rarity.ToUpper()}"]);
+            obj.Stats.CRD += Convert.ToInt16(xpTable[item.Level].Item2.CRD * ItemData.RarityMultipliers[$"{item.Rarity.ToUpper()}"]);
 
             //Reset xp to max if level is max
             if (item.Level == xpTable.Keys.LastOrDefault())
             {
-                obj.Stats.XP = xpTable[item.Level].Item1;
-            }
-            return;
-
-            //Old code
-            if (item is Weapon wpn)
-            {
-                //Increase the level
-                wpn.Level++;
-
-                //Substract the required XP
-                wpn.Stats.XP -= LevelData.WeaponXPTable[wpn.Level].Item1;
-
-                //Get the stats of the next level
-                Stats levelUpStats = LevelData.WeaponXPTable[wpn.Level].Item2;
-
-                //Add the stats to the item
-                wpn.Stats.HP += levelUpStats.HP;
-                wpn.Stats.DEF += levelUpStats.DEF;
-                wpn.Stats.DMG += levelUpStats.DMG;
-                wpn.Stats.SPD += levelUpStats.SPD;
-                wpn.Stats.STA += levelUpStats.STA;
-                wpn.Stats.STR += levelUpStats.STR;
-                wpn.Stats.CRC += levelUpStats.CRC;
-                wpn.Stats.CRD += levelUpStats.CRD;
-
-                //Reset xp to max if level is max
-                if (wpn.Level == LevelData.WeaponXPTable.Keys.LastOrDefault())
-                {
-                    wpn.Stats.XP = LevelData.WeaponXPTable[wpn.Level].Item1;
-                }
-            }
-            else if (item is Armour arm)
-            {
-                //Increase the level
-                arm.Level++;
-
-                //Substract the required XP
-                arm.Stats.XP -= LevelData.ArmourXPTable[arm.Level].Item1;
-
-                //Get the stats of the next level
-                Stats levelUpStats = LevelData.ArmourXPTable[arm.Level].Item2;
-
-                //Add the stats to the item
-                arm.Stats.HP += levelUpStats.HP;
-                arm.Stats.DEF += levelUpStats.DEF;
-                arm .Stats.DMG += levelUpStats.DMG;
-                arm.Stats.SPD += levelUpStats.SPD;
-                arm.Stats.STA += levelUpStats.STA;
-                arm.Stats.STR += levelUpStats.STR;
-                arm.Stats.CRC += levelUpStats.CRC;
-                arm.Stats.CRD += levelUpStats.CRD;
-
-                //Reset xp to max if level is max
-                if (arm.Level == LevelData.ArmourXPTable.Keys.LastOrDefault())
-                {
-                    arm.Stats.XP = LevelData.ArmourXPTable[arm.Level].Item1;
-                }
-            }
-            else if (item is Amulet amu)
-            {
-                //Increase the level
-                amu.Level++;
-
-                //Substract the required XP
-                amu.Stats.XP -= LevelData.AmuletXPTable[amu.Level].Item1;
-
-                //Get the stats of the next level
-                Stats levelUpStats = LevelData.AmuletXPTable[amu.Level].Item2;
-
-                //Add the stats to the item
-                amu.Stats.HP += levelUpStats.HP;
-                amu.Stats.DEF += levelUpStats.DEF;
-                amu.Stats.DMG += levelUpStats.DMG;
-                amu.Stats.SPD += levelUpStats.SPD;
-                amu.Stats.STA += levelUpStats.STA;
-                amu.Stats.STR += levelUpStats.STR;
-                amu.Stats.CRC += levelUpStats.CRC;
-                amu.Stats.CRD += levelUpStats.CRD;
-
-                //Reset xp to max if level is max
-                if (amu.Level == LevelData.AmuletXPTable.Keys.LastOrDefault())
-                {
-                    amu.Stats.XP = LevelData.AmuletXPTable[amu.Level].Item1;
-                }
+                obj.Stats.XP = Convert.ToInt16(xpTable[item.Level].Item1 * ItemData.RarityMultipliers[item.Rarity.ToUpper()]);
             }
         }
     }

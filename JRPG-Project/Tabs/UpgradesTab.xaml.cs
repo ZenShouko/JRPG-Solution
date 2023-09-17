@@ -23,9 +23,6 @@ namespace JRPG_Project.Tabs
     {
         public UpgradesTab(BaseItem item)
         {
-            //TEST
-            //Inventory.Materials["M2"] += 100;
-            //Inventory.Materials["M7"] += 20;
             InitializeComponent();
             Item = item;
             PrepareGuiForUpgrade();
@@ -73,13 +70,13 @@ namespace JRPG_Project.Tabs
             //Fill dictionary with xp required per level
             if (Item is Weapon)
                 for (int i = LevelData.WeaponXPTable.Keys.FirstOrDefault(); i <= LevelData.WeaponXPTable.Keys.LastOrDefault(); i++)
-                    XpPerLevel.Add(i, LevelData.WeaponXPTable[i].Item1);
+                    XpPerLevel.Add(i, Convert.ToInt16(LevelData.WeaponXPTable[i].Item1 * ItemData.RarityMultipliers[Item.Rarity.ToUpper()]));
             else if (Item is Armour)
                 for (int i = LevelData.ArmourXPTable.Keys.FirstOrDefault(); i <= LevelData.ArmourXPTable.Keys.LastOrDefault(); i++)
-                    XpPerLevel.Add(i, LevelData.ArmourXPTable[i].Item1);
+                    XpPerLevel.Add(i, Convert.ToInt16(LevelData.ArmourXPTable[i].Item1 * ItemData.RarityMultipliers[Item.Rarity.ToUpper()]));
             else if (Item is Amulet)
                 for (int i = LevelData.AmuletXPTable.Keys.FirstOrDefault(); i <= LevelData.AmuletXPTable.Keys.LastOrDefault(); i++)
-                    XpPerLevel.Add(i, LevelData.AmuletXPTable[i].Item1);
+                    XpPerLevel.Add(i, Convert.ToInt16(LevelData.AmuletXPTable[i].Item1 * ItemData.RarityMultipliers[Item.Rarity.ToUpper()]));
 
             //Set item image
             ItemImage.Source = Item.ItemImage.Source;
@@ -99,6 +96,7 @@ namespace JRPG_Project.Tabs
 
             //Display essence mat
             TxtOrbs.Text = Inventory.Materials["M2"].ToString();
+            TxtCoins.Text = Inventory.Coins.ToString();
         }
 
         private void LoadScrolls()
@@ -208,6 +206,7 @@ namespace JRPG_Project.Tabs
             AniListTextblocks.Add(TxtCurrentXp);
             AniListTextblocks.Add(TxtMaxXp);
             AniListTextblocks.Add(TxtOrbs);
+            AniListTextblocks.Add(TxtCoins);
         }
 
         #endregion
@@ -266,6 +265,7 @@ namespace JRPG_Project.Tabs
 
             //Get required orbs
             int requiredOrbs = GetRequiredOrbs(GetRequiredXp());
+            int upgradeCost = GetUpgradeCost();
 
             //[!] Check if we have enough orbs
             if (Inventory.Materials["M2"] < requiredOrbs)
@@ -275,8 +275,9 @@ namespace JRPG_Project.Tabs
             int essenceXp = requiredOrbs * ItemData.ListMaterials.FirstOrDefault(x => x.ID == "M2").Stats.XP;
             LevelData.AddXP(Item, essenceXp);
 
-            //Remove materials
+            //Remove materials and coins
             Inventory.Materials["M2"] -= requiredOrbs;
+            Inventory.Coins -= upgradeCost;
 
             //Recalculate value
             ItemData.SetValue(Item);
@@ -285,6 +286,7 @@ namespace JRPG_Project.Tabs
             RefreshStats();
             IsUpgradePossible();
             TxtOrbs.Text = Inventory.Materials["M2"].ToString();
+            TxtCoins.Text = Inventory.Coins.ToString();
 
             //Is scroll container empty?
             HandleEmptyScrollContainer();
@@ -319,21 +321,22 @@ namespace JRPG_Project.Tabs
                 return;
             }
 
-            //Check if we have enough essence for an upgrade
+            //Check if we have enough essence for an upgrade. Also check if we can afford the upgrade
             int requiredOrbs = GetRequiredOrbs(GetRequiredXp());
+            int upgradeCost = GetUpgradeCost();
 
-            if (requiredOrbs < Inventory.Materials["M2"])
+            if (requiredOrbs <= Inventory.Materials["M2"] && Inventory.Coins >= upgradeCost)
             {
-                TxtUpgradeStatus.Text = requiredOrbs > 1 ? $"Upgrade Available for {GetRequiredOrbs(GetRequiredXp())} orbs!" :
-                    $"Upgrade Available for {GetRequiredOrbs(GetRequiredXp())} orb!";
+                TxtUpgradeStatus.Text = requiredOrbs > 1 ? $"Upgrade Available for {requiredOrbs} orbs and {upgradeCost} coins!" :
+                    $"Upgrade Available for {requiredOrbs} orb and {upgradeCost} coins!";
                 TxtUpgradeStatus.Foreground = Brushes.LimeGreen;
                 BtnUpgrade.IsEnabled = true;
                 BtnUpgrade.Background = Brushes.GhostWhite;
             }
             else
             {
-                TxtUpgradeStatus.Text = requiredOrbs > 1 ? $"Need {GetRequiredOrbs(GetRequiredXp())} orbs to upgrade." :
-                    $"Need {GetRequiredOrbs(GetRequiredXp())} orb to upgrade.";
+                TxtUpgradeStatus.Text = requiredOrbs > 1 ? $"Need {requiredOrbs} orbs and {upgradeCost} coins to upgrade." :
+                    $"Need {requiredOrbs} orb and {upgradeCost} to upgrade.";
                 TxtUpgradeStatus.Foreground = Brushes.Crimson;
                 BtnUpgrade.IsEnabled = false;
                 BtnUpgrade.Background = Brushes.Gray;
@@ -418,6 +421,12 @@ namespace JRPG_Project.Tabs
             double orbs = requiredXp / orbXp;
             orbs = Math.Ceiling(orbs);
             return (int)orbs;
+        }
+
+        private int GetUpgradeCost()
+        {
+            //Upgrades cost 40 coins per orb. Additionally, apply rarity multiplier
+            return (int)(GetRequiredOrbs(GetRequiredXp()) * 40 * ItemData.RarityMultipliers[Item.Rarity]);
         }
 
         private async void AnimateTexts()

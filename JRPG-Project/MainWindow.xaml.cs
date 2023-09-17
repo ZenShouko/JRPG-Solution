@@ -1,5 +1,6 @@
 ﻿using JRPG_ClassLibrary;
 using JRPG_Project.ClassLibrary.Data;
+using JRPG_Project.ClassLibrary.Player;
 using System.Windows;
 
 namespace JRPG_Project
@@ -15,6 +16,10 @@ namespace JRPG_Project
             //Set Grid & Open main tab
             Interaction.Grid = grid;
             Interaction.OpenTab("MainTab");
+
+            //Test
+            //Inventory.Materials["M2"] = 2500;
+            //Inventory.Coins = 1000000;
         }
     }
 }

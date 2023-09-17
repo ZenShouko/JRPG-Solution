@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:JRPG_Project"
         mc:Ignorable="d" WindowStartupLocation="CenterScreen" WindowStyle="ThreeDBorderWindow" ResizeMode="NoResize" SizeToContent="WidthAndHeight"
-        Title="Map" Height="auto" Width="auto">
+        Title="Map" Height="auto" Width="auto" KeyUp="Window_KeyUp">
     <Grid x:Name="MainGrid" Height="800" Width="1000">
         
     </Grid>

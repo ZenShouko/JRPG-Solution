@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
@@ -18,11 +19,13 @@ namespace JRPG_Project.ClassLibrary.Universal
     /// </summary>
     public partial class InventoryTab : UserControl
     {
+        bool AddedKeydownEvent = false;
         public InventoryTab()
         {
             InitializeComponent();
             PrepareGUI();
             DisplayBlank();
+
 
             //[?] Items get loaded when sort combobox' selection changes. Hence why we don't need to call LoadItems() here.
 
@@ -507,6 +510,13 @@ namespace JRPG_Project.ClassLibrary.Universal
 
         private void ReturnButton_Click(object sender, RoutedEventArgs e)
         {
+            //Unsubscribe from keydown event
+            if (Window.GetWindow(this) != null && AddedKeydownEvent)
+            {
+                Window.GetWindow(this).KeyDown -= DispatchTab_KeyDown;
+                AddedKeydownEvent = false;
+            }
+
             SoundManager.PlaySound("click-short.wav");
             if (Stages.CurrentStage == null)
                 Interaction.OpenTab("MainTab");
@@ -785,7 +795,14 @@ namespace JRPG_Project.ClassLibrary.Universal
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            //Did we come back from upgrade tab?
+            //Add keydown event
+            if (!AddedKeydownEvent)
+            {
+                Window.GetWindow(this).KeyDown += DispatchTab_KeyDown;
+                AddedKeydownEvent = true;
+            }
+
+            //#Did we come back from upgrade tab?
             if (string.IsNullOrEmpty(SelectedItemUniqueID))
                 return;
 
@@ -831,6 +848,12 @@ namespace JRPG_Project.ClassLibrary.Universal
 
             //Display item details
             SelectItem(targetListbox);
+        }
+
+        private void DispatchTab_KeyDown(object sender, KeyEventArgs e)
+        {
+            //Return
+            ReturnButton_Click(sender, e);
         }
     }
 }

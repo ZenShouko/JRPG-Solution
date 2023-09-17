@@ -126,7 +126,16 @@ namespace JRPG_Project.ClassLibrary.Data
             Inventory.Team = data.Team;
             for (int i = 0; i < 3; i++)
             {
+                //Load image
                 Inventory.Team[i].CharImage = CharacterData.GetCharacterImage(Inventory.Team[i].ImageName);
+
+                //[!] Re-equip items
+                if (Inventory.Team[i].Weapon != null)
+                    Inventory.Team[i].Weapon = Inventory.Weapons.FirstOrDefault(x => x.UniqueID == Inventory.Team[i].Weapon.UniqueID);
+                if (Inventory.Team[i].Armour != null)
+                    Inventory.Team[i].Armour = Inventory.Armours.FirstOrDefault(x => x.UniqueID == Inventory.Team[i].Armour.UniqueID);
+                if (Inventory.Team[i].Amulet != null)
+                    Inventory.Team[i].Amulet = Inventory.Amulets.FirstOrDefault(x => x.UniqueID == Inventory.Team[i].Amulet.UniqueID);
             }
         }
 
